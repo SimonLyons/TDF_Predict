@@ -1,6 +1,8 @@
 # Script to attempt to extract relevant elements from Cycling News calendar webite.
 # This method uses xpathApply to look at the nodes and divide it into relevant rows
 
+
+
 library(XML)
 
 # Need to create the loop that cycles through all of the relevant years
