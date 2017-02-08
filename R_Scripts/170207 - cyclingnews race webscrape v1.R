@@ -18,6 +18,7 @@ for(e in 1:nrow(calendar_2016)){
     # Extract relevant weblink and race name for first race (Bpost bank trofee - GP Sven Nys)
     race_url <- calendar_2016$Web.link[e]
     race_name <- gsub(" ", "", calendar_2016$Race.Details[e])
+    race_name <- gsub("/", "", race_name)
     
     # Pull in the XML data from the weblink
     race_xml <- htmlParse(race_url)
