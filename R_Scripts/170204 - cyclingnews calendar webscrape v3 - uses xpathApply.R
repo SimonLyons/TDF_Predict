@@ -4,7 +4,7 @@
 library(XML)
 
 # set working directory
-setwd("C:/b Data Analysis/Sandpit/TDF_Predict/Data_Files")
+setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
 
 # Create FOR loop that creates a web address for Cycling News calendars between 2005 and 2016
 for (n in 2005:2016){
