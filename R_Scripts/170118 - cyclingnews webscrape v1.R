@@ -1,39 +1,26 @@
-#
-#
+# Script writes function to extract race results tables from CN results web links.
 #
 #
 # load relevant libraries
-library(xml2)     # library for downloading and working with XML
-library(rvest)   # library for working with HTML nodes
-library(RCurl)
-library(magrittr)   # Library to use the package 'piping' action - %>%
-library(HTML)
+# library(xml2)     # library for downloading and working with XML
+# library(rvest)   # library for working with HTML nodes
+# library(RCurl)
+# library(magrittr)   # Library to use the package 'piping' action - %>%
+# library(HTML)
+library(XML)
 
-# set working directory
-setwd("C:/b Data Analysis/Sandpit/TDF_Predict")
-
-# Set url
-
-uci_2016_calendar <- "http://www.cyclingnews.com/races/calendar/2016/"
-
-tdu_2016_classic_url <- "http://www.cyclingnews.com/races/santos-tour-down-under-2016/down-under-classic-adelaide/results/"
-tdu_2016_stage_1_url <- "http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-1/results/"
-
-tdu_2016_stage_3_url <- "http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-3/results/"
-
-
-# -------- Expressions for testing results webscrape function
-# getCNresults(tdu_2016_stage_3_url)
-# my_url <- tdu_2016_stage_3_url
-# -------------------------------------------------------------
 
 # build function to take results url from Cycling News and return data.frame table
 getCNresults <- function(my_url){
+  
+# Set directory to write results datafiles
+  setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
   
 #  my_url_file <- "my_url_file.xml"    # not necessary to create local xml file
 #  download.file(my_url, destfile = my_url_file, method = 'auto')
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
+  table_list <- c()
   
   # Use FOR LOOP for the number of tables 'i'
     for (i in 1:table_no){
@@ -54,17 +41,11 @@ getCNresults <- function(my_url){
       my_results <- my_results[-1,]   # delete first row which contains column names
       my_results <- my_results[,-4]   # delete fourth column which is empty
       assign(paste("table_", i, sep = ""), my_results)   # Create unique table with 'i' appended
+      write.csv(my_results, file = paste("table_", i, ".csv", sep = ""), row.names = FALSE)
+      table_list <- c(table_list, paste("table_", i, sep = ""))
+      
     }   # end FOR LOOP for number of tables
   
-
-  return(table_1)   # Need to work out how to return all of the tables created in the loop
+  return(my_results)
+  # return(table_1)   # Need to work out how to return all of the tables created in the loop
 }
-
-# -----------------------------------------------------
-# Some potentially useful expressions
-#
-# getNodeSet(my_url_parse, ".//table", attributes"list")
-# # xpathApply(tdu_2016_classic__parse, "//<tbody>")
-# getNodeSet()
-
-
