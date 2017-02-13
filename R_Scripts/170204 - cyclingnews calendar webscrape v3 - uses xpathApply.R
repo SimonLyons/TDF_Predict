@@ -47,7 +47,7 @@ for (n in 2005:2016){
     
     # IF statement to add START and END columns for the date
     if(any(grepl(" to ", calendar_cn[j, "Date"]))){
-      pos_to <- regexpr(" to ", calendar_cn[j, "Date"])[1]
+      pos_to <- regexpr(" to ", calendar_cn[j, "Date"])[1]   # Determine text position of ' to '
       calendar_cn[j, "Start.date"] <- paste(substr(calendar_cn[j, "Date"],1  ,  pos_to-1), n, sep = " ")
       calendar_cn[j, "End.date"] <- paste(substr(calendar_cn[j, "Date"],pos_to +4  ,  nchar(calendar_cn[j, "Date"])), n, sep = " ")
     }   else {
