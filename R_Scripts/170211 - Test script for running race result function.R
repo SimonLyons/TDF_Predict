@@ -27,6 +27,10 @@
 
 
 
+# Practice script for testing out bits.
+# On Tue 14 Feb I was attempting to scrape tables (unsuccessfully) from race.ID 2009FeniouxFranceTrophy_1
+# Different types of tables are causing problems for my getCNresults function
+
 test_urls <- read.csv("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/calendar_CN_2009FeniouxFranceTrophy.csv", header = TRUE, sep = ",")
 
 url_race1 <- paste("http://www.cyclingnews.com/", as.character(test_urls[1,1]), sep = "")
@@ -41,9 +45,4 @@ tables_out
 my_url <- url_race1
 
 
-my_df <- iris
-
-colnames(my_df)[3]
-
-my_df[1,3]
 
