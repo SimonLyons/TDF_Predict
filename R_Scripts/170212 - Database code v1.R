@@ -24,21 +24,35 @@ for(i in 2005:2016){
   
 }   # Close FOR loop
 
+#################################################################
 # Script to remove tables (requires 'manager' or 'admin' rights)
 for(i in 2005:2016){
 dbRemoveTable(conn_local, paste("calendar_cn_", i, sep = ""))
 }
 # End script to remove tables
+#################################################################
 
+dbSendQuery(conn_local, "ALTER TABLE calendar_cn_2010 ADD PRIMARY KEY(`event.ID`);" )
+
+ALTER TABLE goods ADD PRIMARY KEY(id)
 
 # List db tables
 dbListTables(conn_local, dbname='ProCycling')
+
 
 dbListFields(conn_local, "calendar_cn_2010")
 
 # List all open db connectoins
 dbListConnections(MySQL())
 
+dbClearResult(dbListResults(conn_local)[[1]])
+
+query <- dbSendQuery(conn_local, "SELECT * FROM calendar_cn_2010 limit 5000;")
+new_df <- dbFetch(query, n=500)
+new_df[480:489,"Web.link"]
+
+summary(new_df)
+new_df[, "Web.link"]
 
 # Get info about db that's connected
 dbGetInfo(conn_local)
@@ -48,3 +62,6 @@ all_cons <- dbListConnections(MySQL())
 for(con in all_cons) 
   dbDisconnect(con)
 
+
+
+dbDisconnect(dbListConnections(MySQL())[[1]])

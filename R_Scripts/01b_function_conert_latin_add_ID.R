@@ -36,7 +36,8 @@ for (n in start_year:end_year){
     add_ID_df[i, "event.name"] <- gsub(":", "", add_ID_df[i, "event.name"])
     # Next create unique event ID by removing spaces and appending year
     add_ID_df[i, "event.ID"] <- gsub(" ", "", add_ID_df[i, "event.name"])
-    add_ID_df[i, "event.ID"] <- paste(n, add_ID_df[i, "event.ID"], sep = "" )
+    # Paste in the year. Use only 30 characters in the 'event.ID'. 
+    add_ID_df[i, "event.ID"] <- substr(paste(n, add_ID_df[i, "event.ID"], sep = "" ), 1, 30)
   }
 
 # Write CSV file for each calendar

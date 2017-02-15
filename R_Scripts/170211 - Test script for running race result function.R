@@ -2,8 +2,8 @@
 
 # Create files for CN race calendars
 # Define range of years. Can be modified below.
-start_year <- 2015
-end_year <- 2016
+start_year <- 2009
+end_year <- 2010
 
 # Run 'initialCNCalendar' function
 initialCNCalendar(start_year, end_year)
