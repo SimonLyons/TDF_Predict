@@ -10,6 +10,7 @@ write_race_results_tables <- function(my_url, race.ID){
 setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
 
 require(XML)    
+  my_url <- paste("http://www.cyclingnews.com/", my_url, sep = "")
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
   table_list <- c()   # Create empty table list for use in loop
@@ -23,8 +24,6 @@ require(XML)
   # Use FOR LOOP for the number of tables 'i'
     for (i in 1:table_no){
       my_results <- as.data.frame(readHTMLTable(my_url_parse)[i])   # extract table number i
-      
-      # My attempt to match captions to tables
       # Some CN tables have no caption - the title of the table is the 'h4' title preceding the table
       # Other CN results tables have a caption matching each table (which should be used as the table title)
       if (length(table_caption_text) == table_no){   
@@ -51,11 +50,19 @@ require(XML)
       
       # Need to find a way to delete empty columns. Not a priority right now (15FEB17)
       # my_results <- my_results[,-4]   # delete fourth column which is empty
-       
+      
+        # Function to strip out non-alpha and non-numeric characters from the table title
+        # so that it can be used successfully in the write.csv function
+        fsSafe <- function(string) {
+          safeString <- gsub("[^[:alnum:]]", "_", string)
+          safeString <- gsub("_+", "_", safeString)
+          safeString
+        }  
+         
       # Write the table to its location (currently a .csv file, soon to be a MySQL table)  
       # I've used a tricky function 'formatC' that allows me to specify the number of digits, so '2' can become '02'. Awesome!
-      write.csv(my_results, file = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", table_titles[i], ".csv", sep = ""), row.names = FALSE)
-      table_list <- c(table_list, paste("R", race.ID,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", table_titles[i], ".csv", sep = ""))
+      write.csv(my_results, file = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""), row.names = FALSE)
+      table_list <- c(table_list, paste("R", race.ID,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
       formatC(i, width = 2, format = "d", flag = "0")
       
       }   # end IF statement for empty tables

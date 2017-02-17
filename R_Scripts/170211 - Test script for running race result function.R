@@ -14,17 +14,16 @@ CalendarAddAndClean(start_year, end_year)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2016
+input_year <- 2018
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
 
 # Read in CN calendar csv file
-calendar_CN_year <- read.csv(paste("calendar_CN_", input_year, "_final.csv", header = TRUE, sep = ","))
+# calendar_CN_year <- read.csv(paste("calendar_CN_", input_year, "_final.csv", sep = ""), header = TRUE, sep = ","))
 
 # Extract (into dataframe) the following columns Web.link	Start.date	End.date	event.name	event.ID
-
-event_no <- nrows
+# event_no <- nrows
 
 
 
@@ -35,6 +34,8 @@ event_no <- nrows
 # Currently script for this is in 170207 cyclingnews race webscrape v1.R
 
 
+  Race_Weblink_Year <- GetRaceWebLinks(input_year)  
+  head(Race_Weblink_Year)
 
 # Open each race weblink and extract tables
 # Currently this is acheived with the function 'write_race_results_tables' in the following file
@@ -75,14 +76,7 @@ race.ID <- "dubai_2"
 tables_out <- write_race_results_tables(url_race4, race.ID)
 tables_out
 
-my_url <- url_race4
 
-table_no <- length(readHTMLTable(url_race1))
-my_results <- as.data.frame(readHTMLTable(url_race1)[1])
-ncol(my_results)
-
-
-my_url <- url_race1
-
+race_url <- url_race4
 
 
