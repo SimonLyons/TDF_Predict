@@ -6,9 +6,17 @@
 # This is my unique race code, to be used in the database as a KEY identifier.
 write_race_results_tables <- function(my_url, race.ID){
   
-# Set directory to write results datafiles
-setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
+# Set directory to write results datafiles. No longer required with switch to database
+# setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
+  
+# Set working directory to user passwords location
+setwd("C:/b_Data_Analysis/Database")
+# Read password file
+psswd <- read.csv("passwords_db.csv", header = TRUE)
+conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Designer", "user"]) , password = as.character(psswd[psswd$type == "Designer", "password"]),  dbname='ProCycling', host='localhost')
 
+
+require(RMySQL)    
 require(XML)    
   my_url <- paste("http://www.cyclingnews.com/", my_url, sep = "")
   my_url_parse <- htmlParse(my_url)
@@ -59,15 +67,30 @@ require(XML)
           safeString
         }  
          
-      # Write the table to its location (currently a .csv file, soon to be a MySQL table)  
-      # I've used a tricky function 'formatC' that allows me to specify the number of digits, so '2' can become '02'. Awesome!
-      write.csv(my_results, file = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""), row.names = FALSE)
+      # Write the table to its location (now to the MySQL database)
+      dbWriteTable(conn_local, name = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""), my_results)
       table_list <- c(table_list, paste("R", race.ID,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
-      formatC(i, width = 2, format = "d", flag = "0")
+      
+      
+      ##########################################
+      # Old script writing to .csv files
+      # I've used a tricky function 'formatC' that allows me to specify the number of digits, so '2' can become '02'. Awesome!
+      #
+      # write.csv(my_results, file = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""), row.names = FALSE)
+      # table_list <- c(table_list, paste("R", race.ID,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
+      # formatC(i, width = 2, format = "d", flag = "0")
+      #
+      ##########################################
+      
       
       }   # end IF statement for empty tables
     }   # end FOR LOOP for number of tables
   
   return(table_list)
   # return(table_1)   # Need to work out how to return all of the tables created in the loop
+  
+  # Script for closing all active connections to MySQL databases.
+  all_cons <- dbListConnections(MySQL())
+  for(con in all_cons) 
+    dbDisconnect(con)
 }

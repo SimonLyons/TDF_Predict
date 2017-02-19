@@ -1,5 +1,5 @@
 # Master script for calling functions to extract race results data
-# from the Cycling News website
+# from the Cycling News
 
 
 #################################################
@@ -21,7 +21,7 @@ CalendarAddAndClean(start_year, end_year)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2020
+input_year <- 2021
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
