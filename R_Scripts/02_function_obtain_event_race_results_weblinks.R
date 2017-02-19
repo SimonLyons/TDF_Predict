@@ -26,9 +26,20 @@ colnames(races_master)[2] <- "race.ID"
 colnames(races_master)[3] <- "event.ID"
 colnames(races_master)[4] <- "event.name"
 
+
+# Use Windows Progress Bar
+total <- nrow(calendar_CN)
+# create progress bar
+pb <- winProgressBar(title = "Obtain event.name & event.ID from calendar", label = "0% done", min = 0,
+                     max = total, width = 300)
+
 # FOR loop to run through all of the events listed in the calendar dataframe
 # The LOOP needs to ignore events with no weblink
 for(e in 1:nrow(calendar_CN)){
+  
+  Sys.sleep(0.1)   # Windows Progress Bar script
+  setWinProgressBar(pb, e, title = "Obtain event.name & event.ID from calendar", label=paste( round(e/total*100, 0),
+                                        "% done"))
   
   if (!is.na(calendar_CN$Web.link[e])){
     # Extract relevant weblink and race name
@@ -57,11 +68,12 @@ for(e in 1:nrow(calendar_CN)){
       for(n in 1: length(race_links)){
         races_cn[n,1] <- race_links[[n]][[name = "href"]]
         races_cn[n,2] <- paste(event_ID, "_", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
-        races_cn[n,3] <- event_ID
-        races_cn[n,4] <- event_name
+        races_cn[n,3] <- as.character(event_ID)
+        races_cn[n,4] <- as.character(event_name)
       }   # End FOR loop that pulls out weblink data
+      
       # Remove duplicate entries
-      races_cn <- unique(races_cn)
+      races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
       
       # Row bind the small races_cn dataframe to the races_master dataframe
       races_master <- rbind(races_master, races_cn)
@@ -73,6 +85,8 @@ for(e in 1:nrow(calendar_CN)){
   }   # End IF statement identifying whether a race result link exists for each calendar entry
   
 }   #   End FOR loop to run through all of the events in the calendar dataframe
+
+close(pb)   # Windows Progress Bar script
 
 write.csv(races_master, file = paste(input_year, "CN_race_weblinks", ".csv", sep = ""), row.names = FALSE)
 return(races_master)

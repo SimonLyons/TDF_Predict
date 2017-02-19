@@ -1,6 +1,11 @@
+# Master script for calling functions to extract race results data
+# from the Cycling News website
 
 
+#################################################
 # Create files for CN race calendars
+# This essentially only needs to be done once.
+# 
 # Define range of years. Can be modified below.
 start_year <- 2009
 end_year <- 2010
@@ -11,10 +16,12 @@ initialCNCalendar(start_year, end_year)
 # Run calendar conversion function 
 CalendarAddAndClean(start_year, end_year)
 
+#################################################
+
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2018
+input_year <- 2020
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -23,60 +30,37 @@ GetAllRacesInAYear <- function(input_year){
 # calendar_CN_year <- read.csv(paste("calendar_CN_", input_year, "_final.csv", sep = ""), header = TRUE, sep = ","))
 
 # Extract (into dataframe) the following columns Web.link	Start.date	End.date	event.name	event.ID
-# event_no <- nrows
-
-
 
 # Go to each Web.link and extract the race web links for each event.ID. Create race.ID
-# At present I think the easiest thing to do will be to assign a sequential number for the race.ID
 # So we'll combine the event.ID with a sequential number to create the race.ID
 # Create a dataframe for each event with columns for the race weblink, date, start.location, finish.location
-# Currently script for this is in 170207 cyclingnews race webscrape v1.R
-
-
+# 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
+  
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   head(Race_Weblink_Year)
-
+  
 # Open each race weblink and extract tables
-# Currently this is acheived with the function 'write_race_results_tables' in the following file
 # 03_function_race_results_table.R
 
-
-
+  # Use Windows Progress Bar
+  total <- nrow(Race_Weblink_Year)
+  # create progress bar
+  pb <- winProgressBar(title = "Race Table Download Progress", label = "0% done",  min = 0,
+                       max = total, width = 300)
+  
+  for (r in 1: nrow(Race_Weblink_Year)){
+    Sys.sleep(0.1)
+    setWinProgressBar(pb, r, title = , label = paste( round(r/total*100, 0),
+                                          "% done"))
+    write_race_results_tables(Race_Weblink_Year[r, 1], Race_Weblink_Year[r, 2])
+    }   # End FOR loop to retrieve race results tables using function "write_race_results_tables"
+  close(pb)   # Windows Progress Bar script 
+  
+  
 # Create a dataframe for each race result table. Name it for the race.ID
-
-
-
 
 }   # End overall function 'GetAllRacesInAYear'
 
 
-
-
-# Practice script for testing out bits.
-# On Tue 14 Feb I was attempting to scrape tables (unsuccessfully) from race.ID 2009FeniouxFranceTrophy_1
-# Different types of tables are causing problems for my getCNresults function
-
-test_urls <- read.csv("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/calendar_CN_2009FeniouxFranceTrophy.csv", header = TRUE, sep = ",")
-
-url_race1 <- paste("http://www.cyclingnews.com/", as.character(test_urls[1,1]), sep = "")
-url_race2 <- paste("http://www.cyclingnews.com/", as.character(test_urls[2,1]), sep = "")
-
-url_race3 <- "http://www.cyclingnews.com/races/dubai-tour-2017/stage-4/results/"
-url_race4 <- "http://www.cyclingnews.com/races/dubai-tour-2017/stage-2/results/"
-
-
-url_race5 <- "http://www.cyclingnews.com/races/giro-ditalia-internazionale-femminile-2016/stage-3/results"
-url_race6 <- "http://www.cyclingnews.com/races/fenioux-france-trophy-isgp3/sprint/results"
-
-
-race.ID <- as.character(test_urls[1,2])
-race.ID <- "dubai_2"
-
-tables_out <- write_race_results_tables(url_race4, race.ID)
-tables_out
-
-
-race_url <- url_race4
 
 
