@@ -67,7 +67,7 @@ for(e in 1:nrow(calendar_CN)){
       # This actually took me ages to isolate just the 'href' value
       for(n in 1: length(race_links)){
         races_cn[n,1] <- race_links[[n]][[name = "href"]]
-        races_cn[n,2] <- paste(event_ID, "_", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
+        races_cn[n,2] <- paste(event_ID, ".R", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
         races_cn[n,3] <- as.character(event_ID)
         races_cn[n,4] <- as.character(event_name)
       }   # End FOR loop that pulls out weblink data

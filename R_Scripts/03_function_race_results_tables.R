@@ -28,7 +28,7 @@ require(XML)
   # Extract table header/caption information
   table_header_text <- xpathSApply(my_url_parse, "//h4", xmlValue)[1]   # There are two h4 elements. We only want the first.
   table_caption_text <- xpathSApply(my_url_parse, "//table/caption", xmlValue)
-  
+
   # Use FOR LOOP for the number of tables 'i'
     for (i in 1:table_no){
       my_results <- as.data.frame(readHTMLTable(my_url_parse)[i])   # extract table number i
@@ -52,8 +52,13 @@ require(XML)
           for(h in 1: ncol(my_results)){
           colnames(my_results)[h] <- as.character(my_results[1, h])   # toString
           }   # End 
-          # We only delete the first row is there are column titles in the tables
+          # We only delete the first row if there are column titles in the tables
           my_results <- my_results[-1,]   # delete first row which contains column names
+          # Replace characters that can't be used in column names in MySQL
+          # Should be limited to alpha, numeric and '_'
+          colnames(my_results) <- gsub("#", "Pos", colnames(my_results))
+          colnames(my_results) <- gsub(" ", "", colnames(my_results))
+          colnames(my_results) <- gsub("\\(|)", ".", colnames(my_results))
         }
       
       # Need to find a way to delete empty columns. Not a priority right now (15FEB17)
@@ -68,8 +73,8 @@ require(XML)
         }  
          
       # Write the table to its location (now to the MySQL database)
-      dbWriteTable(conn_local, name = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""), my_results)
-      table_list <- c(table_list, paste("R", race.ID,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
+      dbWriteTable(conn_local, name = paste(race.ID, ".T", formatC(i, width = 2, format = "d", flag = "0"), sep = ""), my_results)
+      table_list <- c(table_list, paste(race.ID, ".T", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
       
       
       ##########################################

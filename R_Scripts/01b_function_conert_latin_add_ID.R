@@ -36,8 +36,9 @@ for (n in start_year:end_year){
     add_ID_df[i, "event.name"] <- gsub(":", "", add_ID_df[i, "event.name"])
     # Next create unique event ID by removing spaces and appending year
     add_ID_df[i, "event.ID"] <- gsub(" ", "", add_ID_df[i, "event.name"])
-    # Paste in the year. Use only 30 characters in the 'event.ID'. 
-    add_ID_df[i, "event.ID"] <- substr(paste(n, add_ID_df[i, "event.ID"], sep = "" ), 1, 30)
+    # Event ID of format E.2016.001.
+    # Updated to simple sequential numbering. Was previously combination of year and race name.
+    add_ID_df[i, "event.ID"] <- paste("E", n, formatC(i, width = 3, format = "d", flag = "0"),  sep = "." )
   }
 
 # Write CSV file for each calendar
