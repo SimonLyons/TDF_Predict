@@ -20,7 +20,7 @@ i <- 2016
 for(i in 2005:2016){
   
   calendar_cn <- read.csv(paste("calendar_CN_", i, ".csv", sep = ""), header = TRUE, encoding = "UTF-8", stringsAsFactors=FALSE)
-  dbWriteTable(conn_local, name = paste("calendar_CN_", i, sep = ""), calendar_cn)
+  dbWriteTable(conn_local, name = paste("calendar_CN_", i, sep = ""), calendar_cn, overwrite = TRUE)
   
 }   # Close FOR loop
 

@@ -1,14 +1,13 @@
 # Master script for calling functions to extract race results data
 # from the Cycling News
 
-
 #################################################
 # Create files for CN race calendars
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2005
-end_year <- 2017
+start_year <- 2006
+end_year <- 2006
 
 # Run 'initialCNCalendar' function
 initialCNCalendar(start_year, end_year)

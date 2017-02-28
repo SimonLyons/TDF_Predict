@@ -9,7 +9,7 @@ initialCNCalendar <- function(start_year, end_year){
 # Call relevant libraries
 # In this case, just 'XML' for webscraping
   require(XML)
-  require(RMySQL)
+
 
 # set working directory
 setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
