@@ -8,7 +8,8 @@ initialCNCalendar <- function(start_year, end_year){
 
 # Call relevant libraries
 # In this case, just 'XML' for webscraping
-library(XML)
+  require(XML)
+  require(RMySQL)
 
 # set working directory
 setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
@@ -24,14 +25,14 @@ for (n in start_year:end_year){
   
   # Create blank calendar table
   calendar_cn <- as.data.frame(matrix(NA, nrow = 0, ncol = 8))
-  colnames(calendar_cn)[1] <- "Date"
-  colnames(calendar_cn)[2] <- "Race.Details"
-  colnames(calendar_cn)[3] <- "Discipline"
-  colnames(calendar_cn)[4] <- "Location"
-  colnames(calendar_cn)[5] <- "UCI.code"
-  colnames(calendar_cn)[6] <- "Web.link"
-  colnames(calendar_cn)[7] <- "Start.date"
-  colnames(calendar_cn)[8] <- "End.date"
+  colnames(calendar_cn)[1] <- "race_date"
+  colnames(calendar_cn)[2] <- "race_details"
+  colnames(calendar_cn)[3] <- "discipline"
+  colnames(calendar_cn)[4] <- "location"
+  colnames(calendar_cn)[5] <- "uci_code"
+  colnames(calendar_cn)[6] <- "web_link"
+  colnames(calendar_cn)[7] <- "start_date"
+  colnames(calendar_cn)[8] <- "end_date"
   
   # FOR loop to run through the number of row entries in the calendar table
   for(j in 1:length(td_ns)){
@@ -41,8 +42,8 @@ for (n in start_year:end_year){
     for(i in 1:5){
       calendar_cn[j, i] <- (xmlValue(my_r1[[i]]))
       
-      calendar_cn[j,"Date"] <- gsub("\t", "", calendar_cn[j,"Date"])
-      calendar_cn[j,"Date"] <- gsub("\n", "", calendar_cn[j,"Date"])
+      calendar_cn[j,"race_date"] <- gsub("\t", "", calendar_cn[j,"race_date"])
+      calendar_cn[j,"race_date"] <- gsub("\n", "", calendar_cn[j,"race_date"])
       
       
     } # End 'i' loop to run over calendar columns
@@ -53,31 +54,32 @@ for (n in start_year:end_year){
       }   # End if statement
     
     # IF statement to add START and END columns for the date
-    if(any(grepl(" to ", calendar_cn[j, "Date"]))){
-      pos_to <- regexpr(" to ", calendar_cn[j, "Date"])[1]   # Determine text position of ' to '
-      calendar_cn[j, "Start.date"] <- paste(substr(calendar_cn[j, "Date"],1  ,  pos_to-1), n, sep = " ")
-      calendar_cn[j, "End.date"] <- paste(substr(calendar_cn[j, "Date"],pos_to +4  ,  nchar(calendar_cn[j, "Date"])), n, sep = " ")
+    if(any(grepl(" to ", calendar_cn[j, "race_date"]))){
+      pos_to <- regexpr(" to ", calendar_cn[j, "race_date"])[1]   # Determine text position of ' to '
+      calendar_cn[j, "start_date"] <- paste(substr(calendar_cn[j, "race_date"],1  ,  pos_to-1), n, sep = " ")
+      calendar_cn[j, "end_date"] <- paste(substr(calendar_cn[j, "race_date"],pos_to +4  ,  nchar(calendar_cn[j, "race_date"])), n, sep = " ")
     }   else {
-      calendar_cn[j, "Start.date"] <- paste(calendar_cn[j, "Date"], n, sep = " ")
-      calendar_cn[j, "End.date"] <- NA
+      calendar_cn[j, "start_date"] <- paste(calendar_cn[j, "race_date"], n, sep = " ")
+      calendar_cn[j, "end_date"] <- NA
       
     }   # End IF statement
     
   } # End 'j' loop to run over calendar rows
     
-  # Remove "\t" and "\n" from Race.Details column
-  calendar_cn$Race.Details <- gsub("\t", "", calendar_cn$Race.Details)
-  calendar_cn$Race.Details <- gsub("\n", "", calendar_cn$Race.Details)
+  # Remove "\t" and "\n" from race_details column
+  calendar_cn$race_details <- gsub("\t", "", calendar_cn$race_details)
+  calendar_cn$race_details <- gsub("\n", "", calendar_cn$race_details)
 
   # Create a dataframe with the table information and append it with the YEAR
-  assign(paste("calendar_CN_", n, sep = ""), calendar_cn)
+  assign(paste("race_calendar_", n, sep = ""), calendar_cn)
   
   # Write CSV file for each calendar
-  write.csv(assign(paste("calendar_CN_", n, sep = ""), calendar_cn), file = paste("calendar_CN_", n, ".csv", sep = ""), row.names = FALSE)
+  write.csv(assign(paste("race_calendar_", n, sep = ""), calendar_cn), file = paste("race_calendar_", n, ".csv", sep = ""), row.names = FALSE)
 
 }   # End loop for calendars between 'start_year' and 'end_year'
 
 }   # End 'initialCNCalendar' function
+
 
 
 

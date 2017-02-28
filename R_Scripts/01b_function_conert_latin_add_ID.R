@@ -1,12 +1,12 @@
 # Cleanup function 'CalendarAddAndClean' takes the initial race calendar and peforms the following actions:
-#    1. Addds columns for 'event.Name' and 'event.ID'
+#    1. Adds columns for 'race_name' and 'race_id'
 #    2. Converts latin and other non 'UTF-8' characters
 # Function requires a 'start_year' and 'end_year' as inputs
 
 CalendarAddAndClean <- function(start_year, end_year){
 
 # Script to take CN calendar, replace latin characters from the race details column
-# and use the clean name to create a new event.name column and unique event ID column
+# and use the clean name to create a new race_name column and unique race ID column
 
 # set working directory
 setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
@@ -24,25 +24,23 @@ removeDiscritics <- function(string) {
 for (n in start_year:end_year){
 
   # Read in calendar .csv file
-  add_ID_df <- read.csv(paste("calendar_CN_", n, ".csv", sep = ""), header = TRUE)
-  # Add columns to dataframe for event.name and event.ID
-  add_ID_df$event.name <- NA
-  add_ID_df$event.ID <- NA
+  add_ID_df <- read.csv(paste("race_calendar_", n, ".csv", sep = ""), header = TRUE)
+  # Add columns to dataframe for race_name and race_id
+  add_ID_df$race_name <- NA
+  add_ID_df$race_id <- NA
 
   for (i in 1:nrow(add_ID_df)){
-    # First create clean event name
-    add_ID_df[i, "event.name"] <- removeDiscritics(add_ID_df[i, "Race.Details"])
-    add_ID_df[i, "event.name"] <- gsub("/", "", add_ID_df[i, "event.name"])
-    add_ID_df[i, "event.name"] <- gsub(":", "", add_ID_df[i, "event.name"])
-    # Next create unique event ID by removing spaces and appending year
-    add_ID_df[i, "event.ID"] <- gsub(" ", "", add_ID_df[i, "event.name"])
-    # Event ID of format E.2016.001.
+    # First create clean race name
+    add_ID_df[i, "race_name"] <- removeDiscritics(add_ID_df[i, "race_details"])
+    add_ID_df[i, "race_name"] <- gsub("/", "", add_ID_df[i, "race_name"])
+    add_ID_df[i, "race_name"] <- gsub(":", "", add_ID_df[i, "race_name"])
+    # Race ID of format race_YYYY_000N.
     # Updated to simple sequential numbering. Was previously combination of year and race name.
-    add_ID_df[i, "event.ID"] <- paste("E", n, formatC(i, width = 3, format = "d", flag = "0"),  sep = "." )
+    add_ID_df[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
   }
 
 # Write CSV file for each calendar
-write.csv(assign(paste("calendar_CN_", n, sep = ""), add_ID_df), file = paste("calendar_CN_", n, "_final.csv", sep = ""), row.names = FALSE)
+write.csv(assign(paste("race_calendar_", n, sep = ""), add_ID_df), file = paste("race_calendar_", n, "_final.csv", sep = ""), row.names = FALSE)
 
 }   # End loop through yearly calendars
 
