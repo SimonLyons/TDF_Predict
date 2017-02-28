@@ -6,8 +6,8 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2009
-end_year <- 2017
+start_year <- 2010
+end_year <- 2011
 
 # Run 'initialCNCalendar' function
 initialCNCalendar(start_year, end_year)
@@ -61,5 +61,28 @@ GetAllRacesInAYear <- function(input_year){
 }   # End overall function 'GetAllRacesInAYear'
 
 
+
+#################################################
+# Script for extracting data for all riders
+# This essentially only needs to be done once.
+# and then updated annually.
+# 
+# This function writes a table for each year
+# to the database in name format 'riderlist_20YY'
+# 
+# Define range of years. Can be modified below.
+start_year <- 2010
+end_year <- 2011
+
+# Run 'getRiderList' function
+getRiderList(start_year, end_year)
+
+#################################################
+
+query <- dbSendQuery(conn_local, "SELECT * FROM riderlist_2011;")
+new_df <- dbFetch(query)
+head(new_df)
+
+new_df[new_df$nationality == "Switzerland", ]
 
 
