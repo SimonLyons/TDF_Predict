@@ -36,11 +36,22 @@ dbSendQuery(conn_local, "ALTER TABLE calendar_cn_2010 ADD PRIMARY KEY(`event.ID`
 
 ALTER TABLE goods ADD PRIMARY KEY(id)
 
+dbSendQuery(conn_local, "ALTER TABLE race_calendar_2006 CHANGE COLUMN race_id race_id INT PRIMARY KEY;")
+dbSendQuery(conn_local, 'ALTER TABLE race_calendar_2006 ALTER PRIMARY KEY(race_id);')
+alter table Persion add primary key (persionId,Pname,PMID)
+
 # List db tables
 dbListTables(conn_local, dbname='ProCycling')
 
 
-dbListFields(conn_local, "calendar_cn_2010")
+
+
+
+dbListFields(conn_local, "race_calendar_2008")
+
+
+query <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2009")
+new_df <- dbFetch(query)
 
 # List all open db connectoins
 dbListConnections(MySQL())

@@ -6,8 +6,8 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2006
-end_year <- 2006
+start_year <- 2009
+end_year <- 2017
 
 # Run 'initialCNCalendar' function
 initialCNCalendar(start_year, end_year)

@@ -31,14 +31,20 @@ for (n in start_year:end_year){
   # Read in calendar .csv file
   add_ID_df <- read.csv(paste("race_calendar_", n, ".csv", sep = ""), header = TRUE)
   # Add columns to dataframe for race_name and race_id
-  add_ID_df$race_name <- NA
+  # add_ID_df$race_name <- NA
   add_ID_df$race_id <- NA
-
+head(add_ID_df)
   for (i in 1:nrow(add_ID_df)){
     # First create clean race name
-    add_ID_df[i, "race_name"] <- removeDiscritics(add_ID_df[i, "race_details"])
-    add_ID_df[i, "race_name"] <- gsub("/", "", add_ID_df[i, "race_name"])
-    add_ID_df[i, "race_name"] <- gsub(":", "", add_ID_df[i, "race_name"])
+    add_ID_df[i, "race_details"] <- removeDiscritics(add_ID_df[i, "race_details"])
+    add_ID_df[i, "race_details"] <- gsub("/", "", add_ID_df[i, "race_details"])
+    add_ID_df[i, "race_details"] <- gsub(":", "", add_ID_df[i, "race_details"])
+    add_ID_df[i, "race_details"] <- gsub("’", "'", add_ID_df[i, "race_details"])
+    # add_ID_df[i, "race_details"] <- enc2utf8(add_ID_df[i, "race_details"])
+    # Next clean the race location
+    add_ID_df[i, "location"] <- removeDiscritics(add_ID_df[i, "location"])
+    add_ID_df[i, "location"] <- as.character(add_ID_df[i, "location"])
+    # add_ID_df[i, "location"] <- enc2utf8(add_ID_df[i, "location"])
     # Race ID of format race_YYYY_000N.
     # Updated to simple sequential numbering. Was previously combination of year and race name.
     add_ID_df[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
@@ -48,7 +54,16 @@ for (n in start_year:end_year){
 # write.csv(assign(paste("race_calendar_", n, sep = ""), add_ID_df), file = paste("race_calendar_", n, "_final.csv", sep = ""), row.names = FALSE)
 
 # write table to ProCycling database
-dbWriteTable(conn_local, name = paste("race_calendar_", n, sep = ""), add_ID_df[ , -2], overwrite = TRUE) #, "race_id" INTEGER PRIMARY KEY)
+# Encoding(add_ID_df$race_details[71]) <- 'UTF-8'
+  add_ID_df$race_details <- as.character(add_ID_df$race_details)
+  add_ID_df$race_details <- enc2utf8(add_ID_df$race_details)
+  add_ID_df$location <- as.character(add_ID_df$location)
+  add_ID_df$location <- enc2utf8(add_ID_df$location)
+# enc2utf8(add_ID_df$race_details) <- 'UTF-8' ?Encoding
+  add_ID_df[107, ]
+  dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), add_ID_df, overwrite = TRUE)
+
+# dput(add_ID_df)
 
 }   # End loop through yearly calendars
 
