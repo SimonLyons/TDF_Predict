@@ -60,7 +60,7 @@ GetAllRacesInAYear <- function(input_year){
 
 }   # End overall function 'GetAllRacesInAYear'
 
-
+p <- 38
 
 #################################################
 # Script for extracting data for all riders
@@ -71,18 +71,19 @@ GetAllRacesInAYear <- function(input_year){
 # to the database in name format 'riderlist_20YY'
 # 
 # Define range of years. Can be modified below.
-start_year <- 2010
-end_year <- 2011
+start_year <- 2009
+end_year <- 2009
 
 # Run 'getRiderList' function
 getRiderList(start_year, end_year)
 
 #################################################
 
+conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
 query <- dbSendQuery(conn_local, "SELECT * FROM riderlist_2011;")
 new_df <- dbFetch(query)
 head(new_df)
 
-new_df[new_df$nationality == "Switzerland", ]
+new_df[new_df$nationality == "Germany", ]
 
 
