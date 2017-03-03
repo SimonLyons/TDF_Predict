@@ -26,7 +26,7 @@ for (p in start_year:end_year){
   
   # Divide the xml data into team elements, divided by /tr node with 'data-i' inluded
   teams_xml <- xpathApply(my_url_parse, "//div[@class='team_box'][1]/ul/li/h3/a")
-  no_teams <- 1 #length(teams_xml)
+  no_teams <- length(teams_xml)
   
   team_table <- as.data.frame(matrix(data = NA, nrow = no_teams, ncol = 2 ))
   colnames(team_table)[1] <- "team_name"
@@ -101,13 +101,14 @@ for (p in start_year:end_year){
   close(pb)   # Windows Progress Bar script 
 
   # Combine the list of tables for the year into a single list of riders
-  assign(paste("riderlist", p, sep = "_"), do.call(rbind, team_table_list))              # rbindlist(team_table_list))
+  # Now inserted into dbWriteTable function below
+  # assign(paste("riderlist", p, sep = "_"), do.call(rbind, team_table_list))              # rbindlist(team_table_list))
 
   # Write the combined list (for each year) to database
-  dbWriteTable(conn_local, type = 'UTF-8', name = paste("riderlist", p, sep = "_"), paste("riderlist", p, sep = "_"), overwrite = TRUE)
+  dbWriteTable(conn_local, type = 'UTF-8', name = paste("riderlist", p, sep = "_"), value = assign(paste("riderlist", p, sep = "_"), do.call(rbind, team_table_list)), overwrite = TRUE)
   
 }   # End FOR loop to run through years
-riderlist_2000
+
 # Script for closing all active connections to MySQL databases.
 all_cons <- dbListConnections(MySQL())
 for(con in all_cons) 

@@ -71,7 +71,7 @@ p <- 38
 # to the database in name format 'riderlist_20YY'
 # 
 # Define range of years. Can be modified below.
-start_year <- 2010
+start_year <- 2005
 end_year <- 2017
 # 
 # Run 'getRiderList' function
