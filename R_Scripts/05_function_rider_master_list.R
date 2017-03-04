@@ -5,9 +5,7 @@
 # The tricky bit is likely to be how I define the teams they have belonged
 # in each particular year
 
-
-
-function riderMasterList(start_year, end_year){
+riderMasterList <- function(start_year, end_year){
   
   # Establish connection to ProCycling database
   conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')

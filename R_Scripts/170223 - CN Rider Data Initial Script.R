@@ -75,7 +75,7 @@ for (p in start_year:end_year){
       i_team_table[k,1] <- xmlValue(riders_xml[[k]])   # Rider name
       i_team_table[k,1] <- removeDiscritics(i_team_table[k,1])
       i_team_table[k,2] <- paste(xmlAttrs(riders_xml[[k]]), sep = "")   # URL link  
-      i_team_table[k,3] <-  team_table[e, 1]
+      i_team_table[k,3] <-  removeDiscritics(team_table[e, 1])
 
       # Extract individual rider data from their url
       rider_url <- paste("http://www.cyclingnews.com", i_team_table[k, 2], sep = "")

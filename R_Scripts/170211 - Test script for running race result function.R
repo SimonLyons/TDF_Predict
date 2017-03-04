@@ -71,7 +71,7 @@ p <- 38
 # to the database in name format 'riderlist_20YY'
 # 
 # Define range of years. Can be modified below.
-start_year <- 2005
+start_year <- 2006
 end_year <- 2017
 # 
 # Run 'getRiderList' function
@@ -86,7 +86,7 @@ getRiderList(start_year, end_year)
 # 
 # Define range of years. Can be modified below.
 start_year <- 2005
-end_year <- 2010
+end_year <- 2017
 # 
 # Run 'riderMasterList' function
 riderMasterList(start_year, end_year)
@@ -96,12 +96,9 @@ riderMasterList(start_year, end_year)
 
 
 conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
-query <- dbSendQuery(conn_local, "SELECT * FROM riderlist_2011;")
+query <- dbSendQuery(conn_local, "SELECT * FROM riderlist_2005;")
 new_df <- dbFetch(query)
 head(new_df)
 
-new_df[new_df$nationality == "Italy", ]
+new_df[new_df$nationality == "Spain", ]
 
-
-p <- 2008
-no_teams <- 1
