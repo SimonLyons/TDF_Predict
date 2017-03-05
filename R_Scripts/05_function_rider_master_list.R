@@ -15,12 +15,6 @@ riderMasterList <- function(start_year, end_year){
   
   # no_years <- length(start_year:end_year)
   master_list <- as.data.frame(matrix(data = NA, nrow = 1, ncol = 6 ))
-  colnames(master_list)[1] <- "rider_name"
-  colnames(master_list)[2] <- "rider_link"
-  colnames(master_list)[3] <-  "team_name"
-  colnames(master_list)[4] <- "dob"
-  colnames(master_list)[5] <- "nationality"
-  colnames(master_list)[6] <-  "uci_ID"
   
   # Run LOOP through the number of years
   for (y in start_year:end_year){
@@ -30,16 +24,20 @@ riderMasterList <- function(start_year, end_year){
     e <- e + 1
   }
 
+  # Combine annual rider list tables into a single rider master list
+  master_list <- do.call(rbind, table_list)[ , -1]
+  colnames(master_list)[6] <-  "uci_id"
+  # master_list <- within(master_list, rm("team_name"))
+  master_list <- master_list[!duplicated(master_list$rider_name), ]
+  nrow(master_list)
+  head(master_list)
+  nrow(master_list[master_list$nationality == "United States", ])
+  names(master_list)
+  # Write master_list to database as rider_list_master
+  dbWriteTable(conn_local, type = 'UTF-8', name = "rider_list_master", master_list, overwrite = TRUE, row.names=F, nrows = nrow(master_list))
+
     # Close all database connections
   all_cons <- dbListConnections(MySQL())
   for(con in all_cons) 
     dbDisconnect(con)
-
-  # Combine annual rider list tables into a single rider master list
-  master_list <- do.call(rbind, table_list)
-  master_list <- within(master_list, rm("team_name"))
-  master_list <- master_list[!duplicated(master_list$rider_name), ]
-  nrow(master_list)
-  names(master_list)
-
 }   #End FUNCTION riderMasterList

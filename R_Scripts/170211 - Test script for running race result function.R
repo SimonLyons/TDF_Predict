@@ -96,9 +96,14 @@ riderMasterList(start_year, end_year)
 
 
 conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
-query <- dbSendQuery(conn_local, "SELECT * FROM riderlist_2005;")
-new_df <- dbFetch(query)
-head(new_df)
-nrow(new_df)
-new_df[new_df$nationality == "United States", ]
+query1 <- dbSendQuery(conn_local, "SELECT * FROM rider_list_master;")
+new_df1 <- dbFetch(query1, n=-1)   # Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500!!
+head(new_df1)
+nrow(new_df1)
+names(new_df1)
+nrow(new_df[new_df$nationality == "United States", ])
+
+
+unique(new_df$team_name)
+new_df[new_df$team_name == "Cannondale-Drapac", ]
 
