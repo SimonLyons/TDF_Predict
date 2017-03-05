@@ -99,6 +99,6 @@ conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45
 query <- dbSendQuery(conn_local, "SELECT * FROM riderlist_2005;")
 new_df <- dbFetch(query)
 head(new_df)
-
-new_df[new_df$nationality == "Spain", ]
+nrow(new_df)
+new_df[new_df$nationality == "United States", ]
 
