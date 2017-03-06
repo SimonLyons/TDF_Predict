@@ -20,7 +20,7 @@ CalendarAddAndClean(start_year, end_year)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2021
+input_year <- 2005
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -44,7 +44,7 @@ GetAllRacesInAYear <- function(input_year){
   # Use Windows Progress Bar
   total <- nrow(Race_Weblink_Year)
   # create progress bar
-  pb <- winProgressBar(title = "Race Table Download Progress", label = "0% done",  min = 0,
+  pb <- winProgressBar(title = paste("Race Table ", input_year, " Download Progress", sep = ""), label = "0% done",  min = 0,
                        max = total, width = 300)
   
   for (r in 1: nrow(Race_Weblink_Year)){
@@ -53,6 +53,7 @@ GetAllRacesInAYear <- function(input_year){
                                           "% done"))
     write_race_results_tables(Race_Weblink_Year[r, 1], Race_Weblink_Year[r, 2])
     }   # End FOR loop to retrieve race results tables using function "write_race_results_tables"
+        # 'write_race_results_tables' function comes from 03_functoin_race_results_tables.R
   close(pb)   # Windows Progress Bar script 
   
   
@@ -60,7 +61,9 @@ GetAllRacesInAYear <- function(input_year){
 
 }   # End overall function 'GetAllRacesInAYear'
 
-p <- 38
+
+
+
 
 #################################################
 # Script for extracting data for all riders

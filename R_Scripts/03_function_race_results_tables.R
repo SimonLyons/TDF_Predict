@@ -2,18 +2,20 @@
 # Function write_race_results_tables
 
 # Build function to take results url from Cycling News and save .csv files with each race result. 
-# Input variables are the race results URL and the unique race.ID code.
+# Input variables are the race results URL and the unique race_id code.
 # This is my unique race code, to be used in the database as a KEY identifier.
-write_race_results_tables <- function(my_url, race.ID){
-  
-# Set directory to write results datafiles. No longer required with switch to database
-# setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
+write_race_results_tables <- function(my_url, race_id){
   
 # Set working directory to user passwords location
 setwd("C:/b_Data_Analysis/Database")
 # Read password file
 psswd <- read.csv("passwords_db.csv", header = TRUE)
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Designer", "user"]) , password = as.character(psswd[psswd$type == "Designer", "password"]),  dbname='ProCycling', host='localhost')
+
+# For testing only
+# my_url <- "/races/giro-ditalia-2005/prologue/results"
+# race_id <- "race_2005_0012_s01"
+# i <- 1
 
 
 require(RMySQL)    
@@ -56,9 +58,9 @@ require(XML)
           my_results <- my_results[-1,]   # delete first row which contains column names
           # Replace characters that can't be used in column names in MySQL
           # Should be limited to alpha, numeric and '_'
-          colnames(my_results) <- gsub("#", "Pos", colnames(my_results))
+          colnames(my_results) <- gsub("#", "pos", colnames(my_results))
           colnames(my_results) <- gsub(" ", "", colnames(my_results))
-          colnames(my_results) <- gsub("\\(|)", ".", colnames(my_results))
+          colnames(my_results) <- gsub("\\(|)", "_", colnames(my_results))
         }
       
       # Need to find a way to delete empty columns. Not a priority right now (15FEB17)
@@ -73,16 +75,19 @@ require(XML)
         }  
          
       # Write the table to its location (now to the MySQL database)
-      dbWriteTable(conn_local, name = paste(race.ID, ".T", formatC(i, width = 2, format = "d", flag = "0"), sep = ""), my_results)
-      table_list <- c(table_list, paste(race.ID, ".T", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
+      dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), sep = ""), my_results, overwrite = TRUE)
+      table_list <- c(table_list, paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""))
+      # List all open db connections and clear open result
+      # 
+      # NEED TO INSERT SOMETHING APPROPRIATE HERE TO OPEN AND CLOSE THE DATABASE CONNECTION
       
       
       ##########################################
       # Old script writing to .csv files
       # I've used a tricky function 'formatC' that allows me to specify the number of digits, so '2' can become '02'. Awesome!
       #
-      # write.csv(my_results, file = paste("R", race.ID, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""), row.names = FALSE)
-      # table_list <- c(table_list, paste("R", race.ID,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
+      # write.csv(my_results, file = paste("R", race_id, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""), row.names = FALSE)
+      # table_list <- c(table_list, paste("R", race_id,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
       # formatC(i, width = 2, format = "d", flag = "0")
       #
       ##########################################

@@ -53,7 +53,7 @@ dbListFields(conn_local, "race_calendar_2008")
 query <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2009")
 new_df <- dbFetch(query)
 
-# List all open db connectoins
+# List all open db connections
 dbListConnections(MySQL())
 
 dbClearResult(dbListResults(conn_local)[[1]])

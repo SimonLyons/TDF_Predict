@@ -59,7 +59,7 @@ head(add_ID_df)
   add_ID_df$race_details <- enc2utf8(add_ID_df$race_details)
   add_ID_df$location <- as.character(add_ID_df$location)
   add_ID_df$location <- enc2utf8(add_ID_df$location)
-# enc2utf8(add_ID_df$race_details) <- 'UTF-8' ?Encoding
+# enc2utf8(add_ID_df$race_details) <- 'UTF-8'
   add_ID_df[107, ]
   dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), add_ID_df, overwrite = TRUE)
 
