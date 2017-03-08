@@ -10,7 +10,7 @@ write_race_results_tables <- function(my_url, race_id){
 setwd("C:/b_Data_Analysis/Database")
 # Read password file
 psswd <- read.csv("passwords_db.csv", header = TRUE)
-conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Designer", "user"]) , password = as.character(psswd[psswd$type == "Designer", "password"]),  dbname='ProCycling', host='localhost')
+
 
 # For testing only
 # my_url <- "/races/giro-ditalia-2005/prologue/results"
@@ -21,15 +21,16 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Designe
 require(RMySQL)    
 require(XML)    
   my_url <- paste("http://www.cyclingnews.com/", my_url, sep = "")
+  # my_url <- "http://www.cyclingnews.com/races/giro-ditalia-2016/stage-2/results/"
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
   table_list <- c()   # Create empty table list for use in loop
   
   # Extract table column titles - need to check for tables with no column titles
-  table_column_text <- xpathSApply(my_url_parse, "//table/tbody/tr[@class = 'headers']/th", xmlValue)
+  table_column_text <- xpathApply(my_url_parse, "//table/tbody/tr[@class = 'headers']/th", xmlValue)
   # Extract table header/caption information
-  table_header_text <- xpathSApply(my_url_parse, "//h4", xmlValue)[1]   # There are two h4 elements. We only want the first.
-  table_caption_text <- xpathSApply(my_url_parse, "//table/caption", xmlValue)
+  table_header_text <- xpathApply(my_url_parse, "//h4", xmlValue)[1]   # There are two h4 elements. We only want the first.
+  table_caption_text <- xpathApply(my_url_parse, "//table/caption", xmlValue)
 
   # Use FOR LOOP for the number of tables 'i'
     for (i in 1:table_no){
@@ -66,33 +67,19 @@ require(XML)
       # Need to find a way to delete empty columns. Not a priority right now (15FEB17)
       # my_results <- my_results[,-4]   # delete fourth column which is empty
       
-        # Function to strip out non-alpha and non-numeric characters from the table title
-        # so that it can be used successfully in the write.csv function
-        fsSafe <- function(string) {
-          safeString <- gsub("[^[:alnum:]]", "_", string)
-          safeString <- gsub("_+", "_", safeString)
-          safeString
-        }  
-         
-      # Write the table to its location (now to the MySQL database)
-      dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), sep = ""), my_results, overwrite = TRUE)
-      table_list <- c(table_list, paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""))
-      # List all open db connections and clear open result
-      # 
-      # NEED TO INSERT SOMETHING APPROPRIATE HERE TO OPEN AND CLOSE THE DATABASE CONNECTION
-      
-      
-      ##########################################
-      # Old script writing to .csv files
-      # I've used a tricky function 'formatC' that allows me to specify the number of digits, so '2' can become '02'. Awesome!
-      #
-      # write.csv(my_results, file = paste("R", race_id, "_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""), row.names = FALSE)
-      # table_list <- c(table_list, paste("R", race_id,"_TbNo_", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), ".csv", sep = ""))
-      # formatC(i, width = 2, format = "d", flag = "0")
-      #
-      ##########################################
-      
-      
+        # Function to strip out UTF-8 characters from the table
+        my_results$RiderName_Country_Team <- removeDiscritics(my_results$RiderName_Country_Team)
+
+        # Create connection to database 
+        conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')   
+        # Write the table to its location (now to the MySQL database)
+        dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), sep = ""), my_results, overwrite = TRUE)
+        table_list <- c(table_list, paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""))
+        # List all open db connections and clear open result
+        # 
+        # NEED TO INSERT SOMETHING APPROPRIATE HERE TO OPEN AND CLOSE THE DATABASE CONNECTION
+        dbDisconnect(dbListConnections(MySQL())[[1]])
+
       }   # end IF statement for empty tables
     }   # end FOR LOOP for number of tables
   

@@ -7,8 +7,13 @@
 
 riderMasterList <- function(start_year, end_year){
   
+  # Set working directory to user passwords location
+  setwd("C:/b_Data_Analysis/Database")
+  # Read password file
+  psswd <- read.csv("passwords_db.csv", header = TRUE)
+  
   # Establish connection to ProCycling database
-  conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
+  conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')   
   
   table_list <- c()
   e <- 1

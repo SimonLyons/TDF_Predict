@@ -20,7 +20,7 @@ CalendarAddAndClean(start_year, end_year)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2005
+input_year <- 2009
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -32,7 +32,7 @@ GetAllRacesInAYear <- function(input_year){
 
 # Go to each Web.link and extract the race web links for each event.ID. Create race.ID
 # So we'll combine the event.ID with a sequential number to create the race.ID
-# Create a dataframe for each event with columns for the race weblink, date, start.location, finish.location
+# Create a dataframe for each event with columns for the race weblink, date, start_location, finish_location
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
@@ -52,6 +52,14 @@ GetAllRacesInAYear <- function(input_year){
     setWinProgressBar(pb, r, title = , label = paste( round(r/total*100, 0),
                                           "% done"))
     write_race_results_tables(Race_Weblink_Year[r, 1], Race_Weblink_Year[r, 2])
+    
+    # Sleep function to randomise web queries
+    sleep <- abs(rnorm(1)) + runif(1, 0, .25)
+    message("I have done ", r, " of ", nrow(Race_Weblink_Year),
+            " - gonna sleep ", round(sleep, 2),
+            " seconds.")
+    Sys.sleep(sleep)
+    
     }   # End FOR loop to retrieve race results tables using function "write_race_results_tables"
         # 'write_race_results_tables' function comes from 03_functoin_race_results_tables.R
   close(pb)   # Windows Progress Bar script 

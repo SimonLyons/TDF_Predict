@@ -3,7 +3,7 @@
 # This method uses xpathApply to look at the nodes and divide it into relevant rows
 
 GetRaceWebLinks <- function(input_year){
-
+  
 # Load necessary packages
 require(XML)
 require(RMySQL)
@@ -84,6 +84,13 @@ for(e in 1:nrow(calendar_CN)){
      
     }   #  END IF statement relating to whether race links exist in the HTML data
   }   # End IF statement identifying whether a race result link exists for each calendar entry
+  
+  # Insert sleep script to randomise web queries
+  sleep <- abs(rnorm(1)) + runif(1, 0, .25)
+  message("I have done ", e, " of ", nrow(calendar_CN),
+          " - gonna sleep ", round(sleep, 2),
+          " seconds.")
+  Sys.sleep(sleep)
   
 }   #   End FOR loop to run through all of the events in the calendar dataframe
 
