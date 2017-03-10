@@ -47,10 +47,10 @@ dbListTables(conn_local, dbname='ProCycling')
 
 
 
-dbListFields(conn_local, "race_calendar_2008")
+dbListFields(conn_local, "race_calendar_2005")
 
 
-query <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2009")
+query <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2005")
 new_df <- dbFetch(query)
 
 # List all open db connections

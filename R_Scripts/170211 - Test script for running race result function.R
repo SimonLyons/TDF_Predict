@@ -6,21 +6,20 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2010
-end_year <- 2011
+start_year <- 2005
+end_year <- 2005
 
 # Run 'initialCNCalendar' function
+# This function now includes the script to clean
+# and remove problem characters (including 'removeDiscritics')
 initialCNCalendar(start_year, end_year)
-
-# Run calendar conversion function 
-CalendarAddAndClean(start_year, end_year)
 
 #################################################
 
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2009
+input_year <- 2005
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){

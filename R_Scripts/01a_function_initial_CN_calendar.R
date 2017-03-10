@@ -9,13 +9,33 @@ initialCNCalendar <- function(start_year, end_year){
 # Call relevant libraries
 # In this case, just 'XML' for webscraping
   require(XML)
+  require(RMySQL)
 
 
 # set working directory
-setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
+setwd("C:/b_Data_Analysis/Database")
 
+# Read password file
+psswd <- read.csv("passwords_db.csv", header = TRUE)
+conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')
+
+# Use Windows Progress Bar
+total <- length(start_year:end_year)
+# create progress bar
+pb <- winProgressBar(title = paste("Obtain race calendar for year ", input_year, sep = ""), label = "0% done", min = 0,
+                     max = total, width = 300)
+
+# Create a list of the calendars being written to the database
+# This is the empty list to be populated at the end of the loop
+calendar_list <- c()
+  
 # Create FOR loop that creates a web address for Cycling News calendars between 2005 and 2016
 for (n in start_year:end_year){
+  
+  Sys.sleep(0.1)   # Windows Progress Bar script
+  setWinProgressBar(pb, (n-start_year+1), paste("Obtain race calendar for year ", input_year, sep = ""), label=paste( round((n-start_year+1)/total*100, 0),
+                                                                                              "% done"))
+  
   my_url <- paste("http://www.cyclingnews.com/races/calendar/", n, sep = "")
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
@@ -64,19 +84,53 @@ for (n in start_year:end_year){
       
     }   # End IF statement
     
+    # Insert sleep script to randomise web queries
+    sleep <- abs(rnorm(1)) + runif(1, 0, .25)
+    message("I have done ", j, " of ", length(td_ns),
+            " - gonna sleep ", round(sleep, 2),
+            " seconds.")
+    Sys.sleep(sleep)
+    
   } # End 'j' loop to run over calendar rows
     
   # Remove "\t" and "\n" from race_details column
   calendar_cn$race_details <- gsub("\t", "", calendar_cn$race_details)
   calendar_cn$race_details <- gsub("\n", "", calendar_cn$race_details)
 
-  # Create a dataframe with the table information and append it with the YEAR
-  assign(paste("race_calendar_", n, sep = ""), calendar_cn)
+  # Add column to dataframe for race_id
+  calendar_cn$race_id <- NA
   
-  # Write CSV file for each calendar
-  write.csv(assign(paste("race_calendar_", n, sep = ""), calendar_cn), file = paste("race_calendar_", n, ".csv", sep = ""), row.names = FALSE)
+  for (i in 1:nrow(calendar_cn)){
+    # First create clean race name
+    calendar_cn[i, "race_details"] <- removeDiscritics(calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- gsub("/", "", calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- gsub(":", "", calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- gsub("’", "'", calendar_cn[i, "race_details"])
+    # Next clean the race location
+    calendar_cn[i, "location"] <- removeDiscritics(calendar_cn[i, "location"])
+    calendar_cn[i, "location"] <- as.character(calendar_cn[i, "location"])
+    # Race ID of format race_YYYY_000N.
+    # Updated to simple sequential numbering. Was previously combination of year and race name.
+    calendar_cn[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
+  }
 
+  # Write 'race_calendar' dataframe to ProCycling database
+  dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, overwrite = TRUE)
+  
+  # add the lastest race_calendar name to the list being built
+  # This list will be returned by the function
+  calendar_list <- c(calendar_list, paste("race_calendar_", n, sep = ""))
+  
 }   # End loop for calendars between 'start_year' and 'end_year'
+
+# Script for closing all active connections to MySQL databases.
+all_cons <- dbListConnections(MySQL())
+for(con in all_cons) 
+  dbDisconnect(con)
+
+close(pb)   # Windows Progress Bar script
+
+return(calendar_list)
 
 }   # End 'initialCNCalendar' function
 

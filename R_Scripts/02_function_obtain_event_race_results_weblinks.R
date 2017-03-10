@@ -96,8 +96,6 @@ for(e in 1:nrow(calendar_CN)){
 
 close(pb)   # Windows Progress Bar script
 
-# write.csv(races_master, file = paste(input_year, "CN_race_weblinks", ".csv", sep = ""), row.names = FALSE)
-
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, overwrite = TRUE)
 return(races_master)

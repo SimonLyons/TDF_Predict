@@ -11,29 +11,21 @@ CalendarAddAndClean <- function(start_year, end_year){
 require(RMySQL)   # Package required for writing tables to database
   
 # set working directory
-setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files")
+setwd("C:/b_Data_Analysis/Database")
 
-# Create connection to Procycling database
-conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
-
-# Use function to replace latin and foreign characters with basic ASCII characters
-removeDiscritics <- function(string) {
-  chartr(
-    "ŠŽšžŸÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöùúûüýÿ"
-    ,"SZszYAAAAAACEEEEIIIIDNOOOOOUUUUYaaaaaaceeeeiiiidnooooouuuuyy"
-    , string
-  )
-}
-
+# Read password file
+psswd <- read.csv("passwords_db.csv", header = TRUE)
+conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')
 
 for (n in start_year:end_year){
-
-  # Read in calendar .csv file
-  add_ID_df <- read.csv(paste("race_calendar_", n, ".csv", sep = ""), header = TRUE)
+  # Read in calendar dataframe from the ProCycling database
+  query <- dbSendQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, ";", sep = ""))
+  add_ID_df <- dbFetch(query, n=-1)   # Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500!!
+  
   # Add columns to dataframe for race_name and race_id
   # add_ID_df$race_name <- NA
   add_ID_df$race_id <- NA
-head(add_ID_df)
+
   for (i in 1:nrow(add_ID_df)){
     # First create clean race name
     add_ID_df[i, "race_details"] <- removeDiscritics(add_ID_df[i, "race_details"])
@@ -50,20 +42,13 @@ head(add_ID_df)
     add_ID_df[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
   }
 
-# Write CSV file for each calendar
-# write.csv(assign(paste("race_calendar_", n, sep = ""), add_ID_df), file = paste("race_calendar_", n, "_final.csv", sep = ""), row.names = FALSE)
-
-# write table to ProCycling database
 # Encoding(add_ID_df$race_details[71]) <- 'UTF-8'
   add_ID_df$race_details <- as.character(add_ID_df$race_details)
   add_ID_df$race_details <- enc2utf8(add_ID_df$race_details)
   add_ID_df$location <- as.character(add_ID_df$location)
   add_ID_df$location <- enc2utf8(add_ID_df$location)
 # enc2utf8(add_ID_df$race_details) <- 'UTF-8'
-  add_ID_df[107, ]
   dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), add_ID_df, overwrite = TRUE)
-
-# dput(add_ID_df)
 
 }   # End loop through yearly calendars
 
