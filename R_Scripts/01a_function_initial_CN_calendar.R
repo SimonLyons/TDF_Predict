@@ -105,7 +105,8 @@ for (n in start_year:end_year){
     calendar_cn[i, "race_details"] <- removeDiscritics(calendar_cn[i, "race_details"])
     calendar_cn[i, "race_details"] <- gsub("/", "", calendar_cn[i, "race_details"])
     calendar_cn[i, "race_details"] <- gsub(":", "", calendar_cn[i, "race_details"])
-    calendar_cn[i, "race_details"] <- gsub("’", "'", calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- gsub("’", "", calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- gsub("Tour of America’s Dairyland", "Tour of Americas Dairyland", calendar_cn[i, "race_details"])
     # Next clean the race location
     calendar_cn[i, "location"] <- removeDiscritics(calendar_cn[i, "location"])
     calendar_cn[i, "location"] <- as.character(calendar_cn[i, "location"])
@@ -130,7 +131,8 @@ for(con in all_cons)
 
 close(pb)   # Windows Progress Bar script
 
-return(calendar_list)
+# return(calendar_list)
+return(calendar_cn)
 
 }   # End 'initialCNCalendar' function
 

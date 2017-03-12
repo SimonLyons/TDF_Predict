@@ -96,6 +96,39 @@ for(e in 1:nrow(calendar_CN)){
 
 close(pb)   # Windows Progress Bar script
 
+#################
+# Cleanup script takes the initial race calendar and peforms the following actions:
+#    1. Adds columns for 'race_name' and 'race_id'
+#    2. Converts latin and other non 'UTF-8' characters
+# Script to take races_master, replace latin characters from the race details column
+# and use the clean name to create a new race_name column and unique race ID column
+
+# Add column to dataframe for race_id
+races_master$race_id <- NA
+
+for (i in 1:nrow(races_master)){
+  # First create clean race name
+  races_master[i, "race_details"] <- removeDiscritics(races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub("/", "", races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub(":", "", races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub("’", "'", races_master[i, "race_details"])
+  # races_master[i, "race_details"] <- enc2utf8(races_master[i, "race_details"])
+  # Next clean the race location
+  races_master[i, "location"] <- removeDiscritics(races_master[i, "location"])
+  races_master[i, "location"] <- as.character(races_master[i, "location"])
+  # races_master[i, "location"] <- enc2utf8(races_master[i, "location"])
+  # Race ID of format race_YYYY_000N.
+  # Updated to simple sequential numbering. Was previously combination of year and race name.
+  races_master[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
+}
+
+# Encoding(races_master$race_details[71]) <- 'UTF-8'
+races_master$race_details <- as.character(races_master$race_details)
+races_master$race_details <- enc2utf8(races_master$race_details)
+races_master$location <- as.character(races_master$location)
+races_master$location <- enc2utf8(races_master$location)
+
+
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, overwrite = TRUE)
 return(races_master)
