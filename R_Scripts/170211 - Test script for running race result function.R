@@ -6,8 +6,8 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2009
-end_year <- 2009
+start_year <- 2010
+end_year <- 2017
 
 # Run 'initialCNCalendar' function
 # This function now includes the script to clean
@@ -15,12 +15,22 @@ end_year <- 2009
 initialCNCalendar(start_year, end_year)
 
 tad <- initialCNCalendar(start_year, end_year)
+
+knitr::kable(tad)
+
 calendar_cn <- tad
 calendar_cn[71,]
-calendar_cn[i, "race_details"] <- gsub('Tour of America’s Dairyland', "Tour of Americas Dairyland", calendar_cn[i, "race_details"])
+calendar_cn[71, "race_details"]
+calendar_cn[71, "race_details"] <- removePainfulCharacters(calendar_cn[71, "race_details"])
+
+
+calendar_cn[71, "race_details"] <- gsub("_", '', calendar_cn[71, "race_details"], fixed = TRUE)
 calendar_cn[71,"race_details"] <- gsub("\\'", "", x = calendar_cn[71,"race_details"])
 
 calendar_cn <- calendar_cn[72,]
+
+gsub("[’]", "", calendar_test)
+
 
 #################################################
 

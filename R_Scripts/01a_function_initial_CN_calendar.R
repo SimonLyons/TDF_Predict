@@ -103,10 +103,11 @@ for (n in start_year:end_year){
   for (i in 1:nrow(calendar_cn)){
     # First create clean race name
     calendar_cn[i, "race_details"] <- removeDiscritics(calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- removePainfulCharacters(calendar_cn[i, "race_details"])
     calendar_cn[i, "race_details"] <- gsub("/", "", calendar_cn[i, "race_details"])
     calendar_cn[i, "race_details"] <- gsub(":", "", calendar_cn[i, "race_details"])
     calendar_cn[i, "race_details"] <- gsub("’", "", calendar_cn[i, "race_details"])
-    calendar_cn[i, "race_details"] <- gsub("Tour of America’s Dairyland", "Tour of Americas Dairyland", calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- gsub("_", "", calendar_cn[i, "race_details"])
     # Next clean the race location
     calendar_cn[i, "location"] <- removeDiscritics(calendar_cn[i, "location"])
     calendar_cn[i, "location"] <- as.character(calendar_cn[i, "location"])
