@@ -117,7 +117,7 @@ for (n in start_year:end_year){
   }
 
   # Write 'race_calendar' dataframe to ProCycling database
-  dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, overwrite = TRUE)
+  try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, overwrite = TRUE))
   
   # add the lastest race_calendar name to the list being built
   # This list will be returned by the function
