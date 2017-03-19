@@ -12,8 +12,8 @@ removeDiscritics <- function(string) {
 # Function to replace special characters
 removePainfulCharacters <- function(string){
   chartr(
-    "’"
-    , "_"
+    "’–"
+    , "__"
     , string
   )
 }

@@ -6,7 +6,7 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2011
+start_year <- 2017
 end_year <- 2017
 
 # Run 'initialCNCalendar' function
@@ -16,14 +16,30 @@ initialCNCalendar(start_year, end_year)
 
 tad <- initialCNCalendar(start_year, end_year)
 
+setwd("c:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
+write.csv(tad, "2017_cal_test.csv")
+n <- 2017
+
+try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn[-14,], overwrite = TRUE))
+
+# Invalid utf8 character string: 'Challenge Mallorca Trofeo Porreres '
+
 knitr::kable(tad)
 
+View(tad)
+
 calendar_cn <- tad
-calendar_cn[71,]
-calendar_cn[71, "race_details"]
-calendar_cn[71, "race_details"] <- removePainfulCharacters(calendar_cn[71, "race_details"])
+calendar_cn
+calendar_cn[13:17,]
+calendar_cn[14, "race_details"]
+Encoding(calendar_cn[14, "race_details"])
 
+for(h in 1:nrow(calendar_cn)){
+calendar_cn[h, "race_details"] <- removePainfulCharacters(calendar_cn[h, "race_details"])
 
+}
+
+calendar_cn[14, "race_details"] <- gsub("\\ – ", "", calendar_cn[14, "race_details"], fixed = TRUE)
 calendar_cn[71, "race_details"] <- gsub("_", '', calendar_cn[71, "race_details"], fixed = TRUE)
 calendar_cn[71,"race_details"] <- gsub("\\'", "", x = calendar_cn[71,"race_details"])
 
@@ -122,7 +138,7 @@ riderMasterList(start_year, end_year)
 #################################################
 
 
-
+##  Check rider_list_master in ProCycling Database
 conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
 query1 <- dbSendQuery(conn_local, "SELECT * FROM rider_list_master;")
 new_df1 <- dbFetch(query1, n=-1)   # Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500!!
@@ -130,8 +146,17 @@ head(new_df1)
 nrow(new_df1)
 names(new_df1)
 nrow(new_df[new_df$nationality == "United States", ])
-
-
 unique(new_df$team_name)
 new_df[new_df$team_name == "Cannondale-Drapac", ]
+
+
+##  Check race_calendar tables in ProCycling Database
+conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
+query1 <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2017;")
+new_df1 <- dbFetch(query1, n=-1)   # Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500!!
+head(new_df1)
+nrow(new_df1)
+names(new_df1)
+
+dbDisconnect(dbListConnections(MySQL())[[1]])
 
