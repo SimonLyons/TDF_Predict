@@ -9,6 +9,8 @@ conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45
 # Create ProCycling stats database
 dbSendQuery(conn_local, "CREATE DATABASE ProCycling;")
 
+
+
 # Create connection to Procycling database
 conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
 
@@ -50,8 +52,13 @@ dbListTables(conn_local, dbname='ProCycling')
 dbListFields(conn_local, "race_calendar_2005")
 
 
-query <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2005")
+query <- dbSendQuery(conn_local, "SELECT * FROM race_calendar_2005;")
 new_df <- dbFetch(query)
+
+query <- dbSendQuery(conn_local, "DESCRIBE race_calendar_2005;")
+new_df <- dbFetch(query)
+View(new_df)
+
 
 # List all open db connections
 dbListConnections(MySQL())
