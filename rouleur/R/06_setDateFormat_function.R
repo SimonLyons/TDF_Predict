@@ -3,8 +3,8 @@
 # Use Hadley's 'lubridate' package
 
 setDateFormat <- function(start_year, end_year){
-  devtools::use_package(lubridate)
-  devtools::use_package(RMySQL)
+  require(lubridate)
+  require(RMySQL)
   
   # Connect to ProCyling database
   setwd("C:/b_Data_Analysis/Database")
