@@ -1,3 +1,4 @@
+# 30 Mar 17
 # Script to attempt to extract relevant elements from Cycling News calendar webite.
 # This method uses xpathApply to look at the nodes and divide it into relevant rows
 
