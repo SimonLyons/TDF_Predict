@@ -16,44 +16,12 @@ initialCNCalendar(start_year, end_year)
 
 tad <- initialCNCalendar(start_year, end_year)
 
-setwd("c:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
-write.csv(tad, "2017_cal_test.csv")
-n <- 2017
-
-try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn[-14,], overwrite = TRUE))
-
-# Invalid utf8 character string: 'Challenge Mallorca Trofeo Porreres '
-
-knitr::kable(tad)
-
-View(tad)
-
-calendar_cn <- tad
-calendar_cn
-calendar_cn[13:17,]
-calendar_cn[14, "race_details"]
-Encoding(calendar_cn[14, "race_details"])
-
-for(h in 1:nrow(calendar_cn)){
-calendar_cn[h, "race_details"] <- removePainfulCharacters(calendar_cn[h, "race_details"])
-
-}
-
-calendar_cn[14, "race_details"] <- gsub("\\ – ", "", calendar_cn[14, "race_details"], fixed = TRUE)
-calendar_cn[71, "race_details"] <- gsub("_", '', calendar_cn[71, "race_details"], fixed = TRUE)
-calendar_cn[71,"race_details"] <- gsub("\\'", "", x = calendar_cn[71,"race_details"])
-
-calendar_cn <- calendar_cn[72,]
-
-gsub("[’]", "", calendar_test)
-
-
 #################################################
 
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2008
+input_year <- 2017
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){

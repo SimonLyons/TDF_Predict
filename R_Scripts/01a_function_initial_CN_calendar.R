@@ -14,31 +14,27 @@ initialCNCalendar <- function(start_year, end_year){
 
 # Read password file
   psswd <- read.csv("passwords_db.csv", header = TRUE)
-  conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
+  conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]),
                           password = as.character(psswd[psswd$type == "Manager", "password"]),
                           dbname='ProCycling', host='localhost')
 
 # Need to replace this progress bar with the one used in our Ozdata files at UnConf 17
-# Use Windows Progress Bar 
+# Use Windows Progress Bar
 total <- length(start_year:end_year)
 # create progress bar
-# pb <- winProgressBar(title = paste("Obtain race calendar for year ", input_year, sep = ""), label = "0% done", min = 0,
-                     # max = total, width = 300)
+pb <- winProgressBar(title = paste("Obtain race calendar for year ", input_year, sep = ""), label = "0% done", min = 0,
+                     max = total, width = 300)
 
 # Create a list of the calendars being written to the database
 # This is the empty list to be populated at the end of the loop
 calendar_list <- c()
- 
-
- 
+  
 # Create FOR loop that creates a web address for Cycling News calendars between 2005 and 2017
 for (n in start_year:end_year){
   
-  # Sys.sleep(0.1)   # Windows Progress Bar script
-  # setWinProgressBar(pb, (n-start_year+1), paste("Obtain race calendar for year ", input_year, sep = ""), label=paste( round((n-start_year+1)/total*100, 0),
-  
-  print(paste("Downloading Calendar Year ", n, sep = ""))                                                                                            "% done"))
-  
+  Sys.sleep(0.1)   # Windows Progress Bar script
+  setWinProgressBar(pb, (n-start_year+1), paste("Obtain race calendar for year ", input_year, sep = ""), label=paste( round((n-start_year+1)/total*100, 0),
+                                                                                              "% done"))
   
   my_url <- paste("http://www.cyclingnews.com/races/calendar/", n, sep = "")
   my_url_parse <- htmlParse(my_url)
@@ -58,14 +54,9 @@ for (n in start_year:end_year){
   colnames(calendar_cn)[7] <- "start_date"
   colnames(calendar_cn)[8] <- "end_date"
   
-  # Progress bar for individual calendar year download
-  pt <- txtProgressBar(min = 0, max = length(td_ns), style = 3)
-  
   # FOR loop to run through the number of row entries in the calendar table
-  for(j in 1:30){  # length(td_ns)){
+  for(j in 1:length(td_ns)){
     my_r1 <- td_ns[[j]]
-    
-    setTxtProgressBar(pt, j)
     
     # FOR loop to run through each column (for each row) and input the relevant XML attribute
     for(i in 1:5){
@@ -100,9 +91,6 @@ for (n in start_year:end_year){
     Sys.sleep(sleep)
     
   } # End 'j' loop to run over calendar rows
-  
-  # Close text progress bar
-  close(pt)
     
   # Remove "\t" and "\n" from race_details column
   calendar_cn$race_details <- gsub("\t", "", calendar_cn$race_details)
@@ -147,7 +135,7 @@ all_cons <- dbListConnections(MySQL())
 for(con in all_cons) 
   dbDisconnect(con)
 
-# close(pb)   # Windows Progress Bar script
+close(pb)   # Windows Progress Bar script
 
 # return(calendar_list)
 return(calendar_cn)

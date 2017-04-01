@@ -109,14 +109,16 @@ races_master$race_id <- NA
 for (i in 1:nrow(races_master)){
   # First create clean race name
   races_master[i, "race_details"] <- removeDiscritics(races_master[i, "race_details"])
-  races_master[i, "race_details"] <- gsub("/", "", races_master[i, "race_details"])
-  races_master[i, "race_details"] <- gsub(":", "", races_master[i, "race_details"])
-  races_master[i, "race_details"] <- gsub("’", "'", races_master[i, "race_details"])
-  # races_master[i, "race_details"] <- enc2utf8(races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub("[[:punct:]]", "", races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub(rawToChar(as.raw("0xa0")), "", races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub("  ", " ", races_master[i, "race_details"])
+  
   # Next clean the race location
   races_master[i, "location"] <- removeDiscritics(races_master[i, "location"])
   races_master[i, "location"] <- as.character(races_master[i, "location"])
-  # races_master[i, "location"] <- enc2utf8(races_master[i, "location"])
+  races_master[i, "location"] <- gsub(rawToChar(as.raw("0xa0")), "", races_master[i, "location"])
+  races_master[i, "location"] <- gsub("  ", " ", races_master[i, "location"])
+  
   # Race ID of format race_YYYY_000N.
   # Updated to simple sequential numbering. Was previously combination of year and race name.
   races_master[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
