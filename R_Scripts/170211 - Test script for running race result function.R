@@ -6,8 +6,8 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2017
-end_year <- 2017
+start_year <- 2011
+end_year <- 2011
 
 # Run 'initialCNCalendar' function
 # This function now includes the script to clean
@@ -16,8 +16,16 @@ initialCNCalendar(start_year, end_year)
 
 tad <- initialCNCalendar(start_year, end_year)
 
-#################################################
 
+match("%Nor%", tad$race_details)
+require(dplyr)
+require(stringr)
+prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The Noreaster"))
+grep("‘", prob)
+gsub("[^[:alnum:]///' ]", "", prob)
+
+
+#################################################
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year

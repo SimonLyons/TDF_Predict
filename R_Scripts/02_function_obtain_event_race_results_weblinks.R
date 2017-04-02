@@ -33,17 +33,15 @@ colnames(races_master)[4] <- "event_name"
 
 # Use Windows Progress Bar
 total <- nrow(calendar_CN)
-# create progress bar
-pb <- winProgressBar(title = paste("Obtain race_name & race_id from race_calendar_", input_year, sep = ""), label = "0% done", min = 0,
-                     max = total, width = 300)
+# Create text progress bar
+prg <- txtProgressBar(min = 0, max = total, title = paste("Obtain race_name & race_id from race_calendar_",
+                                                          input_year, sep = ""), style = 3)
 
 # FOR loop to run through all of the events listed in the calendar dataframe
 # The LOOP needs to ignore events with no weblink
 for(e in 1:nrow(calendar_CN)){
-  
-  Sys.sleep(0.1)   # Windows Progress Bar script
-  setWinProgressBar(pb, e, title = "Obtain event.name & event.ID from calendar", label=paste( round(e/total*100, 0),
-                                        "% done"))
+  # Setup text-based progress bar
+  setTxtProgressBar(prg, e)
   
   if (!is.na(calendar_CN$web_link[e])){
     # Extract relevant weblink and race name
@@ -74,7 +72,7 @@ for(e in 1:nrow(calendar_CN)){
         races_cn[n,2] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
         races_cn[n,3] <- as.character(race_id)
         races_cn[n,4] <- as.character(race_name)
-      }   # End FOR loop that pulls out weblink data
+      }   # End FOR loop (n) that pulls out weblink data
       
       # Remove duplicate entries
       races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
@@ -87,14 +85,14 @@ for(e in 1:nrow(calendar_CN)){
   
   # Insert sleep script to randomise web queries
   sleep <- abs(rnorm(1)) + runif(1, 0, .25)
-  message("I have done ", e, " of ", nrow(calendar_CN),
-          " - gonna sleep ", round(sleep, 2),
-          " seconds.")
+  # message("I have done ", e, " of ", nrow(calendar_CN),
+          # " - gonna sleep ", round(sleep, 2),
+          # " seconds.")
   Sys.sleep(sleep)
   
 }   #   End FOR loop to run through all of the events in the calendar dataframe
 
-close(pb)   # Windows Progress Bar script
+close(prg)   # End txt progress bar
 
 #################
 # Cleanup script takes the initial race calendar and peforms the following actions:
@@ -109,13 +107,17 @@ races_master$race_id <- NA
 for (i in 1:nrow(races_master)){
   # First create clean race name
   races_master[i, "race_details"] <- removeDiscritics(races_master[i, "race_details"])
+  races_master[i, "race_details"] <- removePainfulCharacters(races_master[i, "race_details"])
   races_master[i, "race_details"] <- gsub("[[:punct:]]", "", races_master[i, "race_details"])
+  races_master[i, "race_details"] <- gsub("[^[:alnum:]///' ]", "", races_master[i, "race_details"])
   races_master[i, "race_details"] <- gsub(rawToChar(as.raw("0xa0")), "", races_master[i, "race_details"])
   races_master[i, "race_details"] <- gsub("  ", " ", races_master[i, "race_details"])
   
   # Next clean the race location
   races_master[i, "location"] <- removeDiscritics(races_master[i, "location"])
   races_master[i, "location"] <- as.character(races_master[i, "location"])
+  races_master[i, "location"] <- gsub("[[:punct:]]", "", races_master[i, "location"])
+  races_master[i, "location"] <- gsub("[^[:alnum:]///' ]", "", races_master[i, "location"])
   races_master[i, "location"] <- gsub(rawToChar(as.raw("0xa0")), "", races_master[i, "location"])
   races_master[i, "location"] <- gsub("  ", " ", races_master[i, "location"])
   
