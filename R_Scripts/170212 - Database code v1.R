@@ -90,7 +90,7 @@ conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45
 
 tables_query <- dbSendQuery(conn_local, "SHOW tables;")
 tables <- dbFetch(tables_query, n=-1)
-tables
+View(tables)
 
 
 query <- dbSendQuery(conn_local, "SHOW columns FROM race_calendar_2005;")
@@ -102,3 +102,7 @@ query2 <- dbSendQuery(conn_local, "SELECT race_details AS `Race Name`, location,
                       FROM race_calendar_2017;")
 new_df2 <- dbFetch(query2, n=-1)
 View(new_df2)
+
+query3 <- dbSendQuery(conn_local, "SELECT * FROM race_weblinks_2008;")
+new_df3 <- dbFetch(query3, n=-1)
+View(new_df3)

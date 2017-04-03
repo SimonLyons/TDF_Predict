@@ -17,7 +17,6 @@ initialCNCalendar(start_year, end_year)
 tad <- initialCNCalendar(start_year, end_year)
 
 
-match("%Nor%", tad$race_details)
 require(dplyr)
 require(stringr)
 prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The Noreaster"))
@@ -29,7 +28,7 @@ gsub("[^[:alnum:]///' ]", "", prob)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2017
+input_year <- 2009
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -46,6 +45,7 @@ GetAllRacesInAYear <- function(input_year){
   
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   head(Race_Weblink_Year)
+  View(Race_Weblink_Year)
   
 # Open each race weblink and extract tables
 # 03_function_race_results_table.R
