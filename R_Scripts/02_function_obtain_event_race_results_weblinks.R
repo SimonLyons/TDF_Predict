@@ -32,7 +32,7 @@ colnames(races_master)[3] <- "race_id"
 colnames(races_master)[4] <- "race_details"
 
 # Use Text Progress Bar
-total <- 5 # nrow(calendar_CN)
+total <- nrow(calendar_CN)
 # Create text progress bar
 prg <- txtProgressBar(min = 0, max = total, style = 3)
 

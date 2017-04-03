@@ -28,7 +28,7 @@ gsub("[^[:alnum:]///' ]", "", prob)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2015
+input_year <- 2006
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -43,9 +43,11 @@ GetAllRacesInAYear <- function(input_year){
 # Create a dataframe for each event with columns for the race weblink, date, start_location, finish_location
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
+  
+  for(input_year in 2005:2017){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
-  head(Race_Weblink_Year)
-  View(Race_Weblink_Year)
+  }
+
   
 # Open each race weblink and extract tables
 # 03_function_race_results_table.R
