@@ -28,7 +28,7 @@ gsub("[^[:alnum:]///' ]", "", prob)
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2009
+input_year <- 2015
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
