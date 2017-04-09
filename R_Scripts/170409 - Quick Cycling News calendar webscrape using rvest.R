@@ -16,8 +16,11 @@ for(i in 1:length(cn_nodes)){
   cn_table <- html_table(cn_nodes)[[i]]
   # Combine the latest month table into the overall year table
   cn_calendar <- rbind(cn_calendar, cn_table)
-}n_calendar
+}
 # Add the year so this can be filtered in the master calendar table
 cn_calendar$year <- 2011   
 View(cn_calendar)
 
+# This doesn't do what I wanted it to.
+# It splits the first two items. 'Sep' does the same thing it does in the 'paste' function
+# cn_calendar <- tidyr::separate(cn_calendar, Date, c("start_date", "end_date", sep = " to ", remove = TRUE))
