@@ -80,6 +80,29 @@ all_cons <- dbListConnections(MySQL())
 for(con in all_cons) 
   dbDisconnect(con)
 
-
-
 dbDisconnect(dbListConnections(MySQL())[[1]])
+
+###############################################
+# Practice extracting from Procycling database
+
+# Create connection to Procycling database
+conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45',  dbname='ProCycling', host='localhost')
+
+tables_query <- dbSendQuery(conn_local, "SHOW tables;")
+tables <- dbFetch(tables_query, n=-1)
+View(tables)
+
+
+query <- dbSendQuery(conn_local, "SHOW columns FROM race_calendar_2005;")
+new_df <- dbFetch(query, n=500)
+new_df[480:489,"Web.link"]
+
+
+query2 <- dbSendQuery(conn_local, "SELECT race_details AS `Race Name`, location, uci_code  
+                      FROM race_calendar_2017;")
+new_df2 <- dbFetch(query2, n=-1)
+View(new_df2)
+
+query3 <- dbSendQuery(conn_local, "SELECT * FROM race_weblinks_2008;")
+new_df3 <- dbFetch(query3, n=-1)
+View(new_df3)
