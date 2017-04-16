@@ -8,20 +8,12 @@ write_race_results_tables <- function(my_url, race_id){
   
 # Set working directory to user passwords location
 setwd("C:/b_Data_Analysis/Database")
-# Read password file
+# Read database password file
 psswd <- read.csv("passwords_db.csv", header = TRUE)
 
-
-# For testing only
-# my_url <- "/races/giro-ditalia-2005/prologue/results"
-# race_id <- "race_2005_0012_s01"
-# i <- 1
-
-
-require(RMySQL)    
-require(XML)    
+require(RMySQL)    # For database functions
+require(XML)       # For webscraping functions
   my_url <- paste("http://www.cyclingnews.com/", my_url, sep = "")
-  # my_url <- "http://www.cyclingnews.com/races/giro-ditalia-2016/stage-2/results/"
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
   table_list <- c()   # Create empty table list for use in loop

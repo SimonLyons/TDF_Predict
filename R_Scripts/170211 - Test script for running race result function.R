@@ -6,29 +6,28 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2011
-end_year <- 2011
+start_year <- 2005
+end_year <- 2017
 
 # Run 'initialCNCalendar' function
 # This function now includes the script to clean
 # and remove problem characters (including 'removeDiscritics')
 initialCNCalendar(start_year, end_year)
 
-tad <- initialCNCalendar(start_year, end_year)
-
+tad2 <- initialCNCalendar(start_year, end_year)
+View(tad2 %>% select(race_details, location))
 
 require(dplyr)
 require(stringr)
 prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The Noreaster"))
-grep("‘", prob)
-gsub("[^[:alnum:]///' ]", "", prob)
+
 
 
 #################################################
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2006
+input_year <- 2016
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -44,7 +43,7 @@ GetAllRacesInAYear <- function(input_year){
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
   
-  for(input_year in 2005:2017){
+  for(input_year in 2015:2017){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   }
 

@@ -49,10 +49,10 @@ for (n in start_year:end_year){
   
   total <- length(td_ns)
   # Create text progress bar
-  prg <- txtProgressBar(min = 500, max = total, title = "Individual Year Progress", style = 3)
+  prg <- txtProgressBar(min = 0, max = total, title = "Individual Year Progress", style = 3)
   
   # FOR loop to run through the number of row entries in the calendar table
-  for(j in 500:total){
+  for(j in 1:total){
     # Setup text-based progress bar
     setTxtProgressBar(prg, j)
     
@@ -103,23 +103,23 @@ for (n in start_year:end_year){
   
   for (i in 1:nrow(calendar_cn)){
     # First create clean race name/details
-    calendar_cn[i, "race_details"] <- removeDiscritics(calendar_cn[i, "race_details"])
-    calendar_cn[i, "race_details"] <- removePainfulCharacters(calendar_cn[i, "race_details"])
-    calendar_cn[i, "race_details"] <- gsub("[[:punct:]]", "", calendar_cn[i, "race_details"])
-    calendar_cn[i, "race_details"] <- gsub("[^[:alnum:]///' ]", "", calendar_cn[i, "race_details"])
+    calendar_cn[i, "race_details"] <- text_clean(calendar_cn[i, "race_details"])
+    # calendar_cn[i, "race_details"] <- removePainfulCharacters(calendar_cn[i, "race_details"])
+    # calendar_cn[i, "race_details"] <- gsub("[[:punct:]]", "", calendar_cn[i, "race_details"])
+    # calendar_cn[i, "race_details"] <- gsub("[^[:alnum:]///' ]", "", calendar_cn[i, "race_details"])
     # The following line removes the 'non-breaking space' character. Very annoying!!
-    calendar_cn[i, "race_details"] <- gsub(rawToChar(as.raw("0xa0")), "", calendar_cn[i, "race_details"])
-    calendar_cn[i, "race_details"] <- gsub("  ", " ", calendar_cn[i, "race_details"])
+    # calendar_cn[i, "race_details"] <- gsub(rawToChar(as.raw("0xa0")), "", calendar_cn[i, "race_details"])
+    # calendar_cn[i, "race_details"] <- gsub("  ", " ", calendar_cn[i, "race_details"])
 
     # Next clean the race location
-    calendar_cn[i, "location"] <- removeDiscritics(calendar_cn[i, "location"])
-    calendar_cn[i, "location"] <- as.character(calendar_cn[i, "location"])
-    calendar_cn[i, "location"] <- gsub("[[:punct:]]", "", calendar_cn[i, "location"])
-    calendar_cn[i, "location"] <- gsub("[^[:alnum:]///' ]", "", calendar_cn[i, "location"])
+    calendar_cn[i, "location"] <- text_clean(calendar_cn[i, "location"])
+    # calendar_cn[i, "location"] <- as.character(calendar_cn[i, "location"])
+    # calendar_cn[i, "location"] <- gsub("[[:punct:]]", "", calendar_cn[i, "location"])
+    # calendar_cn[i, "location"] <- gsub("[^[:alnum:]///' ]", "", calendar_cn[i, "location"])
     # The following line removes the 'non-breaking space' character. Very annoying!!
-    calendar_cn[i, "location"] <- gsub(rawToChar(as.raw("0xa0")), "", calendar_cn[i, "location"])
-    calendar_cn[i, "location"] <- gsub("  ", " ", calendar_cn[i, "location"])
-    
+    # calendar_cn[i, "location"] <- gsub(rawToChar(as.raw("0xa0")), "", calendar_cn[i, "location"])
+    # calendar_cn[i, "location"] <- gsub("  ", " ", calendar_cn[i, "location"])
+    # 
     # Race ID of format race_YYYY_000N.
     # Updated to simple sequential numbering. Was previously combination of year and race name.
     calendar_cn[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )

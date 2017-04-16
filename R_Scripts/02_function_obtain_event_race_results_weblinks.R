@@ -39,7 +39,7 @@ prg <- txtProgressBar(min = 0, max = total, style = 3)
 # FOR loop to run through all of the events listed in the calendar dataframe
 for(e in 1:total){
   # Setup text-based progress bar
-  setTxtProgressBar(prg, e,)
+  setTxtProgressBar(prg, e)
 
     # The LOOP needs to ignore events with no weblink
   if (!is.na(calendar_CN$web_link[e])){
@@ -49,7 +49,8 @@ for(e in 1:total){
     race_id <- calendar_CN$race_id[e]
 
     # Pull in the XML data from the weblink
-    race_xml <- htmlParse(race_url)
+    if(RCurl::url.exists(race_url)){
+    race_xml <- htmlParse(race_url)}
     
     # This line does a good job of isolating the XML attributes containing race web link info
     race_links <- xpathApply(race_xml, '//a[contains(@href, "/results")]', xmlAttrs)
