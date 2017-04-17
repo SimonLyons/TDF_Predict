@@ -43,24 +43,38 @@ GetAllRacesInAYear <- function(input_year){
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
   
-  for(input_year in 2015:2017){
+  for(input_year in 2016:2017){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   }
-
+  View(Race_Weblink_Year)
   
 # Open each race weblink and extract tables
 # 03_function_race_results_table.R
 
-  # Use Windows Progress Bar
+  # Set working directory to user passwords location
+  setwd("C:/b_Data_Analysis/Database")
+  # Read database password file
+  psswd <- read.csv("passwords_db.csv", header = TRUE)
+  
+  input_year <- 2016   # Manual input of selected year
+  
+  # Create connection to database 
+  conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , 
+                          password = as.character(psswd[psswd$type == "Manager", "password"]),  
+                          dbname='ProCycling', host='localhost')   
+  query <- dbSendQuery(conn_local, paste("SELECT * FROM race_weblinks_", input_year, ";", sep = ""))
+  Race_Weblink_Year <- dbFetch(query, n=-1)
+  
+  # Use Text Progress Bar
   total <- nrow(Race_Weblink_Year)
-  # create progress bar
-  pb <- winProgressBar(title = paste("Race Table ", input_year, " Download Progress", sep = ""), label = "0% done",  min = 0,
-                       max = total, width = 300)
+  # create text progress bar
+  prg <- txtProgressBar(min = 0, max = total, style = 3)
   
   for (r in 1: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
-    setWinProgressBar(pb, r, title = , label = paste( round(r/total*100, 0),
-                                          "% done"))
+    # Setup text-based progress bar
+    setTxtProgressBar(prg, r)
+    
     write_race_results_tables(Race_Weblink_Year[r, 1], Race_Weblink_Year[r, 2])
     
     # Sleep function to randomise web queries
@@ -72,7 +86,7 @@ GetAllRacesInAYear <- function(input_year){
     
     }   # End FOR loop to retrieve race results tables using function "write_race_results_tables"
         # 'write_race_results_tables' function comes from 03_functoin_race_results_tables.R
-  close(pb)   # Windows Progress Bar script 
+  close(prg)   # Text Progress Bar script 
   
   
 # Create a dataframe for each race result table. Name it for the race.ID

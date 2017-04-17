@@ -89,7 +89,7 @@ for(e in 1:total){
 }   #   End FOR loop 'e' to run through all of the events in the calendar dataframe
 
 close(prg)   # End txt progress bar
-View(races_master)
+# View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, overwrite = TRUE)

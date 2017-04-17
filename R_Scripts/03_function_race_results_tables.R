@@ -1,7 +1,7 @@
 
 # Function write_race_results_tables
 
-# Build function to take results url from Cycling News and save .csv files with each race result. 
+# Build function to take results url from Cycling News and save database tables with each race result. 
 # Input variables are the race results URL and the unique race_id code.
 # This is my unique race code, to be used in the database as a KEY identifier.
 write_race_results_tables <- function(my_url, race_id){
@@ -60,7 +60,7 @@ require(XML)       # For webscraping functions
       # my_results <- my_results[,-4]   # delete fourth column which is empty
       
         # Function to strip out UTF-8 characters from the table
-        my_results$RiderName_Country_Team <- removeDiscritics(my_results$RiderName_Country_Team)
+        my_results$RiderName_Country_Team <- text_clean(my_results$RiderName_Country_Team)
 
         # Create connection to database 
         conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')   
