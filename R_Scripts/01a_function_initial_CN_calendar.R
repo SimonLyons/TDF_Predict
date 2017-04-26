@@ -9,6 +9,7 @@ initialCNCalendar <- function(start_year, end_year){
 # Call relevant libraries
   require(XML)
   require(RMySQL)
+  require(lubridate)
 # set working directory
   setwd("C:/b_Data_Analysis/Database")
 
@@ -19,7 +20,7 @@ initialCNCalendar <- function(start_year, end_year){
                           dbname='ProCycling', host='localhost')
 
 # Need to replace this progress bar with the one used in our Ozdata files at UnConf 17
-# Use Windows Progress Bar
+# Use text Progress Bar
 total <- length(start_year:end_year)
 
 # Create a list of the calendars being written to the database
@@ -125,8 +126,12 @@ for (n in start_year:end_year){
     calendar_cn[i, "race_id"] <- paste("race", n, formatC(i, width = 4, format = "d", flag = "0"),  sep = "_" )
   }
 
+  # Convert start_date and end_date to correct date format using 'lubridate' package and 'dmy' function
+  calendar_cn$start_date <- dmy(calendar_cn$start_date)
+  calendar_cn$end_date <- dmy(calendar_cn$end_date)
+  
   # Write 'race_calendar' dataframe to ProCycling database
-  try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, overwrite = TRUE))
+  try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, overwrite = TRUE, row.names = FALSE))
   
   # add the lastest race_calendar name to the list being built
   # This list will be returned by the function

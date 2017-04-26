@@ -6,8 +6,8 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2005
-end_year <- 2017
+start_year <- 2006
+end_year <- 2007
 
 # Run 'initialCNCalendar' function
 # This function now includes the script to clean
