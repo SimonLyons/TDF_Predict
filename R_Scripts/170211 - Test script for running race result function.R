@@ -6,8 +6,8 @@
 # This essentially only needs to be done once.
 # 
 # Define range of years. Can be modified below.
-start_year <- 2006
-end_year <- 2007
+start_year <- 2008
+end_year <- 2017
 
 # Run 'initialCNCalendar' function
 # This function now includes the script to clean
@@ -27,7 +27,7 @@ prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The No
 
 # Function to go and extract all of the race results tables for an entire calendar year
 # Define the year
-input_year <- 2016
+input_year <- 2013
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){

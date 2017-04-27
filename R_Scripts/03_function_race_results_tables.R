@@ -65,12 +65,13 @@ require(XML)       # For webscraping functions
         # Create connection to database 
         conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')   
         # Write the table to its location (now to the MySQL database)
-        dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), sep = ""), my_results, overwrite = TRUE)
+        dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", 
+                                        formatC(i, width = 2, format = "d", flag = "0"), sep = ""), 
+                                        my_results, overwrite = TRUE, row.names = FALSE)
         table_list <- c(table_list, paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""))
-        # List all open db connections and clear open result
         # 
         # NEED TO INSERT SOMETHING APPROPRIATE HERE TO OPEN AND CLOSE THE DATABASE CONNECTION
-        dbDisconnect(dbListConnections(MySQL())[[1]])
+        dbClearResult(dbListResults(conn_local)[[1]])
 
       }   # end IF statement for empty tables
     }   # end FOR LOOP for number of tables

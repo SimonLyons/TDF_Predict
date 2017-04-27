@@ -92,7 +92,8 @@ close(prg)   # End txt progress bar
 # View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
-dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, overwrite = TRUE)
+dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, 
+             overwrite = TRUE, row.names = FALSE)
 return(races_master)
 
 # Script for closing all active connections to MySQL databases.

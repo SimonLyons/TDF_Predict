@@ -131,7 +131,8 @@ for (n in start_year:end_year){
   calendar_cn$end_date <- dmy(calendar_cn$end_date)
   
   # Write 'race_calendar' dataframe to ProCycling database
-  try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, overwrite = TRUE, row.names = FALSE))
+  try(dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_calendar_", n, sep = ""), calendar_cn, 
+                   overwrite = TRUE, row.names = FALSE))
   
   # add the lastest race_calendar name to the list being built
   # This list will be returned by the function
