@@ -62,8 +62,11 @@ GetAllRacesInAYear <- function(input_year){
   conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , 
                           password = as.character(psswd[psswd$type == "Manager", "password"]),  
                           dbname='ProCycling', host='localhost')   
-  query <- dbSendQuery(conn_local, paste("SELECT * FROM race_weblinks_", input_year, ";", sep = ""))
+  query <- dbSendQuery(conn_local, "SELECT * FROM race_weblinks_Master
+                       LIMIT 10 OFFSET 2200;")
   Race_Weblink_Year <- dbFetch(query, n=-1)
+  View(Race_Weblink_Year)
+
   
   # Use Text Progress Bar
   total <- nrow(Race_Weblink_Year)
@@ -75,7 +78,7 @@ GetAllRacesInAYear <- function(input_year){
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
     
-    write_race_results_tables(Race_Weblink_Year[r, 1], Race_Weblink_Year[r, 2])
+    write_race_results_tables(Race_Weblink_Year[r, "stage_url"], Race_Weblink_Year[r, "race_id"])
     
     # Sleep function to randomise web queries
     sleep <- abs(rnorm(1)) + runif(1, 0, .25)
@@ -85,7 +88,7 @@ GetAllRacesInAYear <- function(input_year){
     Sys.sleep(sleep)
     
     }   # End FOR loop to retrieve race results tables using function "write_race_results_tables"
-        # 'write_race_results_tables' function comes from 03_functoin_race_results_tables.R
+        # 'write_race_results_tables' function comes from 03_function_race_results_tables.R
   close(prg)   # Text Progress Bar script 
   
   

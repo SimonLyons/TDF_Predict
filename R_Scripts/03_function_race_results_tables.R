@@ -13,7 +13,7 @@ psswd <- read.csv("passwords_db.csv", header = TRUE)
 
 require(RMySQL)    # For database functions
 require(XML)       # For webscraping functions
-  my_url <- paste("http://www.cyclingnews.com/", my_url, sep = "")
+  my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
   table_list <- c()   # Create empty table list for use in loop
@@ -37,7 +37,6 @@ require(XML)       # For webscraping functions
       }
       
       # Create data frame table with correct Title and column names
-      # header_df <- my_results[1,1:3]
       if (ncol(my_results) > 0){   # IF statement required to eliminate empty tables
       
         # Insert IF statement to allow for the existence of column title information
@@ -63,14 +62,17 @@ require(XML)       # For webscraping functions
         my_results$RiderName_Country_Team <- text_clean(my_results$RiderName_Country_Team)
 
         # Create connection to database 
-        conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , password = as.character(psswd[psswd$type == "Manager", "password"]),  dbname='ProCycling', host='localhost')   
+        conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
+                                password = as.character(psswd[psswd$type == "Manager", "password"]),  
+                                dbname='ProCycling', host='localhost')   
         # Write the table to its location (now to the MySQL database)
         dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", 
                                         formatC(i, width = 2, format = "d", flag = "0"), sep = ""), 
                                         my_results, overwrite = TRUE, row.names = FALSE)
         table_list <- c(table_list, paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""))
         # 
-        # NEED TO INSERT SOMETHING APPROPRIATE HERE TO OPEN AND CLOSE THE DATABASE CONNECTION
+        # Close open queries (doesn't close the connection - very useful)
+        ###################  NOT SURE WHY THIS IS CAUSING AN ERROR AT THE MOMENT ##############
         dbClearResult(dbListResults(conn_local)[[1]])
 
       }   # end IF statement for empty tables
