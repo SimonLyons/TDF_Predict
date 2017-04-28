@@ -30,14 +30,20 @@ View(race_calendar_2013)
 
 rc_master <- dbSendQuery(conn_local, "SELECT * FROM race_weblinks_Master;")
 rc_master <- dbFetch(rc_master, n=-1)
-
 View(rc_master)
+
+
+race_results_t01 <- dbSendQuery(conn_local, "SELECT * FROM race_2009_0005_t01;")
+race_results_t01 <- dbFetch(race_results_t01, n=-1)
+View(race_results_t01)
 
 
 # Delete tables from Procycling database
 # I've chosen NOT to use 'IF EXISTS' statement as I want an error generated
 # if the table does not exist
 delete_tables <- dbSendQuery(conn_local, "DROP TABLE race_calendar_13;")
+
+dbSendQuery(conn_local, "ALTER TABLE race_weblinks_Master DROP COLUMN row_names;")
 
 
 k <- 2007
