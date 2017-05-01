@@ -6,13 +6,19 @@
 # This is my unique race code, to be used in the database as a KEY identifier.
 write_race_results_tables <- function(my_url, race_id){
   
+require(RMySQL)    # For database functions
+require(XML)       # For webscraping functions
+  
 # Set working directory to user passwords location
 setwd("C:/b_Data_Analysis/Database")
 # Read database password file
 psswd <- read.csv("passwords_db.csv", header = TRUE)
 
-require(RMySQL)    # For database functions
-require(XML)       # For webscraping functions
+# Create connection to database 
+conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
+                        password = as.character(psswd[psswd$type == "Manager", "password"]),  
+                        dbname='ProCycling', host='localhost') 
+
   my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
   my_url_parse <- htmlParse(my_url)
   table_no <- length(readHTMLTable(my_url_parse))   #   determine number of tables on url
@@ -61,12 +67,8 @@ require(XML)       # For webscraping functions
         # Function to strip out UTF-8 characters from the table
         my_results$RiderName_Country_Team <- text_clean(my_results$RiderName_Country_Team)
 
-        # Create connection to database 
-        conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
-                                password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                                dbname='ProCycling', host='localhost')   
         # Write the table to its location (now to the MySQL database)
-        dbWriteTable(conn_local, type = 'UTF-8', name = paste(race_id, "_t", 
+        dbWriteTable(conn_local, name = paste(race_id, "_t", 
                                         formatC(i, width = 2, format = "d", flag = "0"), sep = ""), 
                                         my_results, overwrite = TRUE, row.names = FALSE)
         table_list <- c(table_list, paste(race_id, "_t", formatC(i, width = 2, format = "d", flag = "0"), "_", fsSafe(table_titles[i]), sep = ""))

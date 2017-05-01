@@ -13,8 +13,7 @@ for(con in all_cons)
 dbClearResult(dbListResults(conn_local)[[1]])
 
 
-query4 <- dbSendQuery(conn_local, "SHOW tables;")
-new_df4 <- dbFetch(query4, n=-1)
+new_df4 <- dbGetQuery(conn_local, "SHOW tables;")
 View(new_df4)
 
 race_calendar_2011 <- dbSendQuery(conn_local, "SELECT *
