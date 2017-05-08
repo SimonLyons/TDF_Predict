@@ -50,7 +50,7 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
         if(length(table_column_text) > 0){
           
           for(h in 1: ncol(my_results)){
-          colnames(my_results)[h] <- as.character(my_results[1, h])   # toString
+          colnames(my_results)[h] <- as.character(my_results[1, h])
           }   # End 
           # We only delete the first row if there are column titles in the tables
           my_results <- my_results[-1,]   # delete first row which contains column names
