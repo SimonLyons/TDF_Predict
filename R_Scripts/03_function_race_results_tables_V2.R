@@ -1,4 +1,6 @@
-
+##################################
+# Significantly updated version of the function to scrape race results tables
+# 
 # Function write_race_results_tables
 
 # Build function to take results url from Cycling News and save database tables with each race result. 
