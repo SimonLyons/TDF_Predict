@@ -1,0 +1,1098 @@
+
+
+------------------------------
+Notes from Thu 11 May
+
+Today I've been continuing to work on the race result tables. I'm attempting to work out how to build the time-based 'Result' column into the correct race duration for each rider. I successully eliminated the 'non-breaking space' characters from the Result column, but I'm now trying to work out how to mutate a new Duration column with the correct cumulative time for each rider.
+
+I've been able to correctly assign new columns for race_type and race_classification.
+
+Next steps:
+
+- Continue working out how to build a 'Duration' column
+
+- Correct non-finishing entries (e.g. DNF, DNS, DNQ, etc).
+
+- Combine all 'time' tables and 'points' tables into two master tables.
+
+
+
+------------------------------
+Notes from Wed 10 May
+
+Wet weather in Brisbane this morning, so no 4501 Rouleurs River Loop. Hopefully it will be dry enough for me to ride into work later.
+
+After doing the Giro daily update, today I worked on further sorting out the race result tables.
+
+The cool bit I worked out today is how to split a combined column (in this case "Rider (Country) Team" into separate columns using the 'separate' function from Hadley's 'tidyr' package. It took a bit to understand the syntax and identify the correct regex expression for matching special characters (in this case the parentheses). 
+
+Next steps:
+
+- Combine the script I developed today to separate columns with the other new script I've developed recently to use rvest to download race result tables, correctly assign headers and assign columns for pts/time and race_id.
+
+
+
+
+
+------------------------------
+Notes from Tue 9 May
+
+I've been distracted by getting daily updates for the Giro Velogames competitions up and running, which is now going well. Time to concentrate on the main game!
+
+I believe I've got a format and solution for extracting and storing race result information. The two big decisions are:
+
+1. I will store all of the TIME based results in one table, and all of the POINTS based results in another table.
+2. Each table entry will hace its 'result class' (full, general_classicification, sprint, points_classification, etc) stored in each row (in-line) as a field.  There will also be a field for 'result_type' which will simply state whether the numerical result is a 'time' result or a 'points' reult.
+
+
+So this means all of the time based results (full stage result, GC, teams, young rider, etc) will be thrown into one big table. The results will be separable via the race_id (also a field) and the result_class.  
+
+
+
+
+------------------------------
+Notes from Thu 29 Apr
+
+I've started looking at how to sort out the storage of race result tables. I also today identified it is neater/easier to use the 'dbGetQuery' function instead of using the two-step dbSendQuery and dbFetch. Apparently the above is recommended by Hadley.
+
+
+Next steps:
+
+- Assess how race result information will be called. If I'm going to combine all the race result tables into a Master table, additional columns will be required to ensure results are unique. The most obvious addition is the unique 'stage_id'.
+
+- Cleaning up the race result data. For example
+	* Filling in empty time entries (making sure I don't give a time to DNF, etc
+	* Separating data squashed into a single column (Rider Name, Country, Team, etc)
+
+
+
+
+
+
+------------------------------
+Notes from Thu 29 Apr
+
+I've started sorting out the race results function and working out how this is all going to get stored on the database. First step was trying to execute the race_results_tables function, which has a variety of errors.
+
+I found that my script in 'Test script for running race results' was referencing the incorrect columns from the 'race_weblinks_Master' dataframe.
+
+Anyhow, I've got that sorted, as well as cleaning up the race_results_tables function a bit. I'm still a bit stuck on how to combine the variety of tables into Master results tables.
+
+Next steps:
+
+- Look at how to combine race results data into master tables
+
+- Think about how I'll retrieve race data. Dates may be a challenge if the date isn't stored in the race results tables.
+
+
+------------------------------
+Notes from Thu 27 Apr - PM
+
+I've re-run the race_calendar function successfully and now have a race_calendar_Master table in the database. It appears to have clean race details and locations as well as dates in a useable format. I've done the same for the race_weblinks tables, which I believe has run successfully. I now have a race_weblinks_Master table in the database as well!
+
+Next steps:
+
+- Move on to race results tables. This is a huge challenge and I'm not exactly where to start.
+  I need to work out how I'm going to store and retrieve information from these tables for analysis.
+
+
+------------------------------
+Notes from Thu 27 Apr
+
+I'm having more problems than I anticipated sorting out the race_calendar_Master table. I've discovered a couple of challenges:
+
+1. I haven't done a consistent update to the race_calendar tables and as a result there is inconsistent column naming. At this stage I know the earlier ones are named 'Start.Date' and the more recent tables have 'start_date'. I think I need to re-run the race_calendar initial extract function again.
+
+2. The above might solve the following issue. I've converted some of the start_date and end_date values as a test, and then attempted to lubridate a master table with a combindation of converted and not-converted dates. lubridate::dmy returns an 'NA' for dates that have already been converted.
+
+Next steps:
+
+- Re-run the race_calendar initial function (01) for the tables with old column naming conventions (or just re-name the columns!)
+
+- Combine all the race_calendar tables into a single race_calendar_Master table
+
+- Look at how to combine race results data into master tables
+
+
+
+------------------------------
+Notes from Tue 25 Apr
+
+I attempted to close out my Coursera exercises, but my access to Jupyter Notebooks has been cut off! Well, at least direct access via Courera has.
+
+I've moved on to sorting out my database, starting with the race calendars and combining them into a master calendar. I think they're almost ready to go, I just need to ensure when they are mashed together that I can separate years cleanly. I discovered the dates are stored as a string and won't therefore responsd to numeric queries. Fortunately, Hadley's 'Lubridate' package was able to convert the 'DD MMMM YYYY' dates to a proper date numeric using the 'dmy' function. I also found that Lubridate's 'month' and 'year' functions are great at extracting elements of the numeric date entry, with formatting for taking out exactly what you want (for example - getting 'January' or 'Jan' instead of '01'.
+
+I also discovered a MySQL function for closing open queries, but leaves the connection to the database and table open:
+
+# Close open queries (doesn't close the connection - very useful)
+dbClearResult(dbListResults(conn_local)[[1]])
+
+
+Next steps:
+
+- Perhaps write the Lubridate conversion straight into the initial race_calendar scrape function (01a_function_initial_CN_calendar.R).
+
+- Check the data in the existing race_calendar tables
+
+- Convert all the start_date and end_date values in the existing calendars (although I could do this when they're all combined)
+
+- Combine all the race_calendar tables into a single race_calendar_Master table
+
+- Look at how to combine race results data into master tables 
+
+
+------------------------------
+Notes from Thu 20 Apr & Sat 22 Apr
+
+On both days I've simply progressed through the Week 4 exercises on my MySQL Database course.
+
+
+------------------------------
+Notes from Tue 18 Apr
+
+I've mostly continued on the datbase week 4 exercises. At the same time I ran the obtain race weblink function to complete the final years (2016 and 2017[partial]). It's now possible to combine all of the race weblink tables into a single master table - noting that I would need to write and update script to go and get new race weblinks as the year (currently 2017) progresses.
+
+I'm now working on the script that takes the raec weblinks and goes and scrapes all the race result tables. The biggest challenge is working out how I'm going to store this in the database. Ideally I would like a single master table for the primary race result, another master table for various points outcomes and that sort of thing. In theory I could ignore GC tables (as I should be able to calculate this from individual stage times), but it's probably prudent to collect this data for validation against my own calculations later on. There's almost certainly going to be some weird anomalies in GC times thanks to corrections and adjustments by race officials.
+
+Next steps:
+
+- Complete database Week 4
+
+- Combine race calendars into a master table
+
+- Look at how to combine race results data into master tables 
+
+
+------------------------------
+Notes from Mon 17 Apr
+
+On Saturday (15th) I tried remote connecting from Maleny (Phil & Brenda's house) but failed. The Study PC (database server host) was suspended when I got home so I think I didn't really have the ability. Need to test again when I'm sure the computer is still on!
+
+This morning I believe I've sorted out the 'text_clean' function. I've inserted the 'magrittr' function to allow me to pipe my various text operators into each other. I'm now running a complete re-scrape of the race calendars (2005 to 2017). It is important to have this little function sorted as I'll be using it repeatedly when I import race data.
+
+I've also done a little bit on Week 4 of my database course. I need to close this out. Week 5 to do as well.
+
+Next steps:
+
+- Complete database Week 4
+
+- Combine race calendars into a master table
+
+- Look at how to combine race results data into master tables
+
+
+
+
+------------------------------
+Notes from Thu 13 Apr
+
+I think I've successfully set up the ability to remotely connect in to my MySQL server. The laptop connects. I need to test it offsite to see if there are firewall issues.
+
+Study Computer IP Address
+192.168.1.1   
+Port  3306
+
+Next steps:
+
+- Test remote connection to database (from Maleny)
+
+- Start implementation of new database relational schema
+
+
+
+------------------------------
+Notes from Thu 06 Apr
+
+Haven't been able to replicate the error from Tuesday. It was possibly just a HTTP connection error. I should look for code that test for a connection and is able to move on if there isn't on (possibly producing a warning). I think there's some in the UnConf::Ozdata work.
+
+URL check courtesy of the RCurl package
+   RCurl::url.exists(race_url)
+
+I've inserted the above RCurl function into GetRaceWebLinks to test it out.
+
+The following does a check. Returns nothing if TRUE. Returns and error if FALSE
+   assertthat::assert_that(nrow(calendar_cn) < 0)
+
+Next steps:
+
+- Sort out remote connection to database
+
+- Design database relational schema
+
+
+------------------------------
+Notes from Tue 04 Apr
+
+I seem to have the 02_function mostly sorted. I've just tried running it (getRaceWeblinks) over 2005:2017, but it failed in the middle of 2009 (44% mark), with the following error:
+
+Error: failed to load HTTP resource
+
+The good news is that I sorted out plenty of errors, cleaned out a lot of uncessary code (from 02_function) as well as setting up and single text_clean function to uniformly deal with special characters.
+
+
+Next steps
+
+- Work out why 02_function failed on the 2009 calendar.
+
+
+
+------------------------------
+Notes from Mon 03 Apr
+
+I spent this morning updating the calendar scraping function. The latest issue appears to be with another special character, this time the uptick (‘) {there has to be an official name for this problem character} contained within the 2011 calendar for: The Nor’easter ‘Cross 2011 whic is in September.
+
+[UPDATE!]: I believe I've sorted it. The character is called 'Okina' (Hawaiian) and can be removed with the following stange regex expression:  [^[:alnum:]///' ]
+
+gsub("[^[:alnum:]///' ]", "", races_master[i, "race_details"])
+
+
+I inserted the text progress bar into the calendar and obtain race results functions as well.
+
+Next steps
+
+- Sort out how to deal with this latest problem special character.
+
+- potentially stick all of the 'cleaning' actions into a single function, so this can be used uniformly across all of my cycling code.
+
+
+
+
+------------------------------
+Notes from Sun 02 Apr
+
+I've returned to work on my TDF_Predict project after taking a week to focus on the BURGr UnConf 2017. The event was great and I learned an enormous amount. 
+
+
+This morning I finished updates to initial calendar function and I believe I have all of the race calendars stored in the database.
+
+I'm now moving on to the race results weblink function, which has errors. That's a job for tomorrow.
+
+
+
+
+
+------------------------------
+Notes from Thu 23 Mar
+
+Same again - still working through Coursera database course. It's been really beneficial. Today I finished off my writing some queries in R looking at my Pro Cyling database. Everything seems to be working well! My practice file is:
+
+170323 - Practice ProCycling Database Queries.R
+
+
+
+------------------------------
+Notes from Tue 21 Mar
+
+Today I continued working through the database course on Coursera. Last week I learnt about Entity Diagrams and Relational Schema (how to interpret and create them) and this week I am getting into MySQL commands.
+
+
+
+------------------------------
+Notes from Mon 20 Mar
+
+Super painful. I'm trying to sort out the non-UTF8 character problem still. In the 2017 race calendar, the first problem race is on row 14:
+
+"Challenge Mallorca Trofeo Porreres – Felanitx – Ses Salines – Campos"
+
+The problem is the 'em-dash' which isn't apparently UTF-8. I've built a replacement into the 'removePainfulCharacters' function, but I don't like it. Even once I've done that, the database write function throws up the same error - apparently picking out the " " space in the same row 14 string. Annoying!!
+
+Next steps
+
+- Continue working on problems with '01a_function_initial_CN_calendar.R', specifically trying to sort out further non-UTF8 characters.
+
+- Create an ER Diagram and Relational Schema for the Pro Cycling database.
+
+
+
+
+
+
+
+------------------------------
+Notes from Thu 16 Mar
+
+I haven't made a great deal of progress with fixing the problem characters in the 'race_description' column of the calendar tables. I've decided to insert the 'try()' function at the start of the 'dbwriteTables' function and run through the remainding calendars. There's still plenty of problem characters. 
+
+I did spend a bit of productive time familiarising myself with Hadley's lubridate package, which helps with working with dates. I've written a quick function 'setDateFormat' to correct and update the 'start_date' and 'end_date' columns in the calendars. 
+
+I also had a quick look at Hadley's 'broom' package, which is used to clean up the output from predictive modelling. It neatly arranges output models into tables which can be used for further analysis and easier visualisation.
+
+Next steps
+
+- Continue working on problems with '01a_function_initial_CN_calendar.R'
+
+
+
+------------------------------
+Notes from Mon 13 Mar
+
+I'm still having problems with certain characters in the race_details column. I fixed the apostophe issue by creating a copy of the removeDiscritics function. In the 2009 calendar I've now run into a problem with inverted commas (") in the 253rd column: 3 Giorni  Internazionale open "Città  di Pordenone"
+
+Next steps
+
+- Continue working on problems with '01a_function_initial_CN_calendar.R'
+
+
+
+
+------------------------------
+Notes from Mon 13 Mar
+
+I'm continuing to have problems sorting out characters in the calendar function. The first problem event is the following in the 2009 calendar, but there are more. I think the issue is with special/reserved characters, such as quotes and inverted commas. 
+
+Tour of America’s Dairyland
+<a href="/races/tour-of-americas-dairyland-ne">Tour of America’s Dairyland</a>
+
+Next steps
+
+- Continue working on problems with '01a_function_initial_CN_calendar.R'
+
+
+------------------------------
+Notes from Sun 12 Mar
+
+I had a short play with dplyr this afternoon while Liz was out for a run. The big success was working out how to summarise a value using multiple factor variables. The key was listing a number of variables in the one 'group_by' function dplyr.
+
+e.g.
+
+colnames(df) -> c("State", "Product", "Month", "Sales")
+
+my_summary -> df %>%
+   group_by(Month, Product) %>%
+   summarise(sum(Sales))
+
+knitr::kable(df)
+
+Here's the list of packages from Hadley's slide presentation:
+
+
+Import: readr, readxl, xml2, DBI
+
+Tidy: tibble; tidyr
+
+Transform: dplyr, forcats, hns, stringr, lubridate
+
+Visualise: ggplot2
+
+Model: broom
+
+Program: purr, magrittr
+
+
+
+------------------------------
+Notes from Sat 11 Mar
+
+I've needed to take a step back. I've realised I need the complete list of race calendars written to the database. This helped me realise that my calendar functions (01a & 01b) were writing .csv files instead of the database. I've cleaned these both up and I'm now running the scripts to extract the full race calendars with race weblinks and write them to the database. 
+
+It's interesting to see my script from just over a month ago. It's evident I'm making progress in terms of writing more efficiently and in noting what I'm doing. 
+
+I'm having problems with the '02_function_obtain_event_race_result_weblinks.R' file
+
+I've enrolled in a Coursera course on 'Managing Big Data with MySQL':
+https://www.coursera.org/learn/analytics-mysql/home/welcome
+
+Next steps
+
+- Continue working on problems with '02_function_obtain_event_race_result_weblinks.R'
+
+- Continue working through race results functions. 
+
+- Look at running 'GetAllRacesInAYear' function and scraping all years to database. Need to check on the format and data being written to the race weblinks tables.
+
+- Consider how the tables might be amalgamated. Not easy given their heterogeneous nature. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------
+Notes from Thu 9 Mar
+
+
+I had a quick go at using some of the dataframe arranging functions in the dplyr package. I went to my first BURGr Meetup last night and had a great time.
+(tidyverse, magrittr, dplyr)
+This is of course massively easier than some of the base R filtering techniques I've been using!
+
+I was able to fix the issues with the 03_function_race_results_table.R' which is called out as the 'write_race_results_tables' function. I now need to go and scrape all of the race calendars from Cycling News using the 'GetRaceWebLinks' function from the '02_function_....' file.
+
+Next steps
+
+- Continue working through race results functions. 
+
+- Look at running 'GetAllRacesInAYear' function and scraping all years to database. Need to check on the format and data being written to the race weblinks tables.
+
+- Consider how the tables might be amalgamated. Not easy given their heterogeneous nature. 
+
+- Look for Coursera (or MOOC) MySQL database course
+
+
+------------------------------
+Notes from Mon 06 Mar
+
+I've had a reasonable session working through the race results functions and converting them across to writing to the database. Unfortunately I've been reminded the race result tables don't kick in until at after 2007. I was able to successfully update 'GetRaceWebLinks' function from the '02_function_....' file. 
+
+Next steps
+
+- Continue working through race results functions. Specifically, I'm up to the writing of tables in the '03_function_race_results_table.R' which is called out as the 'write_race_results_tables' function in '170211 - Test script for running race result' function.
+
+- Sort out management of open database connections. This is throwing up an error in the '03_function_race_results_table.R' file. 
+
+- Consider how the tables might be amalgamated. Not easy given their heterogeneous nature. 
+
+- Look for Coursera (or MOOC) MySQL database course
+
+------------------------------
+Notes from Mon 06 Mar
+
+I finally sorted out the 'rider_master_list' and was able to retrieve all 1572 rows of rider names from the database. The other issue is that I've imported only the riders form the UCI WouldTour teams. I probably also need to import the riders from at least the UCI Pro Continental teams as well.
+
+I couldn't identify any sort of loading error WRT the 'Error : failed to load HTTP resource' that came up yesterday. 
+
+Team categories on the Cycling News website
+2005: Four tables: UCI WorldTour (20 teams), Teams (3 teams), UCI Pro Continental Men's (29 teams), UCI Continental Men's (122 teams)
+2006: Four tables: UCI WorldTour (18 teams), Teams, (13 teams), UCI Pro Continental Men's (30 teams), UCI Continental Men's (lots)
+2007, 2008 & 2009: as above
+2010:2017, : Three tables:  UCI WorldTour, UCI Pro Continental Men's & UCI Continental Men's
+
+Next steps
+
+- Work out how to capture team history
+
+- Work through completing the download (and writing to database) of all the race results.
+
+
+------------------------------
+Notes from Sun 05 Mar
+
+I sorted out the issue with team names. The problem was simply related to not having the removeDiscritics function running over the team names. (It was doing riding names only).
+
+I also fixed the riderMasterList error. Again a simple issue. I had the title of the function in the wrong spot. I needed to 'assign' the function to the riderMasterList title.
+
+I've successfully run the entire rider list webscrape, however I got the following error message in what I think is the run of 2016 team tables:
+
+I have done 1 of 18 - gonna sleep 0.24 seconds.
+Error : failed to load HTTP resource
+
+In addition: There were 28 warnings (use warnings() to see them)
+I have done 2 of 18 - gonna sleep 0.98 seconds.
+Error : failed to load HTTP resource
+
+I have done 3 of 18 - gonna sleep 0.85 seconds.
+
+So there's a chance that teams 2 and 3 of 2016 weren't extracted.
+
+
+Next steps
+
+- Check the error above.
+
+- Work out how to capture team history
+
+- Learn more database skills. e.g. Assignment of PRIMARY KEY. I've got a copy of a SQL database for beginners book that's now in my Calibre library.
+
+- Start work on database queries. I don't want or need to pull in entire database tables. It will be far more efficient to perform filtering queries.
+
+
+------------------------------
+Notes from Sat 04 Mar 
+
+I believe I've sorted out the function to extract rider details from the CN website. The issue appeared to be the assignment of the data/value to the table to be written in dbWriteTable.
+
+I've also nearly sorted out the Master Rider list, although it's giving me a funny error relating to the LPAREN "}" in my function 'riderMasterList'.
+
+I've just set the getRiderList function to run, extracting all of the rider data from every team from 2005 through to 2017. This should hopefully load all of them into the ProCycling database, with correct table and column names.
+
+Next steps
+
+- Fix 'riderMasterList' function error.
+
+- Work out how to capture team history
+
+- Learn more database skills. e.g. Assignment of PRIMARY KEY. I've got a copy of a SQL database for beginners book that's now in my Calibre library.
+
+- Start work on database queries. I don't want or need to pull in entire database tables. It will be far more efficient to perform filtering queries.
+
+
+
+
+
+
+
+
+------------------------------
+Notes FROM Thu 02 Mar (written at the end of my morning session, Wed 01 Mar)
+
+#### NOTE: I'm changing my notes date system to specify the date on
+#### on which I've written the notes, instead of the date I'm next
+#### going to use them. 
+
+I've been dealing with another non UTF-8 character issue, this one in the names of riders.
+Sadly, converting the encoding to UTF-8 on a string just inserts all sorts of unusable characters. It appears that the fantastic removeDiscritics function is still the main solution.
+Today I inserted what I assume is a Scandanavian character for the letter o. I think I'll just have to keep updating this function as I come across problem characters. With luck, I've got 99% of them. 
+
+Next steps
+
+- Sort out why the 2009 rider list is not writing to the database.
+
+- Build a master rider list that has only a unique entry for each rider and somehow lists all of the years for which they have ridden.
+
+- Learn more database skills. e.g. Assignment of PRIMARY KEY. I've got a copy of a SQL database for beginners book that's now in my Calibre library.
+
+- Start work on database queries. I don't want or need to pull in entire database tables. It will be far more efficient to perform filtering queries.
+
+
+
+------------------------------
+Notes for Thu 02 Mar (written at the end of my morning session, Wed 01 Mar)
+
+Good progress on the rider_list script. I was able to:
+1. Fix up the latin characters (convert to UTF-8) on the rider names [I can see this is going to be an ongoing issue]
+2. Write a combined annual list of years to the database
+3. Insert a 'sleep' function to insert delays between webscraping rider data for a team
+
+Next steps
+
+- Build a master rider list that has only a unique entry for each rider and somehow lists all of the years for which they have ridden.
+
+- Attempt to sort out assignment of PRIMARY KEY
+
+- Fix non UTF-8 characters in the race results tables. Race name and race location are still being problematic.
+
+- Start work on database queries. I don't want or need to pull in entire database tables. It will be far more efficient to perform filtering queries.
+
+
+
+
+
+------------------------------
+Notes from my day of coding - Tue 28 Feb
+
+Database Day!
+
+Not as much progress as I had hoped. Finding more problems with unique non UTF-8 characters.
+
+I have managed to sort out the table name and column naming conventions to allow the race calendars to be successfully written to the database. I'm still having problems with assignment of the PRIMARY KEY.
+
+
+
+
+------------------------------
+Notes for Thu 02 Mar (written at the end of my morning session, Tue 28 Feb)
+
+I had a more successful time sort out the rider list webscrape today and I think I've got it sorted out. My test runs have been limited to the first few teams in any given year. I had two problems:
+1. For some reason I was using the xPath for Nationality when I wanted the UCI ID data; and
+2. I needed to find a way to extract just the UCI number. gsub came to the rescue!
+
+I can now generate an overall list of riders for a year. I think it will be useful to put each of these rider lists for each year into the database. I'll still want a master rider list that is a table with only one entry for each rider. 
+
+
+Next steps
+
+- Build a master rider list that has only a unique entry for each rider and somehow lists all of the years for which they have ridden.
+
+- Once the above master list is created, it should hopefully be straightforward to write this table to the database. The uci.ID for each rider should in theory act as the Primary Key.
+
+- Splitting up URL requests. See text file:
+C:\b_Data_Analysis\Projects\TDF_Predict\Script relating to delaying webscraping requests.txt
+
+
+------------------------------
+Notes for Tue 28 Feb
+
+Woke up late (6am) and have done about 50mins of coding. Didn't really solve my issues with the tables for each team. I'm not extracting the UCI ID cleanly.
+
+
+------------------------------
+Notes for Mon 27 Feb
+
+A decent morning today (Sat 25 Feb). I've managed to finish the script that extracts rider data from the CN website. At the moment I've got a table for each team (in each year) that lists their riding roster, with the following elements: rider.name, rider.link, team.name, dob, nationality & uci.ID
+
+Although I've essentially got all of the data, I now need to organise it into a more useful dataframe that will make later queries much easier. The main trick will be working out how to efficiently deal with all of the rider duplications each year.
+
+It's been gold inserting the Windows Progress Bar. On long (download) scripts it's difficult to know whether it's working it not!
+
+Next steps
+
+- Fix the rider list (for a complete year) component of the script
+
+- Build a master rider list that has only a unique entry for each rider and somehow lists all of the years for which they have ridden.
+
+- Once the above master list is created, it should hopefully be straightforward to write this table to the database. The uci.ID for each rider should in theory act as the Primary Key.
+
+
+------------------------------
+Notes for Sat 25 Feb
+
+Although it didn't feel like I acheived too much from a coding perspective today, I actually made a good amount of ground on the steps required to pull down rider data. It's evident I'm much better at scraping html data now as I can isolate XML nodes and their relevant Values and Attributes pretty quickly. 
+
+After some research, I've decided to use the Cycling News data for rider information. It goes back the year 2000, has pages that follow a logical naming convention and it (importantly) has the UCI ID for each rider (nationality and birthdate combined). 
+
+http://www.cyclingnews.com/teams/2016/
+http://www.cyclingnews.com/teams/2016/team-sky/
+http://www.cyclingnews.com/riders/peter-kennaugh/
+
+http://www.cyclingnews.com/teams/2000/   # Year
+http://www.cyclingnews.com/teams/2000/7up-colorado-cyclist/   # Team
+http://www.cyclingnews.com/riders/mike-ley/   # Rider
+
+
+Next Steps
+
+- Go and get rider information (continue my work on file 170223 - CN Rider Data Initial Script.R)
+
+- Fix database table name error.
+
+- Splitting up URL requests. See text file:
+C:\b_Data_Analysis\Projects\TDF_Predict\Script relating to delaying webscraping requests.txt
+
+
+------------------------------
+Notes for Thu 23 Feb
+
+I've simplified the format of the table IDs so they might be accepted by the MySQL database"
+
+Calendar table:  C.2016
+Event ID:        E.2016.001
+Race ID:         E.2016.001.R01
+Race Table:      E.2016.001.R01.T01
+
+MySQL table column name formats. Doesn't like '#' and 'Rider Name (Country) Team'. I fixed this up, however I'm still getting the following error:
+
+ Error in .local(conn, statement, ...) : 
+  could not run statement: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.002.R01.T01 
+( `row_names` text,
+	`Pos` text,
+	`RiderName.Country.Team` text,
+	' at line 1
+
+I suspect it's to do with the use of "." which I want to force in for the naming of Tables. I've been working with these scripts:
+
+170211 - Test script for running race result function.R
+03_function_race_results_tables.R
+
+Next Steps
+
+- Fix database table name error.
+
+- Go and get rider information
+
+- Splitting up URL requests. See text file:
+C:\b_Data_Analysis\Projects\TDF_Predict\Script relating to delaying webscraping requests.txt
+
+
+
+------------------------------
+Notes for Tue 21 Feb
+
+Replaced script writing race tables to .csv files to database files. First run encountered error relating to max length of table name!
+Successfully updated Windows progress bar to include label with percentage progress and correct title.
+
+
+Next Steps
+
+- Fix database table name error. Will likely require a re-think on the table name (which needs to be a unique race identifier).
+Error in .local(conn, statement, ...) : 
+  could not run statement: Identifier name 'R2015MarsCyclingAustraliaRoadNationalChampionships_01_TbNo_01_Result' is too long
+
+- Go and get rider information
+
+- Splitting up URL requests. See text file:
+C:\b_Data_Analysis\Projects\TDF_Predict\Script relating to delaying webscraping requests.txt
+
+
+------------------------------
+Notes for Mon 20 Feb
+
+I've got the full 'GetAllRacesInAYear' function going, which is a huge achievement! Essentially this now allows me to go and extract ALL of the results tables for any of the years captured on the Cycling News website.
+
+I sorted out the 'event.ID' and 'event.name' columns problem by replacing the 'unique' function with !duplicate[n, ]. 
+
+Next steps
+
+- Fix the use of unallowed characters in the write.csv function. A results table with the '*' at the end (as a note) caused the write.csv function to fail.
+
+- Make use of the 'label' component of the winProgressBar function
+https://www.r-bloggers.com/progress-bars-in-r-using-winprogressbar/
+
+- Definitely need to progress to writing to the database instead of thousdands of .csv files.
+
+
+
+------------------------------
+Notes for Sat 18 Feb
+
+A productive morning. I wrote a functions for the race results weblinks in my TDF Predict project and a function to extract all of the Velogames stage results tables for the TDF.
+
+02_function_obtain_event_race_results_weblinks.R
+170130 - Velogames Results Table Scrape.R
+
+
+I'm having a minor amount of problems with my 'GetRaceWebLinks' function. The 'event.ID' and 'event.name' columns are returning the number '3' for every result!
+
+- Continue writing code to go from start to finish. 
+
+
+
+------------------------------
+Notes from my day of coding - Wed 15 Feb
+
+A big day, and some big wins. The main disappointment is not getting further with my database skills. That will require more effort and time.
+
+I managed to fix up the script to deal with variations in the results tables and how they are named. A bunch of IF statements sorted that out. I'm very close to being able to send R off to webscrape a whole year's worth of race result tables and to put them into .csv files with a unique 'race.ID'. 
+
+On the database front, I've mastered the following:
+a. Connecting to the MySQL server
+b. Creating a database 'ProCycling'
+c. Creating calendar tables 'calendar_cn_2009' etc in the database
+d. Executing basic queries and putting the results into a dataframe
+
+Next steps
+
+- Continue writing code to go from start to finish. I feel like I've got the race results tables scraping function essentially sorted. I mostly need to complete the global script to join the calendar table to a loop through all of the races.
+
+- More database skills. I'll soon need to write all of the race results tables somewhere and I'd prefer to write them straight into the database. I need to sort out assigning the Primary Key.
+
+
+
+------------------------------
+Notes for Tue 14 Feb
+
+Continuing to work on the big kahuna - a full script to go from calendar through to results webscrape and putting it all into tables.
+
+I'm having problems running the getCNresults function on randomly picked event tables with results weblinks. Currently practicing on:
+http://www.cyclingnews.com//races/fenioux-france-trophy-isgp3/sprint/results
+
+I realised that not all results tables will be the same (different number of columns and other attributes), so I've made some adjustments to account for that. But I'm having problems.
+
+Next steps
+
+- Continue writing code to go from start to finish. It's hard going (given the scale), but it's useful starting to tease out all the challenges with extracting and sorting the data.
+
+
+
+------------------------------
+Notes for Tue 14 Feb
+
+Although progress seemed a bit slow at first, I was eventually able to successfully take the Cycling News annual race calendar .csv files and acheive a couple of things:
+a. Convert the latin based characters in the race.details column to standard ASCII; and
+b. Create new columns (with this clean data) for event.name and event.ID
+
+170213 - CN Calendar - Latin to ASCII and create event name and event ID columns.R
+170213 - Function Latin to ASCII.R
+
+The latin conversion was acheived with a function shared on the following website:
+http://stackoverflow.com/questions/15253954/replace-multiple-arguments-with-gsub
+
+Next steps
+
+- Write a basic script to follow through race result extraction from start (annual calendar) to end (writing race result tables) 
+
+- Start learning database skills. With MySQL installed and connected, I can probably do all of this from R.
+http://cse.unl.edu/~sscott/ShowFiles/SQL/CheatSheet/SQLCheatSheet.html
+https://blog.udemy.com/sql-queries/
+
+
+
+- It might make sense to have all the results links for a single year in one dataframe and one csv file.
+
+
+
+------------------------------
+Notes for Mon 13 Feb
+
+I successfully updated my function script that extracts the tables of race results from a cycling news race results webpage. I was reminded that a function can only return one object, so it's not possible to return all the tables as separate dataframes. The solution this time is to write a unique .csv file for each race result table. In the near future, I believe I'll be writing these table to a database. 
+
+170118 - cyclingnews webscrape v1.R
+
+I also had to find a way of uniquely naming  each table. I tidied up the table caption (from XML) extraction and gave each .csv file a name that includes a unique race.ID, the table number (in order on the page) and the caption for each table. This data should in theory all be important when I go to sort out the database files.
+
+Which brings me to some of the unique fields in the database I think will be used as "KEY" fields - important in relational database like SQL. These are fields I think will be important. 
+
+event.ID   # An ID for the cycling event. Must be unique. e.g. TDF2016
+race.ID    # This could be a stage, or just a single race  e.g. TDF16S1
+rider.ID   # Each rider needs a unique shortform ID. I think the UCI uses Nationality and birthday   e.g.  14031977.AUS
+team.ID    #  e.g. Astana 2016 - AST2017
+
+
+In an extra - I managed to quickly install MySQL and set up a server - and then connect from R, creating a table!
+
+170211 - Sandpit scripts for creating and accessing MySQL database.R
+
+
+Next steps
+
+- Write a basic script to follow through race result extraction from start (annual calendar) to end (writing race result tables) 
+
+- Start learning database skills. With MySQL installed and connected, I can probably do all of this from R.
+
+- It might make sense to have all the results links for a single year in one dataframe and one csv file.
+
+- Need to work out unique IDs for tables. Race ID, Rider ID, Team ID, etc so that database elements can be called and linked correctly.
+
+
+------------------------------
+Notes for Sat 11 Feb
+
+Success! I was able to isolate the results link infomation, put it in a dataframe, get rid of duplicates. I then extended this to a loop to run through all of the events in the 2016 calendar. I managed to have a csv file written for each race with the results weblinks.
+
+170207 - cyclingnews race webscrape v1.R
+
+Next steps
+
+- It might make sense to have all the results links for a single year in one dataframe and one csv file.
+
+- Need to work out unique IDs for tables. Race ID, Rider ID, Team ID, etc so that database elements can be called and linked correctly.
+
+
+
+
+------------------------------
+Notes for Thu 9 Feb
+
+I had my first go at scraping data from an individual race webpage. I used the first race at the top of the 2016 calendar (scraped from CN). I can isolate the XML attribute with links to race results, but isolating the link info by itself and narrowing to just the right race links is proving a bit of a challenge.
+
+170207 - cyclingnews race webscrape v1.R
+
+Next steps
+
+- Continue to refine code to scrape the weblinks for race results pages
+
+- Modify Calendar webscrape to include a dataframe column for the raw 'race' weblink. This looks like it will be important on subsequent weblink searches. i.e. the link without "www.cyclingnews.com" at the front.
+
+- Start thinking about what my main R functions will be and how they will call each other. [Practicing funtions at work might be useful]
+
+
+
+------------------------------
+Notes for Tue 7 Feb
+
+I spent the entire morning attempting to set up a working GitHub account linked to RStudio. It appears to be working properly. I was able to 'pull' my old ProjectAssignment2 files (Coursera Data Analysis course) successfully down to RStudio. I've unfortunately got plenty to learn about version control and using GitHub with R, but at least I now have a basic backup and version control of my working files. 
+
+Next steps
+
+- Investigate potential free & private Git services (GitHub is $7/mth for private)
+
+- Look at the next step - going to the web links and determining the pathway to race results.
+
+- Download/Install the VIM text editor
+
+- Start thinking about what my main R functions will be and how they will call each other.
+
+
+
+------------------------------
+Notes for Mon 6 Feb
+
+Still going well. Today I successully created 
+   # the 'Start.date' and 'End.date' columns in the calendar_cn data.frame
+   # Wrote the results of each data frame to a .csv file
+
+I had a good time learning about regular text/string expressions such as 'regexpr', 'nchar' and 'substr'.
+I used these to split up the 'Date' field into start and end dates.
+
+So I now have .csv files for all of the years between 2005 and 2016 with full calendar informaiton, including weblinks to each race and start and end date columns.
+
+Next steps:
+
+- Look at the next step - going to the web links and determining the pathway to race results.
+
+- Sort out a Github account and start some version control
+
+- Download/Instal the VIM text editor
+
+- Start thinking about what my main R functions will be and how they will call each other.
+
+
+------------------------------
+Notes for Sat 4 Feb
+
+Great news! I was able to subset out the weblink for each UCI calendar entry and correctly enter it into my dataframe in the right row. My code is able to successfully ignore this action for rows with no web link.
+
+Next steps:
+
+- Write in loop for the new code to cycle it through all the Cycling News calendar years (easy)
+
+- Adding additional columns to the calendar tables
+	* Instead of editing the Date column, create a 'Start' and 'End' column
+
+- Look at the next step - going to the web links and determining the pathway to race results.
+
+- Sort out a Github account and start some version control
+
+- Download/Instal the VIM text editor
+
+- Start thinking about what my main R functions will be and how they will call each other.
+
+
+
+------------------------------
+Notes for Thu 2 Feb
+
+Still not having a great deal of luck creating a table with all of the calendar informaiton (weblinks and race data). I did have a bit of success using xpathApply to extract a row element of XML data, however I'm unable to then use this subset to extract the needed information. It's great that I've got a subset of XML data with each row that has all the information I need (in either the xmlValue or Attr data), but it's frustrating that I can't access this yet.
+
+170124 - cyclingnews calendar webscrape v2 - uses xpathApply.R
+
+Next steps:
+
+- Continuation of how to subset xml data to collect race data and web link
+
+
+------------------------------
+Notes for Tue 31 Jan
+
+I didn't have a great deal of luck connecting up the weblinks for races and the complete table for the race calendar. However I did manage to learn some more about extracting XML data using xpathApply. For the first time I was able to extract a neat table from the Velogames results webpages.
+
+I'm still using this to find a neat way of extracting the table information from Cycling News webpages, including the html links.
+I think I'm going to have to use a more manual extraction that takes all the data and then combines it into a table in the manner I want.
+
+I also discovered that the next webpages have stage data in a somewhat inconsistent manner than may challenge my approach to automatically generate links to results pages.
+
+
+Next Steps:  Largely still what is mentioned below for Mon 30 Jan.
+
+
+------------------------------
+Notes for Mon 30 Jan
+
+I was able to extract the web link information for each race from the calendar html data.
+The bad news is that not every race in the table has its own page and therefore a link is missing for some race entries.
+This means the length of the web link list is different to the number of rows in the table and they don't match.
+I'm therefore currently looking at ways to extract the web link data at the same time the table is read into R.
+
+Next steps
+
+- Finding the best way to extract the web links for each race and add it to the calendar data frame.
+
+- Sort out a Github account and start some version control
+
+- Download/Instal the VIM text editor
+
+- Start thinking about what my main R functions will be and how they will call each other.
+
+
+------------------------------
+Notes for Sat 28 Jan
+
+Good news! I've written the code to go and get the UCI cycling race table from Cycling News for year 2005 through 2016 (or whatever years I want).
+I also inserted code to cleanup the Date column (removing all the uncessary text). 
+
+Next Steps
+
+- Adding additional columns to the calendar tables
+	* Instead of editing the Date column, create a 'Start' and 'End' column
+	* Add a column for the (anticipated) race results web page
+		Two ways to do this: a. educated guess; and b. draw link info from html data
+
+- Look at what other race details would be useful (distance, weather, elevation, altitude, etc)
+
+
+Note: There is text in the race table that has details of the web address for the results
+
+http://www.cyclingnews.com/races/santos-tour-down-under-2010/stages/
+http://www.cyclingnews.com/races/santos-tour-down-under-2010/stage-6/results/
+
+
+------------------------------
+Notes for Wed 25 Jan
+
+I successfully wrote a FOR loop that extracts the tables from the calendar of road races for a particular year on the Cycling News website. These go back to 2005.
+
+Next steps
+
+- Cleaning up the calendar table
+	* Multi-day races have messy Date entries
+	* Some events have year unique names e.g. - 94th Gent-Weldveren
+- Writing a loop that extracts the same table for years 2005 through 2017
+- Going to the next level and getting the race weblink for each race
+
+
+------------------------------
+Notes for Tue 24JAN17
+
+I've successfully written a FOR loop that extracts the results tables from a Cycling News race results web page (at least for the Tour Down Under 2016). 
+
+
+Next steps
+
+- Cleaning up the tables
+	* Separating Rider/Country/Team
+	* Filling in empty finishing times
+
+- A webscrape that pulls the World Pro Tour race schedule for the year (2016)
+	* Race names and attributes (# and names of stages, distances, elevation, date, location, start/finish, weather)
+	* Identifies Cycling News naming convention for races
+	* http://www.cyclingnews.com/races/calendar/2016/
+
+
+
+
+
+
+
+
+# Webpages for Cycling news
+
+Santos Tour Down Under
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/
+
+Stages
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/stages/
+
+Down Under Classic (Adelaide)
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/down-under-classic-adelaide/results/
+Stage 1
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-1/results/
+Stage 2
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-2/results/
+Stage 3
+http://www.cyclingnews.com/races/santos-tour-down-under-2011/stage-3/results/
+Stage 4
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-4/results/
+Stage 5
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-5/results/
+Stage 6
+http://www.cyclingnews.com/races/santos-tour-down-under-2016/stage-6/results/
+
+
+Gent - Wevelgem
+http://www.cyclingnews.com/races/gent-wevelgem-2016/
+Results
+http://www.cyclingnews.com/races/gent-wevelgem-2016/results/
+
+Paris-Roubaix
+http://www.cyclingnews.com/races/paris-roubaix-2016/
+Results
+
+Giro d'Italia
+http://www.cyclingnews.com/giro-ditalia/
+Stages
+http://www.cyclingnews.com/giro-ditalia/stages/
+Stage 1
+http://www.cyclingnews.com/giro-ditalia/stage-1/results/
+Stage 2
+http://www.cyclingnews.com/giro-ditalia/stage-2/results/
+Stage 20
+http://www.cyclingnews.com/giro-ditalia/stage-20/results/
+Stage 21
+http://www.cyclingnews.com/giro-ditalia/stage-21/results/
+
+
+http://www.cyclingnews.com/races/giro-ditalia-2011/
+
+http://www.cyclingnews.com/races/giro-ditalia-2011/stages/
+
+http://www.cyclingnews.com/races/giro-ditalia-2011/stage-1/results/
+
+http://www.cyclingnews.com/races/giro-ditalia-2011/stage-2/results/
+
+http://www.cyclingnews.com/races/giro-ditalia-2011/stage-21/results/
+
