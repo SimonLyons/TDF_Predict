@@ -1,12 +1,18 @@
 
 
+
+
 ------------------------------
 Notes from Thu 18 May
 
 I was away in Canberra for the first part of this week. I did not have any success remotely connecting to my database on the home Study PC.
 
+I've started working on the "02_function_obtain_event_race_results_weblinks.R" function to pull in stage date information so it can be used later in the race result table.
+
 
 Next steps:
+
+- Continue working on modification of race weblink function to pull in stage date information.
 
 - Work out a secure connection process for accessing the database from offsite.
 
