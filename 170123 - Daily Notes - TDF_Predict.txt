@@ -1,5 +1,19 @@
 
 
+
+------------------------------
+Notes from Sat 13 May
+
+This morning I've worked on allowing remote connection to my MySQL database. The primary actions performed were creating a function that sets the location of the database password file on both the Windows PC and the Linux laptop, and to modify the race_results_tables_V2 file to point to the results of this new function:
+
+Next steps:
+
+- Test remote connection from outside of home WiFI to see if I'm going through the firewall okay.
+
+- Start working on testing webscrape of race results tables.
+
+
+
 ------------------------------
 Notes from Thu 11 May
 
@@ -239,7 +253,7 @@ Next steps
 ------------------------------
 Notes from Mon 03 Apr
 
-I spent this morning updating the calendar scraping function. The latest issue appears to be with another special character, this time the uptick (‘) {there has to be an official name for this problem character} contained within the 2011 calendar for: The Nor’easter ‘Cross 2011 whic is in September.
+I spent this morning updating the calendar scraping function. The latest issue appears to be with another special character, this time the uptick (\91) {there has to be an official name for this problem character} contained within the 2011 calendar for: The Nor\92easter \91Cross 2011 whic is in September.
 
 [UPDATE!]: I believe I've sorted it. The character is called 'Okina' (Hawaiian) and can be removed with the following stange regex expression:  [^[:alnum:]///' ]
 
@@ -292,7 +306,7 @@ Notes from Mon 20 Mar
 
 Super painful. I'm trying to sort out the non-UTF8 character problem still. In the 2017 race calendar, the first problem race is on row 14:
 
-"Challenge Mallorca Trofeo Porreres – Felanitx – Ses Salines – Campos"
+"Challenge Mallorca Trofeo Porreres \96 Felanitx \96 Ses Salines \96 Campos"
 
 The problem is the 'em-dash' which isn't apparently UTF-8. I've built a replacement into the 'removePainfulCharacters' function, but I don't like it. Even once I've done that, the database write function throws up the same error - apparently picking out the " " space in the same row 14 string. Annoying!!
 
@@ -326,7 +340,7 @@ Next steps
 ------------------------------
 Notes from Mon 13 Mar
 
-I'm still having problems with certain characters in the race_details column. I fixed the apostophe issue by creating a copy of the removeDiscritics function. In the 2009 calendar I've now run into a problem with inverted commas (") in the 253rd column: 3 Giorni  Internazionale open "Città  di Pordenone"
+I'm still having problems with certain characters in the race_details column. I fixed the apostophe issue by creating a copy of the removeDiscritics function. In the 2009 calendar I've now run into a problem with inverted commas (") in the 253rd column: 3 Giorni  Internazionale open "Citt\E0\A0 di Pordenone"
 
 Next steps
 
@@ -340,8 +354,8 @@ Notes from Mon 13 Mar
 
 I'm continuing to have problems sorting out characters in the calendar function. The first problem event is the following in the 2009 calendar, but there are more. I think the issue is with special/reserved characters, such as quotes and inverted commas. 
 
-Tour of America’s Dairyland
-<a href="/races/tour-of-americas-dairyland-ne">Tour of America’s Dairyland</a>
+Tour of America\92s Dairyland
+<a href="/races/tour-of-americas-dairyland-ne">Tour of America\92s Dairyland</a>
 
 Next steps
 
