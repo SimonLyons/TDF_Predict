@@ -4,9 +4,9 @@
 # Function write_race_results_tables
 
 # Build function to take results url from Cycling News and save database tables with each race result. 
-# Input variables are the race results URL and the unique race_id code.
+# Input variables are the race results URL and the unique stage_id code.
 # This is my unique race code, to be used in the database as a KEY identifier.
-write_race_results_tables <- function(my_url, race_id, race_date){
+write_race_results_tables <- function(my_url, stage_id, stage_date){
   
 require(RMySQL)    # For database functions
 require(rvest)     # For webscraping
@@ -123,8 +123,9 @@ for(t in 1:table_no){
     
   }   # End IF statement selecting 'time' based tables only (not points)
   
-  # dplyr::mutate new "race_date" column
-  my_table[[t]] <- mutate(my_table[[t]], race_date = race_date)
+  # dplyr::mutate new 'stage_id' and 'stage_date' column
+  my_table[[t]] <- mutate(my_table[[t]], stage_id = stage_id)
+  my_table[[t]] <- mutate(my_table[[t]], stage_date = stage_date)
   
 }   # End FOR loop through number of tables, 't'
 

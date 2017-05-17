@@ -5,8 +5,10 @@
 GetRaceWebLinks <- function(input_year){
   
 # Load necessary packages
-require(XML)
+require(XML)   # I will ideally extract all 'XML' functions and replace with 'rvest'
 require(RMySQL)
+require(rvest)
+require(lubridate)
   
 # Set working directory to user passwords location
 setwd("C:/b_Data_Analysis/Database")
@@ -45,6 +47,7 @@ for(e in 1:total){
   if (!is.na(calendar_CN$web_link[e])){
     # Extract relevant weblink and race name
     race_url <- paste("http://www.cyclingnews.com/", calendar_CN$web_link[e], sep = "") 
+    # race_url <- "http://www.cyclingnews.com/races/22nd-jayco-bay-cycling-classic-ne/"
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
 
@@ -54,6 +57,22 @@ for(e in 1:total){
     
     # This line does a good job of isolating the XML attributes containing race web link info
     race_links <- xpathApply(race_xml, '//a[contains(@href, "/results")]', xmlAttrs)
+    
+    ##################################################################
+    # Section I'm working on to add dates to the weblink info
+    # so that this can be drawn throuh to the stage result tables
+    download.file(race_url, "race_url.xml")
+    race_html <- read_html("race_url.xml")
+    
+    stage_dates <- race_html %>% 
+      html_nodes(xpath="//article/header/time") %>% 
+      html_text()
+    
+    mdy(stage_dates)
+
+    race_dates <- xpathApply(race_xml, '//time/', xmlAttrs())
+    ##################################################################
+    
     
     # IF statement to only perform extraction if there are results links in the html data
     if (length(race_links) > 0){

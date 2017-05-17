@@ -26,6 +26,9 @@ prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The No
 #################################################
 
 # Function to go and extract all of the race results tables for an entire calendar year
+require(RMySQL)
+
+
 # Define the year
 input_year <- 2013
 
