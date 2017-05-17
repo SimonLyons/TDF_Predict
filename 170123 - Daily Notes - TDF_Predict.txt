@@ -1,5 +1,17 @@
 
 
+------------------------------
+Notes from Thu 18 May
+
+I was away in Canberra for the first part of this week. I did not have any success remotely connecting to my database on the home Study PC.
+
+
+Next steps:
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
 
 ------------------------------
 Notes from Sat 13 May
