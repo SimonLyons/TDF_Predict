@@ -51,6 +51,11 @@ GetAllRacesInAYear <- function(input_year){
   }
   View(Race_Weblink_Year)
   
+  class(Race_Weblink_Year$stage_date[23])
+  new_date <- as_date(Race_Weblink_Year$stage_date[23])
+  class(new_date)
+
+  
 # Open each race weblink and extract tables
 # 03_function_race_results_table.R
 

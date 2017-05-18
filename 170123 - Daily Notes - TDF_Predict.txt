@@ -1,16 +1,32 @@
 
 
+
+------------------------------
+Notes from Sat 20 May
+
+
+
+
+
+
 ------------------------------
 Notes from Fri 19 May
 
+I'm getting the race weblinks function updated to pull in the stage dates as well. There are a couple of challenges I've identified. 
 
+The first is the stage dates are apparently displayed only once on the web page, but the race weblinks are usually duplicated. This means when I combine the two sets of lists into a dataframe, they are difference lengths. At the moment the dataframe stops building after it runs out of dates and (as far as I can tell from a short test) I end up with the correct table. However this is a bit of a butcher's method and I don't like it.
+
+The second problem (I'm not certain it's a problem yet) is what happens when there are no race weblinks. I think the stages just get ignored, but I'm a bit worried the previous races' dataframe will be pulled in. 
+
+The first test (for 2011) has just finished and it largely looks successful. The most obvious issue is that single date races (i.e. not stage races) don't have a date. This is probably because a date isn't listed on the race webpage. Dates are also in a straight numeric class. 
 
 Next steps:
 
-- 
+- Assess changes to race weblink extract function and whether dates (and raceweblinks) are being pulled in accurately). 
 
+- Fix missing single date races and ensure dates are being converted to correct class.
 
-
+- Work out a secure connection process for accessing the database from offsite.
 
 
 ------------------------------
@@ -38,8 +54,6 @@ Next steps:
 - Work out a secure connection process for accessing the database from offsite.
 
 
-
-
 ------------------------------
 Notes from Sat 13 May
 
@@ -50,7 +64,6 @@ Next steps:
 - Test remote connection from outside of home WiFI to see if I'm going through the firewall okay.
 
 - Start working on testing webscrape of race results tables.
-
 
 
 ------------------------------
@@ -69,7 +82,6 @@ Next steps:
 - Combine all 'time' tables and 'points' tables into two master tables.
 
 
-
 ------------------------------
 Notes from Wed 10 May
 
@@ -82,9 +94,6 @@ The cool bit I worked out today is how to split a combined column (in this case 
 Next steps:
 
 - Combine the script I developed today to separate columns with the other new script I've developed recently to use rvest to download race result tables, correctly assign headers and assign columns for pts/time and race_id.
-
-
-
 
 
 ------------------------------
