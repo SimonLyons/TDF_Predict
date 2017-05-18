@@ -27,11 +27,12 @@ calendar_CN <- dbFetch(query, n=-1)
 col_counter <- 1
 
 # Create an empty master dataframe
-races_master <- as.data.frame(matrix(data = NA, 0, ncol = 4 ))
+races_master <- as.data.frame(matrix(data = NA, 0, ncol = 5 ))
 colnames(races_master)[1] <- "stage_url"
 colnames(races_master)[2] <- "stage_id"
 colnames(races_master)[3] <- "race_id"
 colnames(races_master)[4] <- "race_details"
+colnames(races_master)[5] <- "stage_date"
 
 # Use Text Progress Bar
 total <- nrow(calendar_CN)
@@ -43,53 +44,60 @@ for(e in 1:total){
   # Setup text-based progress bar
   setTxtProgressBar(prg, e)
 
-    # The LOOP needs to ignore events with no weblink
+  # The LOOP needs to ignore events with no weblink
   if (!is.na(calendar_CN$web_link[e])){
     # Extract relevant weblink and race name
     race_url <- paste("http://www.cyclingnews.com/", calendar_CN$web_link[e], sep = "") 
-    # race_url <- "http://www.cyclingnews.com/races/22nd-jayco-bay-cycling-classic-ne/"
+    # race_url <- "http://www.cyclingnews.com/races/10th-tour-down-under/"
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
 
     # Pull in the XML data from the weblink
+    # if(RCurl::url.exists(race_url)){
+    # race_xml <- htmlParse(race_url)}
+    
+    # New method avoiding use of XML. Seems more robust.
     if(RCurl::url.exists(race_url)){
-    race_xml <- htmlParse(race_url)}
-    
-    # This line does a good job of isolating the XML attributes containing race web link info
-    race_links <- xpathApply(race_xml, '//a[contains(@href, "/results")]', xmlAttrs)
-    
-    ##################################################################
-    # Section I'm working on to add dates to the weblink info
-    # so that this can be drawn throuh to the stage result tables
     download.file(race_url, "race_url.xml")
-    race_html <- read_html("race_url.xml")
+    race_html <- read_html("race_url.xml")}
+   
+    # This line does a good job of isolating the XML attributes containing race web link info
+    # No longer used. Replaced with 'rvest' functions below
+    # race_links <- xpathApply(race_xml, '//a[contains(@href, "/results")]', xmlAttrs)
     
+    # Extract the stage link information using rvest functions
+    race_links <- race_html %>% 
+      html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
+      html_attrs()
+    
+    # Extract the stage dates. Convert to correct date format using lubridate.
     stage_dates <- race_html %>% 
       html_nodes(xpath="//article/header/time") %>% 
-      html_text()
-    
-    mdy(stage_dates)
+      html_text() %>% 
+      mdy()   # Coverts string format dates into date format using Lubridate
 
-    race_dates <- xpathApply(race_xml, '//time/', xmlAttrs())
-    ##################################################################
-    
     
     # IF statement to only perform extraction if there are results links in the html data
     if (length(race_links) > 0){
       # create single column dataframe to capture webpage links to races
-      races_cn <- as.data.frame(matrix(data = NA, nrow = length(race_links), ncol = 4 ))
+      races_cn <- as.data.frame(matrix(data = NA, nrow = length(race_links), ncol = 5 ))
       colnames(races_cn)[1] <- "stage_url"
       colnames(races_cn)[2] <- "stage_id"
       colnames(races_cn)[3] <- "race_id"
       colnames(races_cn)[4] <- "race_details"
+      colnames(races_cn)[5] <- "stage_date"
+      
       
       # Run LOOP to pull out the weblink to the results page
       # This actually took me ages to isolate just the 'href' value
+      # Currently has an error thanks to the stage date information being a shorter
+      # string that the stage links information. (Duplicate stage links data)
       for(n in 1: length(race_links)){
         races_cn[n,1] <- race_links[[n]][[name = "href"]]
         races_cn[n,2] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
         races_cn[n,3] <- as.character(race_id)
         races_cn[n,4] <- as.character(race_details)
+        races_cn[n,5] <- rep(stage_dates[n])
       }   # End FOR loop (n) that pulls out weblink data
       
       # Remove duplicate entries

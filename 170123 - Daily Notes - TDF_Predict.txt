@@ -1,6 +1,19 @@
 
 
 ------------------------------
+Notes from Fri 19 May
+
+
+
+Next steps:
+
+- 
+
+
+
+
+
+------------------------------
 Notes from Thu 18 May - at work
 
 First clone of TDF_Predict git repository from work computer.
@@ -8,8 +21,6 @@ First clone of TDF_Predict git repository from work computer.
 Next steps:
 
 - Ensure git is working correctly.
-
-
 
 
 ------------------------------
