@@ -8,6 +8,14 @@ Notes from Sat 20 May
 
 
 
+------------------------------
+Notes from Fri 19 May @ work
+
+
+I did some mild messing around with the race weblinks script, but spent most of the time trying to sort out the issues I had with RStudio freezing on opening.
+
+The good news is that the git process appears to be working well.
+
 
 ------------------------------
 Notes from Fri 19 May

@@ -5,7 +5,7 @@
 GetRaceWebLinks <- function(input_year){
   
 # Load necessary packages
-require(XML)   # I will ideally extract all 'XML' functions and replace with 'rvest'
+# require(XML)   # I will ideally extract all 'XML' functions and replace with 'rvest'
 require(RMySQL)
 require(rvest)
 require(lubridate)
