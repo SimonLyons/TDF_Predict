@@ -20,3 +20,11 @@ stage_dates <- race_html %>%
   html_nodes(xpath="//article/header/time") %>% 
   html_text() %>% 
   mdy()   # Cov
+
+
+class(as_date(races_cn$stage_date[1]))
+
+class(races_cn$stage_date[1])
+
+
+

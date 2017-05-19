@@ -4,8 +4,20 @@
 ------------------------------
 Notes from Sat 20 May
 
+I carried on testing and improving the race result weblink function. 
 
+Still working on the following function:
+02_function_obtain_event_race_results_weblinks.R
 
+I'm running a limited test (10 rows from 2011) and the function is not returning a correct table. It's not returning the target year data and it's missing the new stage_date column
+
+Next steps:
+
+- Assess changes to race weblink extract function and whether dates (and raceweblinks) are being pulled in accurately). 
+
+- Fix missing single date races and ensure dates are being converted to correct class.
+
+- Work out a secure connection process for accessing the database from offsite.
 
 
 ------------------------------

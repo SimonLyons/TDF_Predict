@@ -20,7 +20,7 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 # Read in calendar dataframe from the ProCycling database
 query <- dbSendQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, ";", sep = ""))
 # Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500.
-calendar_CN <- dbFetch(query, n=-1)   
+calendar_CN <- dbFetch(query, n=10)   ##### Set to a limit of 10 rows for testing purposes #######################################
 
 # Create a counter that keeps a running tally of the columns in the master dataframe
 # Starts at 1 (obviously) and then adds a row with each new race weblink
@@ -48,7 +48,7 @@ for(e in 1:total){
   if (!is.na(calendar_CN$web_link[e])){
     # Extract relevant weblink and race name
     race_url <- paste("http://www.cyclingnews.com/", calendar_CN$web_link[e], sep = "") 
-    # race_url <- "http://www.cyclingnews.com/races/10th-tour-down-under/"
+    # race_url <- "http://www.cyclingnews.com/races/tour-de-san-luis-2013/"
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
 
@@ -97,14 +97,19 @@ for(e in 1:total){
         races_cn[n,2] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
         races_cn[n,3] <- as.character(race_id)
         races_cn[n,4] <- as.character(race_details)
-        races_cn[n,5] <- rep(stage_dates[n])
+        races_cn[n,5] <- stage_dates[n]
       }   # End FOR loop (n) that pulls out weblink data
       
       # Remove duplicate entries
       races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
       
+      # Force date column to class 'date'
+      races_cn$stage_date <- as_date(races_cn$stage_date)
+      
       # Row bind the small races_cn dataframe to the races_master dataframe
       races_master <- rbind(races_master, races_cn)
+      
+      races_master$stage_date <- as_date(races_master$stage_date)
      
     }   #  END IF statement relating to whether race links exist in the HTML data
   }   # End IF statement identifying whether a race result link exists for each calendar entry
