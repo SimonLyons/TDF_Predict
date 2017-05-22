@@ -18,9 +18,14 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
                         password = as.character(psswd[psswd$type == "Manager", "password"]),
                         dbname='ProCycling', host='localhost')  
 # Read in calendar dataframe from the ProCycling database
-query <- dbSendQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, ";", sep = ""))
+# query <- dbSendQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, ";", sep = ""))
 # Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500.
-calendar_CN <- dbFetch(query, n=10)   ##### Set to a limit of 10 rows for testing purposes #######################################
+# calendar_CN <- dbFetch(query, n=-1)
+
+# Instead use combined 'dbGetQuery' to both query and retrieve database calendar table
+##### Set to a limit of 3 rows for testing purposes #######################################
+calendar_CN <- dbGetQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, " LIMIT 4 OFFSET 50;", sep = ""))
+
 
 # Create a counter that keeps a running tally of the columns in the master dataframe
 # Starts at 1 (obviously) and then adds a row with each new race weblink
@@ -52,19 +57,11 @@ for(e in 1:total){
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
 
-    # Pull in the XML data from the weblink
-    # if(RCurl::url.exists(race_url)){
-    # race_xml <- htmlParse(race_url)}
-    
     # New method avoiding use of XML. Seems more robust.
     if(RCurl::url.exists(race_url)){
-    download.file(race_url, "race_url.xml")
+    try(download.file(race_url, "race_url.xml"))
     race_html <- read_html("race_url.xml")}
    
-    # This line does a good job of isolating the XML attributes containing race web link info
-    # No longer used. Replaced with 'rvest' functions below
-    # race_links <- xpathApply(race_xml, '//a[contains(@href, "/results")]', xmlAttrs)
-    
     # Extract the stage link information using rvest functions
     race_links <- race_html %>% 
       html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
@@ -72,11 +69,11 @@ for(e in 1:total){
     
     # Extract the stage dates. Convert to correct date format using lubridate.
     stage_dates <- race_html %>% 
-      html_nodes(xpath="//article/header/time") %>% 
+      html_nodes(xpath="//header/time") %>% 
       html_text() %>% 
-      mdy()   # Coverts string format dates into date format using Lubridate
-
-    
+      mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
+      as_date()
+        
     # IF statement to only perform extraction if there are results links in the html data
     if (length(race_links) > 0){
       # create single column dataframe to capture webpage links to races
@@ -86,7 +83,6 @@ for(e in 1:total){
       colnames(races_cn)[3] <- "race_id"
       colnames(races_cn)[4] <- "race_details"
       colnames(races_cn)[5] <- "stage_date"
-      
       
       # Run LOOP to pull out the weblink to the results page
       # This actually took me ages to isolate just the 'href' value
@@ -121,7 +117,6 @@ for(e in 1:total){
 }   #   End FOR loop 'e' to run through all of the events in the calendar dataframe
 
 close(prg)   # End txt progress bar
-# View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, 

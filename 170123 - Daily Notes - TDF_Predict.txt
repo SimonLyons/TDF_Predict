@@ -1,5 +1,16 @@
 
 
+------------------------------
+Notes from Tue 23 May
+
+I managed to fix the main issues with 02_function_obtain_event_race_results_weblinks.R regarding the date extraction. I inserted a suitable bit for single dates (I needed to adjust the html reference and adjust the format of the lubridate conversion to handle dates with a time as well as a date).
+
+Next steps:
+
+- Do a bigger test of the improved 02_function_obtain_event_race_results_weblinks.R function.
+
+- Work out a secure connection process for accessing the database from offsite.
+
 
 ------------------------------
 Notes from Sat 20 May
