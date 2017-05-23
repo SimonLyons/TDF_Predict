@@ -1,5 +1,24 @@
 
 
+
+
+
+------------------------------
+Notes from Tue 23 May @ work
+
+Just when I thought I'd licked this one I discover and issue and open a can of worms. Of course data for multi-race/stage races are stored in different formats. The main obvious difference is that stage races (Grand Tours, etc) are stored in a table, whilst multi-event races (such as National Championships) are stored in a divided page layout.
+
+Next steps:
+
+- Continue work I'm progressing on extracting the data I need from table-based pages.
+
+- Create some sort of test (if statement possibly) to distinguish between the two types.
+
+- Carry out testing. I possibly need to send a race calendar file to work.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
 ------------------------------
 Notes from Tue 23 May
 
