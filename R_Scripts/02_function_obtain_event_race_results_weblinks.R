@@ -33,11 +33,13 @@ col_counter <- 1
 
 # Create an empty master dataframe
 races_master <- as.data.frame(matrix(data = NA, 0, ncol = 5 ))
-colnames(races_master)[1] <- "stage_url"
-colnames(races_master)[2] <- "stage_id"
-colnames(races_master)[3] <- "race_id"
-colnames(races_master)[4] <- "race_details"
-colnames(races_master)[5] <- "stage_date"
+# colnames(races_master)[1] <- "stage_url"
+# colnames(races_master)[2] <- "stage_id"
+# colnames(races_master)[3] <- "race_id"
+# colnames(races_master)[4] <- "race_details"
+# colnames(races_master)[5] <- "stage_date"
+colnames(races_master) <- c("stage_url", "stage_id", "race_id", "race_details", "stage_date")
+
 
 # Use Text Progress Bar
 total <- nrow(calendar_CN)
