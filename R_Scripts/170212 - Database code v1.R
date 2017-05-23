@@ -2,11 +2,21 @@
 # install.packages("RMySQL")
 require(RMySQL)
 
+# Set working directory to location of database password file
+# Run my own function to set the database password folder location
+# The function asks the user whether they're using the Linux laptop
+# or the Windows PC
+dbpsswddir <- set_db_password()
+setwd(dbpsswddir)
+psswd <- read.csv("passwords_db.csv")
+
 # Create connection to local MySQL server
 # Local machine
 conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45', host="")
 # Remote machine
-conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45', host='localhost')
+conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
+                        password = as.character(psswd[psswd$type == "Manager", "password"]),  
+                        dbname='ProCycling', host='192.168.1.1', port=3306) 
 
 # Create ProCycling stats database
 dbSendQuery(conn_local, "CREATE DATABASE ProCycling;")

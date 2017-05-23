@@ -1,6 +1,7 @@
 # Initial function 'initialCNCalendar' to read the race calendar data from the Cycling News website
 # Function requires a 'start_year' and 'end_year' as inputs
 
+
 initialCNCalendar <- function(start_year, end_year){
 
 # Script to extract relevant elements from Cycling News calendar webite.
