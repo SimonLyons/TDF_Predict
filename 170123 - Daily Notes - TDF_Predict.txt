@@ -2,6 +2,12 @@
 
 
 ------------------------------
+Notes from Thu 25 May
+
+
+
+
+------------------------------
 Notes from Wed 24 May @ work
 
 I made some updates to the following test script, in support of sorting out the race weblinks function
