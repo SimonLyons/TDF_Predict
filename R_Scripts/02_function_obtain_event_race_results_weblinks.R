@@ -59,7 +59,7 @@ for(e in 1:total){
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
 
-    # New method avoiding use of XML. Seems more robust.
+    # Download race data using 'rvest'
     if(RCurl::url.exists(race_url)){
     try(download.file(race_url, "race_url.xml"))
     race_html <- read_html("race_url.xml")}
@@ -69,48 +69,125 @@ for(e in 1:total){
       html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
       html_attrs()
     
-    # Extract the stage dates. Convert to correct date format using lubridate.
-    stage_dates <- race_html %>% 
-      html_nodes(xpath="//header/time") %>% 
-      html_text() %>% 
-      mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
-      as_date()
-        
-    # IF statement to only perform extraction if there are results links in the html data
-    if (length(race_links) > 0){
-      # create single column dataframe to capture webpage links to races
-      races_cn <- as.data.frame(matrix(data = NA, nrow = length(race_links), ncol = 5 ))
-      colnames(races_cn)[1] <- "stage_url"
-      colnames(races_cn)[2] <- "stage_id"
-      colnames(races_cn)[3] <- "race_id"
-      colnames(races_cn)[4] <- "race_details"
-      colnames(races_cn)[5] <- "stage_date"
+    # Remove the duplicate race_link data
+    # First, pull out only the web link (and not the 'href')
+    for(d in 1:length(race_links)){
+      race_links[d] <- race_links[[d]][[name = "href"]]
+    }
+    # Now remove the duplicates. The length should now match the correct number of stages.
+    race_links <- race_links[!duplicated(race_links)]
+    
+    #######################################################################
+    #
+    # There are two forks here. One for dates (and stage data) stored in a table
+    # and one for dates and stage information stored in a more relaxed divided format
+    # 
+    #######################################################################
+    
+    #######################################################################
+    # 
+    # Fork one: Table date format
+    # 
+    # Do a test for the 'table' node to see if a table exists.
+    # If it does, use the table method to extract the stage dates and other data.
+    if(length(html_nodes(race_html, xpath="//table")) > 0){
+      # Extract information when stored in table
+      races_cn <- race_html %>% 
+        html_nodes(xpath="//table") %>% 
+        html_table(fill = TRUE, trim = TRUE) %>% 
+        as.data.frame()
       
-      # Run LOOP to pull out the weblink to the results page
-      # This actually took me ages to isolate just the 'href' value
-      # Currently has an error thanks to the stage date information being a shorter
-      # string that the stage links information. (Duplicate stage links data)
-      for(n in 1: length(race_links)){
-        races_cn[n,1] <- race_links[[n]][[name = "href"]]
-        races_cn[n,2] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
-        races_cn[n,3] <- as.character(race_id)
-        races_cn[n,4] <- as.character(race_details)
-        races_cn[n,5] <- stage_dates[n]
+      # At the moment the table has additional rows
+      # Delete rest day rows, where 'results' = ""
+      races_cn <- races_cn %>% 
+        filter(results != "")
+      # Add race_links to table
+      races_cn$stage_url <- race_links
+      # Convert date values to correct class using lubridate
+      races_cn$date <- mdy(races_cn$date)
+      # Convert distance values to correct 'numeric' class
+      races_cn$distance <- as.numeric(gsub(" km", "", races_cn$distance))
+      # Remove unecessary columns
+      races_cn <- races_cn %>% select(Stage, date, location, distance, stage_url)
+      # View(races_cn)
+      
+      # Add my data into the dataframe
+      for(n in 1:length(races_cn$Stage)){
+        races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
+        races_cn$race_id <- as.character(race_id)
+        races_cn$race_details <- as.character(race_details)
+        
       }   # End FOR loop (n) that pulls out weblink data
       
-      # Remove duplicate entries
-      races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
+    }
+
+    #######################################################################
+    # 
+    # Fork two: Non-table date format
+    #     
+    
+    # Extract the stage dates. Convert to correct date format using lubridate.
+    else{
+      stage_dates <- race_html %>% 
+        html_nodes(xpath="//header/time") %>% 
+        html_text() %>% 
+        mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
+        as_date()
       
-      # Force date column to class 'date'
-      races_cn$stage_date <- as_date(races_cn$stage_date)
+      # IF statement to only perform extraction if there are results links in the html data
+      if (length(race_links) > 0){
+        # create single column dataframe to capture webpage links to races
+        races_cn <- as.data.frame(matrix(data = NA, nrow = length(race_links), ncol = 8 ))
+        colnames(races_cn) <- c("Stage", "date", "location", "distance", "stage_url", "stage_id", "race_id", "race_details")
+        # colnames(races_cn)[1] <- "stage_url"
+        # colnames(races_cn)[2] <- "stage_id"
+        # colnames(races_cn)[3] <- "race_id"
+        # colnames(races_cn)[4] <- "race_details"
+        # colnames(races_cn)[5] <- "stage_date"
+        
+        # Run LOOP to pull out the weblink to the results page
+        # This actually took me ages to isolate just the 'href' value
+        # Currently has an error thanks to the stage date information being a shorter
+        # string that the stage links information. (Duplicate stage links data)
+        for(n in 1: length(race_links)){
+          races_cn$date <- stage_dates[n]
+          races_cn[n,5] <- race_links[[n]]
+          races_cn[n,6] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
+          races_cn[n,7] <- as.character(race_id)
+          races_cn[n,8] <- as.character(race_details)
+          
+        }   # End FOR loop (n) that pulls out weblink data
       
-      # Row bind the small races_cn dataframe to the races_master dataframe
-      races_master <- rbind(races_master, races_cn)
+        }   ########### TEMPORARY!!    STILL WORKING ON THIS SECTION
+      View(races_cn)
+      as_date(races_cn$date)
+      races_cn$date[9] - races_cn$date[1]
+      #############################  STILL WORKING ON THIS SECTION
       
-      races_master$stage_date <- as_date(races_master$stage_date)
-     
-    }   #  END IF statement relating to whether race links exist in the HTML data
-  }   # End IF statement identifying whether a race result link exists for each calendar entry
+      
+      
+        # Remove duplicate entries
+        races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
+        
+        # Force date column to class 'date'
+        races_cn$stage_date <- as_date(races_cn$stage_date)
+        
+        # Row bind the small races_cn dataframe to the races_master dataframe
+        races_master <- rbind(races_master, races_cn)
+        
+        # Force date column to class 'date'
+        races_master$stage_date <- as_date(races_master$stage_date)
+        
+      }   #  END IF statement relating to whether race links exist in the HTML data
+      
+    }   # End ELSE statement for FORK TWO
+      
+      
+    }   # End IF statement identifying whether a race result link exists for each calendar entry
+    
+
+  
+  
   
   # Insert sleep script to randomise web queries
   sleep <- abs(rnorm(1)) + runif(1, 0, .25)

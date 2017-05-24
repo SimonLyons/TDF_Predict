@@ -31,7 +31,7 @@ calendar_CN$race_id[3] <- "AusRoad001"
 # View(calendar_CN)
 
 # Pick one of the races for testing
-e <- 1
+e <- 3
 
 
 # Extract relevant weblink and race name
@@ -45,30 +45,41 @@ if(RCurl::url.exists(race_url)){
   try(download.file(race_url, "race_url.xml"))
   race_html <- read_html("race_url.xml")}
 
-# Extract information when stored in table
-my_table <- race_html %>% 
-  html_nodes(xpath="//table") %>% 
-  html_table(fill = TRUE, trim = TRUE) %>% 
-  as.data.frame()
-# View(my_table)
-
-# The weblinks are not in the table data.
+# Extract the weblinks (which are not in the table data).
+# The weblinks also need to be extracted on pages not using a table.
 race_links <- race_html %>% 
   html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
   html_attr("href")
 # Delete duplicate stage weblinks
 race_links <- race_links[!duplicated(race_links)]
 
-# At the moment the table has additional rows
-# Delete rest day rows, where 'results' = ""
-my_table <- my_table %>% 
-  filter(results != "")
-# Add race_links to table
-my_table$weblinks <- race_links
-# Convert date values to correct class using lubridate
-my_table$date <- mdy(my_table$date)
-# Convert distance values to correct 'numeric' class
-my_table$distance <- as.numeric(gsub(" km", "", my_table$distance))
-# Remove unecessary columns
-my_table <- my_table %>% select(Stage, date, location, distance, weblinks)
-View(my_table)
+# Do a test for the 'table' node to see if a table exists.
+# If it does, use the table method to extract the stage dates and other data.
+if(length(html_nodes(race_html, xpath="//table")) > 0){
+  # Extract information when stored in table
+  my_table <- race_html %>% 
+    html_nodes(xpath="//table") %>% 
+    html_table(fill = TRUE, trim = TRUE) %>% 
+    as.data.frame()
+  
+  # At the moment the table has additional rows
+  # Delete rest day rows, where 'results' = ""
+  my_table <- my_table %>% 
+    filter(results != "")
+  # Add race_links to table
+  my_table$weblinks <- race_links
+  # Convert date values to correct class using lubridate
+  my_table$date <- mdy(my_table$date)
+  # Convert distance values to correct 'numeric' class
+  my_table$distance <- as.numeric(gsub(" km", "", my_table$distance))
+  # Remove unecessary columns
+  my_table <- my_table %>% select(Stage, date, location, distance, weblinks)
+  View(my_table)
+}
+
+
+
+
+
+
+

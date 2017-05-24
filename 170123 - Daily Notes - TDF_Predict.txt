@@ -4,7 +4,13 @@
 ------------------------------
 Notes from Thu 25 May
 
+I'm making progress on the 02_function_obtain_event_race_results_weblinks.R file. I've inserted IF/ELSE statements and the code to deal with date formats in both table and non-table arrangements. At the moment I'm sorting out the non-table format.
 
+Next steps:
+
+- Finish insertion of new code into race result weblink function dealing with alternate storage of date data. Test and debug.
+
+- Work out a secure connection process for accessing the database from offsite.
 
 
 ------------------------------
@@ -15,7 +21,7 @@ I made some updates to the following test script, in support of sorting out the 
 170523 - Test script for extracting race weblinks.R
 
 I managed to clean up the table-based data extraction:
-- Deleting Rest Day rows,
+- Deleting Rest Day rows
 - combining table with weblinks
 
 
