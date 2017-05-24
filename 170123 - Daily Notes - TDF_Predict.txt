@@ -1,6 +1,16 @@
 
 
 
+------------------------------
+Notes from Wed 24 May @ work
+
+I made some updates to the following test script, in support of sorting out the race weblinks function
+
+170523 - Test script for extracting race weblinks.R
+
+I managed to clean up the table-based data extraction:
+- Deleting Rest Day rows,
+- combining table with weblinks
 
 
 ------------------------------
