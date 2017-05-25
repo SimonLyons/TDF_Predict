@@ -1,5 +1,21 @@
 
 
+------------------------------
+Notes from Thu 25 May @ work
+
+I made good progress on developing the race weblinks function and think I have it close.
+Initial testing has been positive. I've run into an early issue with testing on the 2015 TDF.
+It appears the race link for the TDF goes to some form of "countdown page":
+# http://www.cyclingnews.com//races/2015-tour-de-france-countdown-2015
+This appears to be more of an issues for the race calendar function than the race weblinks function.
+Anyway - I'll keep testing and see where I get to.
+
+Next steps:
+
+- Continue testing on updated race weblinks function: 02_function_obtain_event_race_results_weblinks.R
+
+- Work out a secure connection process for accessing the database from offsite.
+
 
 ------------------------------
 Notes from Thu 25 May

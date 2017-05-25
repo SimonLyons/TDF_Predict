@@ -32,13 +32,13 @@ calendar_CN <- dbGetQuery(conn_local, paste("SELECT * FROM race_calendar_", inpu
 col_counter <- 1
 
 # Create an empty master dataframe
-races_master <- as.data.frame(matrix(data = NA, 0, ncol = 5 ))
+races_master <- as.data.frame(matrix(data = NA, 0, ncol = 8 ))
 # colnames(races_master)[1] <- "stage_url"
 # colnames(races_master)[2] <- "stage_id"
 # colnames(races_master)[3] <- "race_id"
 # colnames(races_master)[4] <- "race_details"
 # colnames(races_master)[5] <- "stage_date"
-colnames(races_master) <- c("stage_url", "stage_id", "race_id", "race_details", "stage_date")
+colnames(races_master) <- c("Stage", "date", "location", "distance", "stage_url", "stage_id", "race_id", "race_details")
 
 
 # Use Text Progress Bar
@@ -139,6 +139,7 @@ for(e in 1:total){
         # create single column dataframe to capture webpage links to races
         races_cn <- as.data.frame(matrix(data = NA, nrow = length(race_links), ncol = 8 ))
         colnames(races_cn) <- c("Stage", "date", "location", "distance", "stage_url", "stage_id", "race_id", "race_details")
+        class(races_cn$date) <- "Date"
         # colnames(races_cn)[1] <- "stage_url"
         # colnames(races_cn)[2] <- "stage_id"
         # colnames(races_cn)[3] <- "race_id"
@@ -149,39 +150,31 @@ for(e in 1:total){
         # This actually took me ages to isolate just the 'href' value
         # Currently has an error thanks to the stage date information being a shorter
         # string that the stage links information. (Duplicate stage links data)
-        for(n in 1: length(race_links)){
-          races_cn$date <- stage_dates[n]
-          races_cn[n,5] <- race_links[[n]]
-          races_cn[n,6] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
-          races_cn[n,7] <- as.character(race_id)
-          races_cn[n,8] <- as.character(race_details)
+        for(n in 1:length(race_links)){
+          races_cn$date[n] <- ymd(stage_dates[n])
+          races_cn$stage_url[n] <- race_links[[n]]
+          races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
+          races_cn$race_id[n] <- as.character(race_id)
+          races_cn$race_details[n] <- as.character(race_details)
           
         }   # End FOR loop (n) that pulls out weblink data
       
-        }   ########### TEMPORARY!!    STILL WORKING ON THIS SECTION
-      View(races_cn)
-      as_date(races_cn$date)
-      races_cn$date[9] - races_cn$date[1]
-      #############################  STILL WORKING ON THIS SECTION
-      
-      
-      
-        # Remove duplicate entries
-        races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
+        # Remove duplicate entries - shouldn't have any!
+        # races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
         
         # Force date column to class 'date'
-        races_cn$stage_date <- as_date(races_cn$stage_date)
-        
-        # Row bind the small races_cn dataframe to the races_master dataframe
-        races_master <- rbind(races_master, races_cn)
-        
-        # Force date column to class 'date'
-        races_master$stage_date <- as_date(races_master$stage_date)
+        # races_cn$stage_date <- as_date(races_cn$stage_date)
         
       }   #  END IF statement relating to whether race links exist in the HTML data
       
     }   # End ELSE statement for FORK TWO
       
+    # Row bind the small races_cn dataframe to the races_master dataframe
+    races_master <- rbind(races_master, races_cn)
+    
+    # Force date column to class 'date'
+    # races_master$stage_date <- as_date(races_master$stage_date)
+    
       
     }   # End IF statement identifying whether a race result link exists for each calendar entry
     
@@ -196,6 +189,8 @@ for(e in 1:total){
 }   #   End FOR loop 'e' to run through all of the events in the calendar dataframe
 
 close(prg)   # End txt progress bar
+
+View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, 

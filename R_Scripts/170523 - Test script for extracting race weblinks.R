@@ -8,6 +8,36 @@ library(rvest)
 library(dplyr)
 library(lubridate)
 
+
+# Read in 2015 calendar file
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/Calendar_files/")
+calendar_CN <- read.csv("race_calendar_2015.csv")
+
+calendar_CN$race_details <- text_clean(calendar_CN$race_details)
+calendar_CN$location <- text_clean(calendar_CN$location)
+
+# Convert start and end dates to correct format
+calendar_CN$start_date <- dmy(calendar_CN$start_date)
+calendar_CN$end_date <- dmy(calendar_CN$end_date)
+
+# Add a dummy race_id
+calendar_CN$race_id <- paste("race_id_", 1:length(calendar_CN$race_details), sep = "")
+View(calendar_CN)
+
+# Create a subset of the calendar for testing purposes
+calendar_CN <- calendar_CN[1:10, ]
+
+# Create a subset of the calendar for testing purposes
+# This one includes the Tour De France from 2015 and immediately encountered problems.
+# It appears the race link for the TDF goes to some form of "countdown page":
+# http://www.cyclingnews.com//races/2015-tour-de-france-countdown-2015
+# This appears to be more of an issues for the race calendar function than the race weblinks function.
+calendar_CN <- calendar_CN[238:247, ]
+
+
+
+
+#######################################################
 # Set up a dummy race calendar data frame.
 calendar_CN <- as.data.frame(matrix(data = NA, 3, ncol = 3 ))
 colnames(calendar_CN) <- c("web_link", "race_details", "race_id")
