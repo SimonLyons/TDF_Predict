@@ -1,6 +1,12 @@
 
 
 ------------------------------
+Notes from Fri 26 May @ work
+
+
+
+
+------------------------------
 Notes from Thu 25 May @ work
 
 I made good progress on developing the race weblinks function and think I have it close.
