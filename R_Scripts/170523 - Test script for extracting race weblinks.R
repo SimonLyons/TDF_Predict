@@ -63,6 +63,26 @@ stage_dates <- race_html %>%
   mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
   as_date()
 
+stage_titles <- race_html %>% 
+  html_nodes(xpath="//h2[@class='post-title']/a") %>% 
+  html_text()
+
+# In some circumstances, the stages table is located on anothe webpage, 
+# accessed via a link
+
+# First go and extract potential link to stage table webpage
+race_stages_link <- race_html %>% 
+  html_nodes(xpath="//a[contains(@href, '/stages')]") %>% 
+  html_attr("href")
+
+# If this link exists, we will replace the current webpage html
+# with the html from the stage web link
+if(race_stages_link > 0){
+  race_url <- paste("http://www.cyclingnews.com", race_stages_link, sep = "")
+  download.file(race_url, "race_url.xml")
+  race_html <- read_html("race_url.xml")
+}
+
 
 
 #######################################################

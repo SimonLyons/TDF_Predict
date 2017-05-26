@@ -63,23 +63,34 @@ for(e in 1:total){
     if(RCurl::url.exists(race_url)){
     try(download.file(race_url, "race_url.xml"))
     race_html <- read_html("race_url.xml")}
+    
+    
+    #######################################################################
+    # In some circumstances, the stages table is located on another webpage, 
+    # accessed via a link
+    
+    # First go and extract potential link to stage table webpage
+    race_stages_link <- race_html %>% 
+      html_nodes(xpath="//a[contains(@href, '/stages')]") %>% 
+      html_attr("href")
+    
+    # If this link exists, we will replace the current webpage html
+    # with the html from the stage web link
+    if(length(race_stages_link) > 0){
+      race_url <- paste("http://www.cyclingnews.com", race_stages_link, sep = "")
+      download.file(race_url, "race_url.xml")
+      race_html <- read_html("race_url.xml")
+    }
+    #######################################################################
+    
    
     # Extract the stage link information using rvest functions
     race_links <- race_html %>% 
       html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
-      html_attrs()
+      html_attr("href")
     
-    # Test for existence of race_links - length(race_links) >0
-    # If TRUE, go and extract the race
-    if(length(race_links) >0){
-      # Remove the duplicate race_link data
-      # First, pull out only the web link (and not the 'href')
-      for(d in 1:length(race_links)){
-        race_links[d] <- race_links[[d]][[name = "href"]]
-      }
-      # Now remove the duplicates. The length should now match the correct number of stages.
-      race_links <- race_links[!duplicated(race_links)]
-    }
+    # Now remove the duplicates. The length should now match the correct number of stages.
+    race_links <- race_links[!duplicated(race_links)]
     
 
     
@@ -112,27 +123,31 @@ for(e in 1:total){
         # Delete rest day rows, where 'results' = ""
         races_cn <- races_cn %>% 
           filter(results != "")
-        # Add race_links to table
-        if(length(race_links) >0){
-          races_cn$stage_url <- race_links
-        }
-        # Convert date values to correct class using lubridate
-        races_cn$date <- mdy(races_cn$date)
-        # Convert distance values to correct 'numeric' class
-        races_cn$distance <- as.numeric(gsub(" km", "", races_cn$distance))
-        # Remove unecessary columns
-        races_cn <- races_cn %>% select(Stage, date, location, distance, stage_url)
-        # View(races_cn)
         
-        # Add my data into the dataframe
-        for(n in 1:length(races_cn$Stage)){
-          races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
-          races_cn$race_id <- as.character(race_id)
-          races_cn$race_details <- as.character(race_details)
+        if(length(races_cn$Stage) > 0){
+          # Add race_links to table
+          if(length(race_links) >0){
+            races_cn$stage_url <- race_links
+          }
+          # Convert date values to correct class using lubridate
+          races_cn$date <- mdy(races_cn$date)
+          # Convert distance values to correct 'numeric' class
+          races_cn$distance <- as.numeric(gsub(" km", "", races_cn$distance))
+          # Remove unecessary columns
+          if(length(races_cn$stage_url > 0)){
+            races_cn <- races_cn %>% select(Stage, date, location, distance, stage_url)
+          }
+          
+          # Add my data into the dataframe
+          for(n in 1:length(races_cn$Stage)){
+            races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
+            races_cn$race_id <- as.character(race_id)
+            races_cn$race_details <- as.character(race_details)
+        }   # End loop for addition of my data.
           
         }   # End FOR loop (n) that pulls out weblink data
         
-      }
+      }   # End IF statement checking for results column in the column names
 
     }   # End if statement to check for table and extract data
 
@@ -142,9 +157,9 @@ for(e in 1:total){
     #     
     
     # Extract the stage dates. Convert to correct date format using lubridate.
-    if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("results" %in% colnames(races_cn))){
+    if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("date" %in% colnames(races_cn))){
       stage_dates <- race_html %>% 
-        html_nodes(xpath="//header/time") %>% 
+        html_nodes(xpath="//time[@class='datetime small']") %>% 
         html_text() %>% 
         mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
         as_date()
@@ -185,7 +200,9 @@ for(e in 1:total){
     }   # End IF statement for FORK TWO
       
     # Row bind the small races_cn dataframe to the races_master dataframe
-    races_master <- rbind(races_master, races_cn)
+    if(length(races_cn$Stage) > 0){
+      races_master <- rbind(races_master, races_cn)
+    }
     
     # Force date column to class 'date'
     # races_master$stage_date <- as_date(races_master$stage_date)

@@ -1,6 +1,13 @@
 
 
 
+------------------------------
+Notes from Sat 27 May
+
+I believe I've got the race weblink extraction function (#02) reasonably functional. I need to do some more testing.
+
+
+
 
 ------------------------------
 Notes from Fri 26 May @ work
