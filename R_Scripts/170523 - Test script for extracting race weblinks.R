@@ -34,6 +34,34 @@ calendar_CN <- calendar_CN[1:10, ]
 # This appears to be more of an issues for the race calendar function than the race weblinks function.
 calendar_CN <- calendar_CN[236:245, ]
 
+input_year <- 2015
+
+# I've discovered a new problem. Big races (such as the Tour De France) 
+# don't have the stages listed on the race landing page.
+# They are located in a linked page.
+# 
+# http://www.cyclingnews.com/races/tour-de-france-2015/
+# http://www.cyclingnews.com/races/tour-de-france-2015/stages/
+# 
+# Worse - there can be a table on the landing page - one with the overall results
+# 
+
+# li.tab:nth-child(3) > a:nth-child(1)
+
+race_url <- "http://www.cyclingnews.com/races/tour-de-france-2015/"
+
+download.file(race_url, "race_url.xml")
+race_html <- read_html("race_url.xml")
+
+race_links <- race_html %>% 
+  html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
+  html_attr("href")
+
+stage_dates <- race_html %>% 
+  html_nodes(xpath="//time[@class='datetime small']") %>% 
+  html_text() %>% 
+  mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
+  as_date()
 
 
 

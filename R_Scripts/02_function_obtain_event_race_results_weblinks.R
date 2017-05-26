@@ -24,7 +24,7 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 
 # Instead use combined 'dbGetQuery' to both query and retrieve database calendar table
 ##### Set to a limit of 3 rows for testing purposes #######################################
-calendar_CN <- dbGetQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, " LIMIT 4 OFFSET 50;", sep = ""))
+calendar_CN <- dbGetQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, " ;", sep = ""))
 
 
 # Create a counter that keeps a running tally of the columns in the master dataframe
@@ -54,7 +54,7 @@ for(e in 1:total){
   # The LOOP needs to ignore events with no weblink
   if (!is.na(calendar_CN$web_link[e])){
     # Extract relevant weblink and race name
-    race_url <- paste("http://www.cyclingnews.com/", calendar_CN$web_link[e], sep = "") 
+    race_url <- paste("http://www.cyclingnews.com", calendar_CN$web_link[e], sep = "") 
     # race_url <- "http://www.cyclingnews.com/races/tour-de-san-luis-2013/"
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
@@ -103,31 +103,38 @@ for(e in 1:total){
         html_table(fill = TRUE, trim = TRUE) %>% 
         as.data.frame()
       
-      # At the moment the table has additional rows
-      # Delete rest day rows, where 'results' = ""
-      races_cn <- races_cn %>% 
-        filter(results != "")
-      # Add race_links to table
-      if(length(race_links) >0){
-        races_cn$stage_url <- race_links
-      }
-      # Convert date values to correct class using lubridate
-      races_cn$date <- mdy(races_cn$date)
-      # Convert distance values to correct 'numeric' class
-      races_cn$distance <- as.numeric(gsub(" km", "", races_cn$distance))
-      # Remove unecessary columns
-      races_cn <- races_cn %>% select(Stage, date, location, distance, stage_url)
-      # View(races_cn)
+      # Next check for correct table type by looking for tables
+      # containing the 'results' column
+      # If true, go and extract the table and perform formatting
       
-      # Add my data into the dataframe
-      for(n in 1:length(races_cn$Stage)){
-        races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
-        races_cn$race_id <- as.character(race_id)
-        races_cn$race_details <- as.character(race_details)
+      if("results" %in% colnames(races_cn)){
+        # At the moment the table has additional rows
+        # Delete rest day rows, where 'results' = ""
+        races_cn <- races_cn %>% 
+          filter(results != "")
+        # Add race_links to table
+        if(length(race_links) >0){
+          races_cn$stage_url <- race_links
+        }
+        # Convert date values to correct class using lubridate
+        races_cn$date <- mdy(races_cn$date)
+        # Convert distance values to correct 'numeric' class
+        races_cn$distance <- as.numeric(gsub(" km", "", races_cn$distance))
+        # Remove unecessary columns
+        races_cn <- races_cn %>% select(Stage, date, location, distance, stage_url)
+        # View(races_cn)
         
-      }   # End FOR loop (n) that pulls out weblink data
-      
-    }
+        # Add my data into the dataframe
+        for(n in 1:length(races_cn$Stage)){
+          races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
+          races_cn$race_id <- as.character(race_id)
+          races_cn$race_details <- as.character(race_details)
+          
+        }   # End FOR loop (n) that pulls out weblink data
+        
+      }
+
+    }   # End if statement to check for table and extract data
 
     #######################################################################
     # 
@@ -135,7 +142,7 @@ for(e in 1:total){
     #     
     
     # Extract the stage dates. Convert to correct date format using lubridate.
-    else{
+    if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("results" %in% colnames(races_cn))){
       stage_dates <- race_html %>% 
         html_nodes(xpath="//header/time") %>% 
         html_text() %>% 
@@ -175,7 +182,7 @@ for(e in 1:total){
         
       }   #  END IF statement relating to whether race links exist in the HTML data
       
-    }   # End ELSE statement for FORK TWO
+    }   # End IF statement for FORK TWO
       
     # Row bind the small races_cn dataframe to the races_master dataframe
     races_master <- rbind(races_master, races_cn)
