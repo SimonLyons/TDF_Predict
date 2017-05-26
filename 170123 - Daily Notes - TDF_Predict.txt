@@ -1,9 +1,19 @@
 
 
+
+
 ------------------------------
 Notes from Fri 26 May @ work
 
+I've made some improvements to the race weblinks function that essentially deal with the scenario where race_links = 0, i.e. there are no race weblinks. Some 'if' statements did the trick.
 
+I've just tested the function again and it's improved, but it's encountered an error with the 2015 TDF. It can't see the column "results" in the extracted table. I need to look at whether it's picking up an incorrect table as the one loaded in has overall race results....
+
+Next steps:
+
+- Further testing and fault finding on 02_function_obtain_event_race_results_weblinks.R
+
+- Work out a secure connection process for accessing the database from offsite.
 
 
 ------------------------------

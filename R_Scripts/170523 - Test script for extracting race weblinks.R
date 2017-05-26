@@ -32,7 +32,7 @@ calendar_CN <- calendar_CN[1:10, ]
 # It appears the race link for the TDF goes to some form of "countdown page":
 # http://www.cyclingnews.com//races/2015-tour-de-france-countdown-2015
 # This appears to be more of an issues for the race calendar function than the race weblinks function.
-calendar_CN <- calendar_CN[238:247, ]
+calendar_CN <- calendar_CN[236:245, ]
 
 
 

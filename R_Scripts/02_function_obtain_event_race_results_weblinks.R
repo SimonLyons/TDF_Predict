@@ -69,13 +69,19 @@ for(e in 1:total){
       html_nodes(xpath="//a[contains(@href, '/results')]") %>% 
       html_attrs()
     
-    # Remove the duplicate race_link data
-    # First, pull out only the web link (and not the 'href')
-    for(d in 1:length(race_links)){
-      race_links[d] <- race_links[[d]][[name = "href"]]
+    # Test for existence of race_links - length(race_links) >0
+    # If TRUE, go and extract the race
+    if(length(race_links) >0){
+      # Remove the duplicate race_link data
+      # First, pull out only the web link (and not the 'href')
+      for(d in 1:length(race_links)){
+        race_links[d] <- race_links[[d]][[name = "href"]]
+      }
+      # Now remove the duplicates. The length should now match the correct number of stages.
+      race_links <- race_links[!duplicated(race_links)]
     }
-    # Now remove the duplicates. The length should now match the correct number of stages.
-    race_links <- race_links[!duplicated(race_links)]
+    
+
     
     #######################################################################
     #
@@ -102,7 +108,9 @@ for(e in 1:total){
       races_cn <- races_cn %>% 
         filter(results != "")
       # Add race_links to table
-      races_cn$stage_url <- race_links
+      if(length(race_links) >0){
+        races_cn$stage_url <- race_links
+      }
       # Convert date values to correct class using lubridate
       races_cn$date <- mdy(races_cn$date)
       # Convert distance values to correct 'numeric' class
