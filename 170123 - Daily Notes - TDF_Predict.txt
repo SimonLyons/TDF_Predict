@@ -1,9 +1,33 @@
 
 
+------------------------------
+Notes from Tue 30 May
+
+I've made further refinements to the race weblinks function to correct errors and improve the outcome. 
+
+The main initial error not having 'dplyr' called as a required package at the start of the function. The first time the function was loaded cleanly and needed to 'filter' some rows the code threw out an error that was initially hard to identify. Having 'rvest' loaded meant the piping was working, but the dplyr specific functions were not. I guess when I was writing and testing development of this function I probably had dplyr loaded into the environment. It's definitely been useful working from several computers and getting the code to robustly execute.
+
+Improvements included pulling through the race location from the calendar file for stages where no location data is scraped from the race or stage webpage. I also inserted the 'text_clean' function to uniformly sort out location data.
+
+There was already the usual include script for a delay between webscraping. 
+
+I now need to look at combining the race/stage weblink data for individual years into a master table. This should be able to occur immediately as I think each row entry is already unique and has a PRIMARY KEY column (stage-id). With the dates included for every row, it will be open to immediate filtering and analysis.
+
+I've just run a test of the function using the full 2015 race calendar. I'll save this Daily Notes file before I see the end result.
+
+Next steps:
+
+- A full run of the race weblinks functions for all calendar years. (This will take some time!)
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- Look at combining the race weblink table into a single master table.
+
+- Work on combining the calendar tables into a master table. 
 
 
 ------------------------------
-Notes from Mon 29 May
+Notes from Mon 29 May @ work
 
 Further testing and refinement of 02_function_obtain_event_race_results_weblinks.R.
 

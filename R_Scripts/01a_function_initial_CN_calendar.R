@@ -84,7 +84,7 @@ for (n in start_year:end_year){
       
     }   # End IF statement
     
-    # Insert sleep script to randomise web queries
+    # Insert sleep script to randomise a system pause between web queries
     sleep <- abs(rnorm(1)) + runif(1, 0, .25)
     # message("I have done ", j, " of ", length(td_ns),
             # " - gonna sleep ", round(sleep, 2),

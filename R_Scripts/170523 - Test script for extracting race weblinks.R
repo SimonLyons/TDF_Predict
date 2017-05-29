@@ -36,6 +36,10 @@ calendar_CN <- calendar_CN[236:245, ]
 
 calendar_CN <- calendar_CN[87:103, ]
 
+calendar_CN <- race_calendar_2013[23:45,]
+View(calendar_CN)
+
+
 input_year <- 2015
 
 # I've discovered a new problem. Big races (such as the Tour De France) 
@@ -52,6 +56,8 @@ input_year <- 2015
 
 race_url <- "http://www.cyclingnews.com/races/tour-de-france-2015/"
 race_url <- "http://www.cyclingnews.com/races/cholet-pays-de-loire-2015/"
+race_url <- "http://www.cyclingnews.com/races/grand-prix-hotel-threeland-c2/"
+race_url <- "http://www.cyclingnews.com/races/mitchelton-bay-cycling-classic-2016"
 
 
 download.file(race_url, "race_url.xml")

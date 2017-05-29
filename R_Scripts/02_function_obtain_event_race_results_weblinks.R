@@ -9,6 +9,7 @@ GetRaceWebLinks <- function(input_year){
 require(RMySQL)
 require(rvest)
 require(lubridate)
+require(dplyr)
   
 # Set working directory to user passwords location
 setwd("C:/b_Data_Analysis/Database")
@@ -134,6 +135,7 @@ for(e in 1:total){
           if(length(race_links) >0){
             races_cn$stage_url <- race_links
           }
+          
           # Convert date values to correct class using lubridate
           races_cn$date <- mdy(races_cn$date)
           # Convert distance values to correct 'numeric' class
@@ -196,12 +198,6 @@ for(e in 1:total){
           
         }   # End FOR loop (n) that pulls out weblink data
       
-        # Remove duplicate entries - shouldn't have any!
-        # races_cn <- races_cn[!duplicated(races_cn[,1]), ]  
-        
-        # Force date column to class 'date'
-        # races_cn$stage_date <- as_date(races_cn$stage_date)
-        
       }   #  END IF statement relating to whether race links exist in the HTML data
       
     }   # End IF statement for FORK TWO
@@ -212,21 +208,19 @@ for(e in 1:total){
     # the second checks to see if the dataframe is empty or not.
     if("Stage" %in% colnames(races_cn)){
       if(length(races_cn$Stage) > 0){
-      races_master <- rbind(races_master, races_cn)
-      }
-    }
+        # Clean out special characters from the newly scraped stage location data
+        races_cn$location <- text_clean(races_cn$location)
+        
+        # Set location from Calendar dataframe if scraped location is empty
+        races_cn[is.na(races_cn$location), "location"] <- calendar_CN$location[e]
+        
+        races_master <- rbind(races_master, races_cn)
+      }   # End IF statement checking if dataframe is empty
+    }   # End IF statement looking for a complete table (with column 'Stage') ready for binding
     
-    # Force date column to class 'date'
-    # races_master$stage_date <- as_date(races_master$stage_date)
-    
-      
     }   # End IF statement identifying whether a race result link exists for each calendar entry
     
-
-  
-  
-  
-  # Insert sleep script to randomise web queries
+  # Insert sleep script to randomise a system pause between web queries
   sleep <- abs(rnorm(1)) + runif(1, 0, .25)
   Sys.sleep(sleep)
   
@@ -237,7 +231,7 @@ close(prg)   # End txt progress bar
 # View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
-dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, 
+dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master,
              overwrite = TRUE, row.names = FALSE)
 return(races_master)
 
