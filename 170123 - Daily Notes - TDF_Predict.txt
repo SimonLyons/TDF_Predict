@@ -1,6 +1,26 @@
 
 
 
+
+------------------------------
+Notes from Mon 29 May
+
+Further testing and refinement of 02_function_obtain_event_race_results_weblinks.R.
+
+Some of the issues I've dealt with include:
+* Some race pages not having any results at all (!!) - e.g. Milan San Remo 2015
+* Some race pages with result links not having a date (at least in the right format)
+
+Next steps:
+
+- Insert time delay script for webscraping
+
+- Further testing and fault finding on 02_function_obtain_event_race_results_weblinks.R
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
 ------------------------------
 Notes from Sat 27 May
 
