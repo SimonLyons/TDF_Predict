@@ -34,6 +34,8 @@ calendar_CN <- calendar_CN[1:10, ]
 # This appears to be more of an issues for the race calendar function than the race weblinks function.
 calendar_CN <- calendar_CN[236:245, ]
 
+calendar_CN <- calendar_CN[87:103, ]
+
 input_year <- 2015
 
 # I've discovered a new problem. Big races (such as the Tour De France) 
@@ -49,6 +51,8 @@ input_year <- 2015
 # li.tab:nth-child(3) > a:nth-child(1)
 
 race_url <- "http://www.cyclingnews.com/races/tour-de-france-2015/"
+race_url <- "http://www.cyclingnews.com/races/cholet-pays-de-loire-2015/"
+
 
 download.file(race_url, "race_url.xml")
 race_html <- read_html("race_url.xml")

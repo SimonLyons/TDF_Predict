@@ -41,6 +41,8 @@ races_master <- as.data.frame(matrix(data = NA, 0, ncol = 8 ))
 colnames(races_master) <- c("Stage", "date", "location", "distance", "stage_url", "stage_id", "race_id", "race_details")
 
 
+
+
 # Use Text Progress Bar
 total <- nrow(calendar_CN)
 # Create text progress bar
@@ -50,6 +52,9 @@ prg <- txtProgressBar(min = 0, max = total, style = 3)
 for(e in 1:total){
   # Setup text-based progress bar
   setTxtProgressBar(prg, e)
+  
+  # Set race_cn to empty for each loop iteration
+  races_cn <- NA
 
   # The LOOP needs to ignore events with no weblink
   if (!is.na(calendar_CN$web_link[e])){
@@ -163,6 +168,8 @@ for(e in 1:total){
         html_text() %>% 
         mdy_hm(truncated = 3) %>%    # Coverts string format dates into date format using Lubridate
         as_date()
+      # Sometimes there is a race_link, but no date. So we'll take the date from the calendar:
+      if(!(length(stage_dates)>0)){stage_dates <- calendar_CN$start_date[e]}
       
       # IF statement to only perform extraction if there are results links in the html data
       if (length(race_links) > 0){
@@ -200,8 +207,13 @@ for(e in 1:total){
     }   # End IF statement for FORK TWO
       
     # Row bind the small races_cn dataframe to the races_master dataframe
-    if(length(races_cn$Stage) > 0){
+    # Unfortunately I've got two IF statements
+    # The first checks that I've actually got a dataframe with a column for 'Stage' and
+    # the second checks to see if the dataframe is empty or not.
+    if("Stage" %in% colnames(races_cn)){
+      if(length(races_cn$Stage) > 0){
       races_master <- rbind(races_master, races_cn)
+      }
     }
     
     # Force date column to class 'date'
@@ -222,7 +234,7 @@ for(e in 1:total){
 
 close(prg)   # End txt progress bar
 
-View(races_master)
+# View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master, 
