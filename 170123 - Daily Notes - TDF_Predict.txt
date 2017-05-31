@@ -1,6 +1,26 @@
 
 
 ------------------------------
+Notes from Thu 01 Jun - Day Session (WPD)
+
+
+
+
+------------------------------
+Notes from Thu 01 Jun - Sunrise Session
+
+I'm running a test of data from the new race weblinks data being fed into the race table extract. I'm getting a number of issues:
+
+- Problems writing to the database with the updated race table data
+- Issues with my script splitting 'points' tables from 'time' based tables.
+
+Next steps:
+
+- First I'm working on sorting out the 'points' vs 'time' split
+
+
+
+------------------------------
 Notes from Tue 30 May
 
 I've made further refinements to the race weblinks function to correct errors and improve the outcome. 

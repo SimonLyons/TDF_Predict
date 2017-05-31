@@ -74,8 +74,26 @@ GetAllRacesInAYear <- function(input_year){
                        LIMIT 10 OFFSET 2200;")
   Race_Weblink_Year <- dbFetch(query, n=-1)
   View(Race_Weblink_Year)
-
   
+  ########################################################
+  ########################################################
+  ########################################################
+  # Testing with new race weblink format
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 10 OFFSET 200;")
+  
+  r <- 2
+  my_url <- Race_Weblink_Year$stage_url[r]
+  stage_id <- Race_Weblink_Year$stage_id[r]
+  stage_date <- as.Date(Race_Weblink_Year$date[r])
+
+  test_test <- dbGetQuery(conn_local, "SELECT * FROM test_test_master_results_time;")
+  View(test_test)
+
+  ########################################################
+  ########################################################
+  ########################################################
+
+    
   # Use Text Progress Bar
   total <- nrow(Race_Weblink_Year)
   # create text progress bar
@@ -86,7 +104,7 @@ GetAllRacesInAYear <- function(input_year){
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
     
-    write_race_results_tables(Race_Weblink_Year[r, "stage_url"], Race_Weblink_Year[r, "race_id"])
+    write_race_results_tables(Race_Weblink_Year[r, "stage_url"], Race_Weblink_Year[r, "stage_id"], Race_Weblink_Year[r, "date"])
     
     # Sleep function to randomise web queries
     sleep <- abs(rnorm(1)) + runif(1, 0, .25)

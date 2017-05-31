@@ -10,7 +10,7 @@ write_race_results_tables <- function(my_url, stage_id, stage_date){
   
 require(RMySQL)    # For database functions
 require(rvest)     # For webscraping
-# require(tidyr)     # For tidying up and wrangling scraped dataframes - I don't think I need this anymore as I'm not using the 'fill' function
+require(tidyr)     # For tidying up and wrangling scraped dataframes - I use the 'separate' function
 require(lubridate) # For assigning time/date properties
 require(dplyr)     # For manipulating and filtering tables
   
@@ -64,7 +64,8 @@ if (length(my_captions) == table_no){
   # If the first table doesn't have a caption, then assign the first table title to the 'h4' title
   my_captions <- c(first_header, my_captions)
 }
-
+View(my_table[2])
+t <- 2
 ##################################
 # 3. Split Rider (Country) Team column into multiple columns
 # 4. Assign columns for result_classification and result_type ('time' or 'points')
@@ -88,8 +89,22 @@ for(t in 1:table_no){
   # If the column contains 'pts', fill the entire column with 'pts'. Otherwise, fill the column with 'time'.
   my_table[[t]][ ,6] <- ifelse("pts" %in% my_table[[t]][1 ,6], "pts", "time")
   
+  ########################################################
+  ########################################################
+  ########################################################
+  # I;m trying to work out what's going on with the points split (above)
+  # My script looks correct, but for some reason the pts %in% mytable bit isn't
+  # picking up the 'pts' and is assigning everything to 'time'.
+  pts_test <- my_table[[t]][ ,6]
+  pts_test <- lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y))
+  "pts" %in% pts_test[1]
+  ########################################################
+  ########################################################
+  ########################################################  
+  
   # Kill off the non-breaking spaces in the 'Result' column
   my_table[[t]]$Result <- lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y))
+  my_table[[t]]$result_type <- lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y))
   
   # For the 'time' based tables only, we will convert the result to a true time class
   # and create a new column with the correct rider time/duration for the race.
@@ -138,6 +153,7 @@ for(t in 1:table_no){
 time_tables <- c()   # Used to combine all the 'time' based tables
 points_tables <- c()   # Used to combine all the 'points' based tables
 
+
 # Combine points tables and time tables into two (2) collective holding tables
 for(t in 1:(length(my_table))){
   ifelse(my_table[[t]]$result_type[1] == "time", time_tables <- rbind(time_tables, my_table[[t]]), points_tables <- rbind(points_tables, my_table[[t]]))
@@ -148,11 +164,11 @@ for(t in 1:(length(my_table))){
 ##################################
 
 # Write the 'times' table to the MySQL ProCyling database
-dbWriteTable(conn_local, name = "master_results_time", 
+dbWriteTable(conn_local, name = "TEST_TEST_master_results_time", 
              time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
 
 # Write the 'points' table to the MySQL ProCyling database
-dbWriteTable(conn_local, name = "master_results_points", 
+dbWriteTable(conn_local, name = "TEST_TEST_master_results_points", 
              points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
 # 
 # Close open queries (doesn't close the connection - very useful)
