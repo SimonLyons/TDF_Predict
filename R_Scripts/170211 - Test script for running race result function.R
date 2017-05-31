@@ -81,13 +81,16 @@ GetAllRacesInAYear <- function(input_year){
   # Testing with new race weblink format
   Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 10 OFFSET 200;")
   
-  r <- 2
-  my_url <- Race_Weblink_Year$stage_url[r]
-  stage_id <- Race_Weblink_Year$stage_id[r]
-  stage_date <- as.Date(Race_Weblink_Year$date[r])
 
   test_test <- dbGetQuery(conn_local, "SELECT * FROM test_test_master_results_time;")
   View(test_test)
+  
+  
+  glimpse(points_tables)
+  as.integer(points_tables$Result)
+  points_tables$Rider
+  glimpse(time_tables)
+  
 
   ########################################################
   ########################################################
