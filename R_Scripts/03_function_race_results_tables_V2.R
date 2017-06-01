@@ -29,8 +29,9 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 ##################################
 
 my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
-download.file(my_url, "my_html.xml")
+suppressWarnings(download.file(my_url, "my_html.xml", quiet = TRUE))
 my_html <- read_html("my_html.xml")
+
 
 # Read the result tables from the HTML
 my_table <- "my_html.xml" %>% 
@@ -77,7 +78,7 @@ for(t in 1:table_no){
   # Split the 'Rider Name (Country) Team' column using the 'separate' function from Hadley's 'tidyr' package
   my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
   my_table[[t]] <- separate(data = my_table[[t]], into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
-  
+  View(my_table[1])
   # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name
   my_table[[t]]$Rider <- text_clean(my_table[[t]]$Rider)
   
@@ -91,8 +92,16 @@ for(t in 1:table_no){
   my_table[[t]][ ,6] <- ifelse((agrepl("pts", my_table[[t]][1 ,6])) == 1 , "pts", "time")
   
   # Kill off the non-breaking spaces in the 'Result' column
-  my_table[[t]]$Result <- as.integer(lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y)))
+  
+  
+  # OOPS!! My fix in this next part to sort out the 'list' in points tables accidentally wiped
+  # the result data when there is a time result
+  # my_table[[t]]$Result <- as.integer(lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y)))
+  
+  my_table[[t]]$Result <- lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y))
   # my_table[[t]]$result_type <- lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y))
+  
+  
   
   # For the 'time' based tables only, we will convert the result to a true time class
   # and create a new column with the correct rider time/duration for the race.
@@ -125,6 +134,11 @@ for(t in 1:table_no){
     }   # End IF statement looking for non-finishers
     
   }   # End IF statement selecting 'time' based tables only (not points)
+  
+  # This ELSE statement converts the list of points into an integer class.
+  else {
+    my_table[[t]]$Result <- as.integer(my_table[[t]]$Result)
+  }   # End ELSE statement
   
   # dplyr::mutate new 'stage_id' and 'stage_date' column
   my_table[[t]] <- mutate(my_table[[t]], stage_id = stage_id)

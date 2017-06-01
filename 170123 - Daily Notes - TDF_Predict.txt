@@ -3,6 +3,14 @@
 ------------------------------
 Notes from Thu 01 Jun - Day Session (WPD)
 
+I'm about to take a break to go and pick up my wheel from Tom Wallace Cycles. I'm having problems with the race results tables function, I think due to issues clearing the database connections...
+
+
+I've since identified that the issue is the 'Result' column is being created as a list. I had a solution that turned it into an integer, but then this wrecked the 'time' based Result values.
+
+I'll need an IF statement of some type.
+
+
 
 
 
