@@ -78,6 +78,10 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   ########################################################
   ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+  
   # Testing with new race weblink format
   Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 30 OFFSET 300;")
   
@@ -101,7 +105,10 @@ GetAllRacesInAYear <- function(input_year){
   
   my_url <- Race_Weblink_Year$stage_url[8]
   RCurl::url.exists(my_url)
-
+  httr::http_error(my_url)
+?http_error
+  httr::http_error("http://www.google.com")
+  httr::http_error("http://httpbin.org/status/404")
   
   stage_id <- Race_Weblink_Year$stage_id[8]
   stage_date <- Race_Weblink_Year$date[8]
@@ -109,7 +116,10 @@ GetAllRacesInAYear <- function(input_year){
   
   View(my_table[[t]])
   glimpse(my_table[[t]])
-
+  
+  ########################################################
+  ########################################################
+  ########################################################
   ########################################################
   ########################################################
   ########################################################

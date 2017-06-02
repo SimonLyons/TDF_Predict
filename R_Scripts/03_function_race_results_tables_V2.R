@@ -28,9 +28,31 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 # 1. Download and extract tables
 ##################################
 
+
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+
+# I'm currently having dramas with dodgy weblinks
+# and getting my script to recognise them
+
 my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
+RCurl::url.exists(my_url, .header = FALSE)
+httr::http_error(my_url)
+
+try(download.file(my_url, "my_html.xml", quiet = TRUE))
 suppressWarnings(download.file(my_url, "my_html.xml", quiet = TRUE))
 my_html <- read_html("my_html.xml")
+
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
 
 
 # Read the result tables from the HTML
@@ -57,7 +79,9 @@ first_header <- "my_html.xml" %>%
   read_html() %>% 
   html_nodes(xpath="//h4") %>% 
   html_text()
-first_header <- first_header[[1]]
+if(length(first_header) > 0){
+  first_header <- first_header[[1]]
+}
 
 if (length(my_captions) == table_no){   
   my_captions <- my_captions

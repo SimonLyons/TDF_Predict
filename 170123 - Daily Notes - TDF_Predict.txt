@@ -1,5 +1,38 @@
 
 
+
+------------------------------
+Notes from Sat 03 Jun
+
+I've hopefully solved some interesting problems today.
+
+The main one was I found and issue writing to the database and traced it to results pages not containing and 'points' results. The one I came across was for the Ronde van Drenthe race in 2015 which only has a single results table, for finishing time. This means the 'points_tables' is empty (NULL) and the dbWriteTable function spits the dummy when presented with no data. This was easy enough to solve with an appropriate 'IF' statement. Good to know, as there will be plenty of these results across the calendar.
+
+The earlier problem metastasised when I was dealing with non-breaking spaces in the 'Result' and 'result_type' columns. I (had previously) inserted a clever
+
+I've run a longer test and I think I've come into the issue of a dodgy URL link:
+http://www.cyclingnews.com/races/paris-roubaix-2012/results
+
+The above link has a number of issues. Firstly (and most importantly), it's got the full URL and not just the bit after 'cyclingnews.com'. The second issue is it's for the 2012 Paris-Roubaix and this URL is in the middle of the 2015 Race Weblink table.
+
+Anyway, I think I need to put in a test for URL EXISTS going forward. I can't yet find one that weeds out clearly non-functioning websites....
+
+Next steps:
+
+- Identify and implement a robust url checking decision process
+
+- A full run of the race weblinks functions for all calendar years. (This will take some time!)
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- Look at combining the race weblink table into a single master table.
+
+- Work on combining the calendar tables into a master table. 
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
 ------------------------------
 Notes from Thu 01 Jun - Day Session (WPD)
 
