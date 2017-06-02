@@ -79,18 +79,36 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   ########################################################
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 10 OFFSET 200;")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 30 OFFSET 300;")
   
-
+  ########  ########  ########
+  # DELETE test_test_master_results_time table AND test_test_master_results_points table
+  dbSendQuery(conn_local, "DROP table if exists test_test_master_results_time;")
+  dbSendQuery(conn_local, "DROP table if exists test_test_master_results_points;")
+  ########  ########  ########
+  
   test_test <- dbGetQuery(conn_local, "SELECT * FROM test_test_master_results_time;")
   View(test_test)
   
-  
+  View(Race_Weblink_Year)
   glimpse(points_tables)
   as.integer(points_tables$Result)
   points_tables$Rider
   glimpse(time_tables)
   
+  t <- 1
+  r <- 7
+  
+  my_url <- Race_Weblink_Year$stage_url[8]
+  RCurl::url.exists(my_url)
+
+  
+  stage_id <- Race_Weblink_Year$stage_id[8]
+  stage_date <- Race_Weblink_Year$date[8]
+  
+  
+  View(my_table[[t]])
+  glimpse(my_table[[t]])
 
   ########################################################
   ########################################################

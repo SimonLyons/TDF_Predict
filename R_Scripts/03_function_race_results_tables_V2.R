@@ -78,7 +78,7 @@ for(t in 1:table_no){
   # Split the 'Rider Name (Country) Team' column using the 'separate' function from Hadley's 'tidyr' package
   my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
   my_table[[t]] <- separate(data = my_table[[t]], into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
-  View(my_table[1])
+
   # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name
   my_table[[t]]$Rider <- text_clean(my_table[[t]]$Rider)
   
@@ -91,17 +91,16 @@ for(t in 1:table_no){
   # Note: 'agrepl' returns a logical TRUE/FALSE. 'agrep' returns the location of the match
   my_table[[t]][ ,6] <- ifelse((agrepl("pts", my_table[[t]][1 ,6])) == 1 , "pts", "time")
   
-  # Kill off the non-breaking spaces in the 'Result' column
+  # Kill off the non-breaking spaces in the 'Result' column, for the points tables only
+  # It's important to convert this to an integer. When left as a 'list' the table won't write
+  # to the database.
+  if("pts" %in% my_table[[t]][1 ,6]){
+    my_table[[t]]$Result <- as.integer(lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y)))
+  }
   
-  
-  # OOPS!! My fix in this next part to sort out the 'list' in points tables accidentally wiped
-  # the result data when there is a time result
-  # my_table[[t]]$Result <- as.integer(lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y)))
-  
-  my_table[[t]]$Result <- lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y))
-  # my_table[[t]]$result_type <- lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y))
-  
-  
+  # Kill off the non-breaking spaces in the 'result_type' column, and make the output a character
+  # If it's left as a 'list', the table won't write to the database
+  my_table[[t]]$result_type <- as.character(lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y)))
   
   # For the 'time' based tables only, we will convert the result to a true time class
   # and create a new column with the correct rider time/duration for the race.
@@ -175,12 +174,17 @@ for(t in 1:(length(my_table))){
 
 
 # Write the 'times' table to the MySQL ProCyling database
-dbWriteTable(conn_local, name = "test_test_master_results_time",
-             time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
+if(!is.null(time_tables)){
+  dbWriteTable(conn_local, name = "test_test_master_results_time",
+               time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
+}
 
 # Write the 'points' table to the MySQL ProCyling database
-dbWriteTable(conn_local, name = "test_test_master_results_points",
-             points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
+if(!is.null(points_tables)){
+  dbWriteTable(conn_local, name = "test_test_master_results_points",
+               points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
+}
+
 # 
 # Close open queries (doesn't close the connection - very useful)
 ###################  NOT SURE WHY THIS IS CAUSING AN ERROR AT THE MOMENT ##############
