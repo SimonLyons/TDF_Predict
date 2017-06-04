@@ -2,6 +2,24 @@
 
 
 ------------------------------
+Notes from Mon 05 Jun
+
+I think I've sorted the issue of dodgy webpages. I ran my test again and it progressed past the nasty extra 2012 Paris Roubaix race. 
+
+Next problem:  Some result pages apparently have empty table nodes. The one that's causing me grief at present is:
+http://www.cyclingnews.com/races/gp-de-denain-porte-du-hainaut-2015/results
+
+It returns to tables (even though there is a single results table on the page). The first table node is empty, and is causing an immediate error in the rvest 'html_table' function towards the top of the function_race_results_table_V2 function.
+
+Next steps:
+
+- Sort out a method for eliminating the empty table.
+
+- Continue on the Next Steps list below
+
+
+
+------------------------------
 Notes from Sat 03 Jun
 
 I've hopefully solved some interesting problems today.

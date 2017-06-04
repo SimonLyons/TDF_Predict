@@ -103,7 +103,15 @@ GetAllRacesInAYear <- function(input_year){
   t <- 1
   r <- 7
   
-  my_url <- Race_Weblink_Year$stage_url[8]
+  my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results/http://www.cyclingnews.com/races/paris-roubaix-2012/results"
+  my_url <- "www.cyclingnews.com/race/simon_race_of_fury"
+  my_url <- Race_Weblink_Year$stage_url[10]
+  
+  if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
+    my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
+  }
+  
+  
   RCurl::url.exists(my_url)
   httr::http_error(my_url)
 ?http_error
@@ -130,7 +138,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 1: nrow(Race_Weblink_Year)){
+  for (r in 6: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
