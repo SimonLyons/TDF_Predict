@@ -83,7 +83,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 30 OFFSET 300;")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015;")
   
   ########  ########  ########
   # DELETE test_test_master_results_time table AND test_test_master_results_points table
@@ -100,26 +100,23 @@ GetAllRacesInAYear <- function(input_year){
   points_tables$Rider
   glimpse(time_tables)
   
-  t <- 1
-  r <- 7
+  t <- 8
+  r <- 8
   
   my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results/http://www.cyclingnews.com/races/paris-roubaix-2012/results"
   my_url <- "www.cyclingnews.com/race/simon_race_of_fury"
-  my_url <- Race_Weblink_Year$stage_url[10]
+  my_url <- Race_Weblink_Year$stage_url[15]
   
   if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
     my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
   }
   
   
-  RCurl::url.exists(my_url)
-  httr::http_error(my_url)
-?http_error
-  httr::http_error("http://www.google.com")
-  httr::http_error("http://httpbin.org/status/404")
-  
-  stage_id <- Race_Weblink_Year$stage_id[8]
-  stage_date <- Race_Weblink_Year$date[8]
+my_table
+dim(my_table[[2]])  
+    
+  stage_id <- Race_Weblink_Year$stage_id[15]
+  stage_date <- Race_Weblink_Year$date[15]
   
   
   View(my_table[[t]])
@@ -138,7 +135,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 6: nrow(Race_Weblink_Year)){
+  for (r in 1: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)

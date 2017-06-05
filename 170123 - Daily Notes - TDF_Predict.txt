@@ -2,6 +2,19 @@
 
 
 ------------------------------
+Notes from Mon 05 Jun - Sunrise session
+
+
+I think I've a reasonably elegant solution to the task of only extracting tables with content. By modifying the xpath selector I'm able to only extract table nodes with the correct child element, in this case a 'tbody' node. 
+
+html_nodes(xpath="//table[.//body]")
+
+So I started running tests and got plenty of problems, but I think I've managed to sort most of them. I'm about to run a bigger test on a whole calendar year, while we go and have breakfast. I anticipate problems!!
+
+I just started it and got my first error stopping everything - at row 6!
+
+
+------------------------------
 Notes from Mon 05 Jun
 
 I think I've sorted the issue of dodgy webpages. I ran my test again and it progressed past the nasty extra 2012 Paris Roubaix race. 

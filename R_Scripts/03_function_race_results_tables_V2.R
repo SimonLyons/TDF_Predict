@@ -29,16 +29,6 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 ##################################
 
 
-########################################################
-########################################################
-########################################################
-########################################################
-########################################################
-########################################################
-
-# I'm currently having dramas with dodgy weblinks
-# and getting my script to recognise them
-
 # Check to see if link is expected partial web link
 if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
   my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
@@ -50,30 +40,16 @@ if(RCurl::url.exists(my_url)){    # This IF statement runs almost to the end
   suppressWarnings(download.file(my_url, "my_html.xml", quiet = TRUE))
   my_html <- read_html("my_html.xml")
   
-  ########################################################
-  ########################################################
-  ########################################################
-  ########################################################
-  ########################################################
-  ########################################################
-  
-  
+
   # Read the result tables from the HTML
+  # This has been modified/refined to only select 'table' nodes
+  # containing the 'tbody' node. On some webpages there has been empty
+  # tables which cause problems further down.
   my_table <- "my_html.xml" %>% 
     read_html() %>% 
-    html_nodes(xpath=".//table") %>% 
+    html_nodes(xpath="//table[.//tbody]") %>% 
     html_table(fill = TRUE, trim = TRUE)
   
-  my_table_text <- my_table %>% html_text()
-  length(my_table_text[2])
-  
-  
-  my_table_test <- my_table[2] %>% html_table(fill = TRUE, trim = TRUE)
-  html_attrs(my_table[2])
-summary(my_table[2])
-html_nodes(my_table[2])
-    
-  length(my_table)
   # Determine number of tables
   table_no <- length(my_table)
   
@@ -88,9 +64,11 @@ html_nodes(my_table[2])
     html_text()
   
   # Read in the header artifact - often the name of the first table ('Full Results')
+  # I've made an adjustment (06JUN17) to the xpath selector to refine the list
+  # of header nodes to only those after a 'div' separator of class 'results'
   first_header <- "my_html.xml" %>% 
     read_html() %>% 
-    html_nodes(xpath="//h4") %>% 
+    html_nodes(xpath="//h4[contains(text(),'Results')]") %>% 
     html_text()
   if(length(first_header) > 0){
     first_header <- first_header[[1]]
@@ -110,7 +88,6 @@ html_nodes(my_table[2])
   
   for(t in 1:table_no){
     # Rename first column from '#' to 'Pos'
-    as.data.frame(my_table)
     if(colnames(my_table[[t]][1]) == "X1"){
       colnames(my_table[[t]]) <- c("#", "Rider Name (Country) Team", "Result")
     }
@@ -196,7 +173,7 @@ html_nodes(my_table[2])
   # Create holding tables/variables
   time_tables <- c()   # Used to combine all the 'time' based tables
   points_tables <- c()   # Used to combine all the 'points' based tables
-  
+
   # Combine points tables and time tables into two (2) collective holding tables
   for(t in 1:(length(my_table))){
     ifelse(my_table[[t]]$result_type[1] == "time", time_tables <- rbind(time_tables, my_table[[t]]), points_tables <- rbind(points_tables, my_table[[t]]))
