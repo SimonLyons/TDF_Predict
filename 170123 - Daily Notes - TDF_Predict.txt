@@ -1,15 +1,45 @@
 
+
+
 ------------------------------
-Notes from Mon 05 Jun - End of day
+Notes from Wed 07 Jun - Sunrise session
+
+I've firstly dealt with the error generated at row 746. 
+
+ Error in matrix(NA_character_, nrow = n, ncol = p) : 
+  invalid 'ncol' value (too large or NA)
+
+I discovered the last table in the following page is empty
+http://www.cyclingnews.com/races/prudential-ride-london-classic-2015/ridelondon-classic/results/
+
+Despite being empty, the annoying table has the sub-node 'tbody', which was my previous discriminator for eliminating empty tables. I've now extended the xpath identifier to contain '/tr' as well:
+xpath="//table[.//tbody/tr]"
+
+I'm a bit worried this might exclude some tables I want to keep, if they are missing the '/tr', but I actually doubt there are any of these.
+
+I'm now running the rest of the race calendar. I will, however, have to carry out thorough accuracy testing. I think it actually works! Lots of testing to do yet.....
+
+Next steps:
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- Look at combining the race weblink table into a single master table.
+
+- Work on combining the calendar tables into a master table. 
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+
+------------------------------
+Notes from Tue 06 Jun - End of day
 
 The race result table script has been running relatively well. The latest error is at row 746.
 
- 
-
-
 
 ------------------------------
-Notes from Mon 05 Jun - Midday
+Notes from Tue 06 Jun - Midday
 
 I inserted some code dealing with completely empty 'Result' columns, including no 'Result' column name. Now we're getting somewhere. I started the complete calendar test again and reached row number 85, which is the following event result:
 
@@ -19,7 +49,7 @@ The issue is almost certainly that the Sprint 1 table has no rows (after the col
 
 
 ------------------------------
-Notes from Mon 05 Jun - Midday
+Notes from Tue 06 Jun - Midday
 
 Going okay. I sorted the early error, but have now run into the special case of race results tables with no times or points. In this case the track world championship Keirin event!
 http://www.cyclingnews.com/races/uci-track-world-cup-iii-2014-1/day-1/results/
@@ -28,7 +58,7 @@ I think the lubridate duration function doesn't like being passed NULL values.
 
 
 ------------------------------
-Notes from Mon 05 Jun - Sunrise session
+Notes from Tue 06 Jun - Sunrise session
 
 
 I think I've a reasonably elegant solution to the task of only extracting tables with content. By modifying the xpath selector I'm able to only extract table nodes with the correct child element, in this case a 'tbody' node. 

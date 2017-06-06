@@ -100,22 +100,24 @@ GetAllRacesInAYear <- function(input_year){
   points_tables$Rider
   glimpse(time_tables)
   
-  t <- 2
+  t <- 1
   r <- 8
   
   View(my_table[[5]])
   
   
-  my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results/http://www.cyclingnews.com/races/paris-roubaix-2012/results"
-  my_url <- "www.cyclingnews.com/race/simon_race_of_fury"
-  my_url <- Race_Weblink_Year$stage_url[86]
+  my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results"
+  my_url <- Race_Weblink_Year$stage_url[1185]
+  
+  Race_Weblink_Year[1185,]
+  
   
   if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
     my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
   }
   
-  stage_id <- Race_Weblink_Year$stage_id[45]
-  stage_date <- Race_Weblink_Year$date[45]
+  stage_id <- Race_Weblink_Year$stage_id[746]
+  stage_date <- Race_Weblink_Year$date[746]
   
   
   View(my_table[[t]])
@@ -134,7 +136,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 1: nrow(Race_Weblink_Year)){
+  for (r in 1183: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
