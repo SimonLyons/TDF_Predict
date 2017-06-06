@@ -1,6 +1,18 @@
 
 
 
+
+------------------------------
+Notes from Mon 05 Jun - Midday
+
+Going okay. I sorted the early error, but have now run into the special case of race results tables with no times or points. In this case the track world championship Keirin event!
+http://www.cyclingnews.com/races/uci-track-world-cup-iii-2014-1/day-1/results/
+
+I think the lubridate duration function doesn't like being passed NULL values. 
+
+
+
+
 ------------------------------
 Notes from Mon 05 Jun - Sunrise session
 

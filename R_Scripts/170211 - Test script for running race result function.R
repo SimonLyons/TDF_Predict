@@ -100,23 +100,19 @@ GetAllRacesInAYear <- function(input_year){
   points_tables$Rider
   glimpse(time_tables)
   
-  t <- 8
+  t <- 5
   r <- 8
   
   my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results/http://www.cyclingnews.com/races/paris-roubaix-2012/results"
   my_url <- "www.cyclingnews.com/race/simon_race_of_fury"
-  my_url <- Race_Weblink_Year$stage_url[15]
+  my_url <- Race_Weblink_Year$stage_url[45]
   
   if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
     my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
   }
   
-  
-my_table
-dim(my_table[[2]])  
-    
-  stage_id <- Race_Weblink_Year$stage_id[15]
-  stage_date <- Race_Weblink_Year$date[15]
+  stage_id <- Race_Weblink_Year$stage_id[45]
+  stage_date <- Race_Weblink_Year$date[45]
   
   
   View(my_table[[t]])
