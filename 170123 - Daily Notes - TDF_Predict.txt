@@ -1,5 +1,10 @@
 
+------------------------------
+Notes from Mon 05 Jun - End of day
 
+The race result table script has been running relatively well. The latest error is at row 746.
+
+ 
 
 
 

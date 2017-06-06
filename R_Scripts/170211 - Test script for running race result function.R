@@ -100,7 +100,7 @@ GetAllRacesInAYear <- function(input_year){
   points_tables$Rider
   glimpse(time_tables)
   
-  t <- 5
+  t <- 2
   r <- 8
   
   View(my_table[[5]])

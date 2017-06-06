@@ -92,86 +92,92 @@ if(RCurl::url.exists(my_url)){    # This IF statement runs almost to the end
   ##################################
   
     for(t in 1:table_no){
-      # Rename first column from '#' to 'Pos'
-      if(colnames(my_table[[t]][1]) == "X1"){
-        colnames(my_table[[t]]) <- c("#", "Rider Name (Country) Team", "Result")
-      }
       
-      
-      my_table[[t]] <- rename(my_table[[t]], "Pos" = `#`)
-      
-      # Split the 'Rider Name (Country) Team' column using the 'separate' function from Hadley's 'tidyr' package
-      my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
-      my_table[[t]] <- separate(data = my_table[[t]], into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
-      
-      # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name
-      my_table[[t]]$Rider <- text_clean(my_table[[t]]$Rider)
-      
-      # Assign (an entire) column to the table title, so this can be filtered for analysis
-      my_table[[t]][,"result_class"] <- my_captions[t]
-      # Rename the 'NA' column with 'pts' to the name 'result_type'
-      colnames(my_table[[t]])[6] <- "result_type"
-      # If the column contains 'pts', fill the entire column with 'pts'. Otherwise, fill the column with 'time'.
-      # I've replaced the exact matching '%in%' with the fuzzy matching of 'agrepl' 
-      # Note: 'agrepl' returns a logical TRUE/FALSE. 'agrep' returns the location of the match
-      my_table[[t]][ ,6] <- ifelse((agrepl("pts", my_table[[t]][1 ,6])) == 1 , "pts", "time")
-      
-      # Kill off the non-breaking spaces in the 'Result' column, for the points tables only
-      # It's important to convert this to an integer. When left as a 'list' the table won't write
-      # to the database.
-      if("pts" %in% my_table[[t]][1 ,6]){
-        my_table[[t]]$Result <- as.integer(lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y)))
-      }
-      
-      # Kill off the non-breaking spaces in the 'result_type' column, and make the output a character
-      # If it's left as a 'list', the table won't write to the database
-      my_table[[t]]$result_type <- as.character(lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y)))
-      
-      # For the 'time' based tables only, we will convert the result to a true time class
-      # and create a new column with the correct rider time/duration for the race.
-      if(my_table[[t]]$result_type[1] =="time"){
+      # Exit if the table is empty (nrow = 0)
+      if(nrow(my_table[[t]]) > 0){
         
-        ##################################
-        # 5. Modify time-based 'Result' into correct class. lubridate::hms, lubridate::duration
-        ##################################
+        # Rename first column from '#' to 'Pos'
+        if(colnames(my_table[[t]][1]) == "X1"){
+          colnames(my_table[[t]]) <- c("#", "Rider Name (Country) Team", "Result")
+        }
         
-        # I've renamed the 5th column to "Result" as some tables have an empty column
-        # and therefore the "Result" title is missing.
-        colnames(my_table[[t]])[5] <-  "Result"
         
-        # Use lubridate::as.duration::hms to do time class conversion
-        my_table[[t]]$Result <- as.duration(hms(my_table[[t]]$Result))
-
-        ##################################
-        # 6. Create new column 'Duration' with cumulative time
-        ##################################
-        # Change NA columns to value (numeric) '0'
-        NA_rows <- is.na(my_table[[t]]$Result)
-        my_table[[t]]$Result[NA_rows] <- 0
-        # dplyr::mutate new "Duration" column
-        my_table[[t]] <- mutate(my_table[[t]], Duration = cumsum(Result))
-        # Convert new column into correct date format
-        my_table[[t]]$Duration <- duration(my_table[[t]]$Duration)
+        my_table[[t]] <- rename(my_table[[t]], "Pos" = `#`)
         
-        ##################################
-        # 7. Correct non-finishing entries (e.g. DNF, DNS & DSQ).
-        ##################################
-        if(any(c("DSQ", "DNF", "DNS") %in% my_table[[t]]$Pos)){
-          change_row <- my_table[[t]]$Pos %in% c("DSQ", "DNF", "DNS")
-          my_table[[t]][change_row, "Result"] <- NA
-          my_table[[t]][change_row, "Duration"] <- NA
-        }   # End IF statement looking for non-finishers
+        # Split the 'Rider Name (Country) Team' column using the 'separate' function from Hadley's 'tidyr' package
+        my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
+        my_table[[t]] <- separate(data = my_table[[t]], into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
         
-      }   # End IF statement selecting 'time' based tables only (not points)
-      
-      # This ELSE statement converts the list of points into an integer class.
-      else {
-        my_table[[t]]$Result <- as.integer(my_table[[t]]$Result)
-      }   # End ELSE statement
-      
-      # dplyr::mutate new 'stage_id' and 'stage_date' column
-      my_table[[t]] <- mutate(my_table[[t]], stage_id = stage_id)
-      my_table[[t]] <- mutate(my_table[[t]], stage_date = stage_date)
+        # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name
+        my_table[[t]]$Rider <- text_clean(my_table[[t]]$Rider)
+        
+        # Assign (an entire) column to the table title, so this can be filtered for analysis
+        my_table[[t]][,"result_class"] <- my_captions[t]
+        # Rename the 'NA' column with 'pts' to the name 'result_type'
+        colnames(my_table[[t]])[6] <- "result_type"
+        # If the column contains 'pts', fill the entire column with 'pts'. Otherwise, fill the column with 'time'.
+        # I've replaced the exact matching '%in%' with the fuzzy matching of 'agrepl' 
+        # Note: 'agrepl' returns a logical TRUE/FALSE. 'agrep' returns the location of the match
+        my_table[[t]][ ,6] <- ifelse((agrepl("pts", my_table[[t]][1 ,6])) == 1 , "pts", "time")
+        
+        # Kill off the non-breaking spaces in the 'Result' column, for the points tables only
+        # It's important to convert this to an integer. When left as a 'list' the table won't write
+        # to the database.
+        if("pts" %in% my_table[[t]][1 ,6]){
+          my_table[[t]]$Result <- as.integer(lapply(my_table[[t]]$Result, function(y) gsub("[[:space:]]", NA, y)))
+        }
+        
+        # Kill off the non-breaking spaces in the 'result_type' column, and make the output a character
+        # If it's left as a 'list', the table won't write to the database
+        my_table[[t]]$result_type <- as.character(lapply(my_table[[t]]$result_type, function(y) gsub("Â", "", y)))
+        
+        # For the 'time' based tables only, we will convert the result to a true time class
+        # and create a new column with the correct rider time/duration for the race.
+        if(my_table[[t]]$result_type[1] =="time"){
+          
+          ##################################
+          # 5. Modify time-based 'Result' into correct class. lubridate::hms, lubridate::duration
+          ##################################
+          
+          # I've renamed the 5th column to "Result" as some tables have an empty column
+          # and therefore the "Result" title is missing.
+          colnames(my_table[[t]])[5] <-  "Result"
+          
+          # Use lubridate::as.duration::hms to do time class conversion
+          my_table[[t]]$Result <- as.duration(hms(my_table[[t]]$Result))
+          
+          ##################################
+          # 6. Create new column 'Duration' with cumulative time
+          ##################################
+          # Change NA columns to value (numeric) '0'
+          NA_rows <- is.na(my_table[[t]]$Result)
+          my_table[[t]]$Result[NA_rows] <- 0
+          # dplyr::mutate new "Duration" column
+          my_table[[t]] <- mutate(my_table[[t]], Duration = cumsum(Result))
+          # Convert new column into correct date format
+          my_table[[t]]$Duration <- duration(my_table[[t]]$Duration)
+          
+          ##################################
+          # 7. Correct non-finishing entries (e.g. DNF, DNS & DSQ).
+          ##################################
+          if(any(c("DSQ", "DNF", "DNS") %in% my_table[[t]]$Pos)){
+            change_row <- my_table[[t]]$Pos %in% c("DSQ", "DNF", "DNS")
+            my_table[[t]][change_row, "Result"] <- NA
+            my_table[[t]][change_row, "Duration"] <- NA
+          }   # End IF statement looking for non-finishers
+          
+        }   # End IF statement selecting 'time' based tables only (not points)
+        
+        # This ELSE statement converts the list of points into an integer class.
+        else {
+          my_table[[t]]$Result <- as.integer(my_table[[t]]$Result)
+        }   # End ELSE statement
+        
+        # dplyr::mutate new 'stage_id' and 'stage_date' column
+        my_table[[t]] <- mutate(my_table[[t]], stage_id = stage_id)
+        my_table[[t]] <- mutate(my_table[[t]], stage_date = stage_date)
+        
+      }   # End IF statement checking for empty tables
       
     }   # End FOR loop through number of tables, 't'
     
@@ -207,18 +213,13 @@ if(RCurl::url.exists(my_url)){    # This IF statement runs almost to the end
     if(!is.null(time_tables)){
       dbWriteTable(conn_local, name = "test_test_master_results_time",
                    time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
-    }
+    }   # End of script writing to master time table
     
     # Write the 'points' table to the MySQL ProCyling database
     if(!is.null(points_tables)){
       dbWriteTable(conn_local, name = "test_test_master_results_points",
                    points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
-    }
-    
-    # 
-    # Close open queries (doesn't close the connection - very useful)
-    ###################  NOT SURE WHY THIS IS CAUSING AN ERROR AT THE MOMENT ##############
-    # dbClearResult(dbListResults(conn_local)[[1]])
+    }   # End of script writing to master points table
     
   }   # Close IF statement checking for existence of results tables.
   
