@@ -2,6 +2,17 @@
 
 
 
+
+------------------------------
+Notes from Mon 05 Jun - Midday
+
+I inserted some code dealing with completely empty 'Result' columns, including no 'Result' column name. Now we're getting somewhere. I started the complete calendar test again and reached row number 85, which is the following event result:
+
+http://www.cyclingnews.com/races/etoile-de-besseges-2015/stage-2/results/
+
+The issue is almost certainly that the Sprint 1 table has no rows (after the columns headings), because the sprint was nulified. I'm sure we'll come across this again. So I need to sort this use-case out too.
+
+
 ------------------------------
 Notes from Mon 05 Jun - Midday
 
@@ -9,8 +20,6 @@ Going okay. I sorted the early error, but have now run into the special case of 
 http://www.cyclingnews.com/races/uci-track-world-cup-iii-2014-1/day-1/results/
 
 I think the lubridate duration function doesn't like being passed NULL values. 
-
-
 
 
 ------------------------------

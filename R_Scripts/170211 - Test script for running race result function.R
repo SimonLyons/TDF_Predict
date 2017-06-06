@@ -103,9 +103,12 @@ GetAllRacesInAYear <- function(input_year){
   t <- 5
   r <- 8
   
+  View(my_table[[5]])
+  
+  
   my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results/http://www.cyclingnews.com/races/paris-roubaix-2012/results"
   my_url <- "www.cyclingnews.com/race/simon_race_of_fury"
-  my_url <- Race_Weblink_Year$stage_url[45]
+  my_url <- Race_Weblink_Year$stage_url[86]
   
   if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
     my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
