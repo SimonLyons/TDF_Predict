@@ -67,7 +67,7 @@ for(e in 1:total){
 
     # Download race data using 'rvest'
     if(RCurl::url.exists(race_url)){
-    suppressWarnings(download.file(race_url, "race_url.xml"))
+    suppressWarnings(download.file(race_url, "race_url.xml", quiet = TRUE))
     race_html <- read_html("race_url.xml")}
     
     

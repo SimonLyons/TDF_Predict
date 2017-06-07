@@ -1,5 +1,30 @@
 
 
+------------------------------
+Notes from Thu 08 Jun
+
+So it looks like I've got mostly operational functions to go and get all of the data I require. I started running the raec weblink function for Year 2012 and ran into an issue where the (number of) stage weblinks does not match the number of stages in the Stage table. I found the table had a duplicate stage and I inserted a line of code to fix this issue. I'm now running Year 2012 race weblink again.
+
+I've realised it is important to learn how to write webscraping script that collects and returns data on errors and (if possible) continues running. Essentially, if I'm running through a loop and it fails, so collect identifying information for the failing row and then to continue to the next one.
+
+
+
+
+
+
+
+Next steps:
+
+- Check Race Calendars. Combine into master calendar
+
+- Check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Improve scraping code to identify errors and report them. Function 'trycatch()' might be an option.
+
+- Work out a secure connection process for accessing the database from offsite.
+
 
 ------------------------------
 Notes from Wed 07 Jun - Sunrise session
