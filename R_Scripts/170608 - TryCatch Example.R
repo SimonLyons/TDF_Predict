@@ -1,6 +1,7 @@
 
 
 # tryCatch.Rscript -- experiments with tryCatch
+# http://mazamascience.com/WorkingWithData/?p=912
 
 # Get any arguments
 arguments <- commandArgs(trailingOnly=TRUE)

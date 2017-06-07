@@ -7,10 +7,7 @@ So it looks like I've got mostly operational functions to go and get all of the 
 
 I've realised it is important to learn how to write webscraping script that collects and returns data on errors and (if possible) continues running. Essentially, if I'm running through a loop and it fails, so collect identifying information for the failing row and then to continue to the next one.
 
-
-
-
-
+Need to check 2012 race weblinks completed successfully.
 
 
 Next steps:
