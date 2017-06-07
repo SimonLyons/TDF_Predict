@@ -67,7 +67,7 @@ for(e in 1:total){
 
     # Download race data using 'rvest'
     if(RCurl::url.exists(race_url)){
-    try(download.file(race_url, "race_url.xml"))
+    suppressWarnings(download.file(race_url, "race_url.xml"))
     race_html <- read_html("race_url.xml")}
     
     
@@ -129,6 +129,9 @@ for(e in 1:total){
         # Delete rest day rows, where 'results' = ""
         races_cn <- races_cn %>% 
           filter(results != "")
+        
+        # Delete duplicate rows. This occured in the 2012 TDU
+        races_cn <- races_cn[!duplicated(races_cn),]
         
         if(length(races_cn$Stage) > 0){
           # Add race_links to table
@@ -222,6 +225,9 @@ for(e in 1:total){
     
   # Insert sleep script to randomise a system pause between web queries
   sleep <- abs(rnorm(1)) + runif(1, 0, .25)
+  message("I have done ", e, " of ", total,
+          " - gonna sleep ", round(sleep, 2),
+          " seconds.")
   Sys.sleep(sleep)
   
 }   #   End FOR loop 'e' to run through all of the events in the calendar dataframe

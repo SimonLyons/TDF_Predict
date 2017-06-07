@@ -51,6 +51,13 @@ GetAllRacesInAYear <- function(input_year){
   }
   View(Race_Weblink_Year)
   
+  e <- 39
+  race_url <- "/races/santos-tour-down-under-2012"
+  if(!agrepl("http", race_url) | !agrepl("www.", race_url) | is.na(race_url)){
+    race_url <- race_url <- paste("http://www.cyclingnews.com", race_url, sep = "")
+  }
+  
+  
   class(Race_Weblink_Year$stage_date[23])
   new_date <- as_date(Race_Weblink_Year$stage_date[23])
   class(new_date)
@@ -64,7 +71,7 @@ GetAllRacesInAYear <- function(input_year){
   # Read database password file
   psswd <- read.csv("passwords_db.csv", header = TRUE)
   
-  input_year <- 2016   # Manual input of selected year
+  input_year <- 2012   # Manual input of selected year
   
   # Create connection to database 
   conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , 
@@ -94,6 +101,15 @@ GetAllRacesInAYear <- function(input_year){
   test_test <- dbGetQuery(conn_local, "SELECT * FROM test_test_master_results_time;")
   View(test_test)
   
+  rohandennis <- test_test %>% 
+    filter(Rider == "Rohan Dennis")
+  View(rohandennis)
+  
+  simonyates <- test_test %>% 
+    filter(Rider == "Simon Yates")
+  View(simonyates)
+  
+  
   View(Race_Weblink_Year)
   glimpse(points_tables)
   as.integer(points_tables$Result)
@@ -105,23 +121,10 @@ GetAllRacesInAYear <- function(input_year){
   
   View(my_table[[5]])
   
-  
-  my_url <- "www.cyclingnews.com/races/paris-roubaix-2012/results"
-  my_url <- Race_Weblink_Year$stage_url[1185]
-  
   Race_Weblink_Year[1185,]
-  
-  
-  if(!agrepl("http", my_url) | !agrepl("www.", my_url)){
-    my_url <- my_url <- paste("http://www.cyclingnews.com", my_url, sep = "")
-  }
-  
+  my_url <- Race_Weblink_Year$stage_url[1185]
   stage_id <- Race_Weblink_Year$stage_id[746]
   stage_date <- Race_Weblink_Year$date[746]
-  
-  
-  View(my_table[[t]])
-  glimpse(my_table[[t]])
   
   ########################################################
   ########################################################
