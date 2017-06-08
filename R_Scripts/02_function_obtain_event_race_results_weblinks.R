@@ -132,12 +132,24 @@ for(e in 1:total){
         
         # Delete duplicate rows. This occured in the 2012 TDU
         races_cn <- races_cn[!duplicated(races_cn),]
-        
+
         if(length(races_cn$Stage) > 0){
           # Add race_links to table
           if(length(race_links) >0){
+            
+            # Need to deal with the scenario where there are less race weblinks
+            # than stages in the table. There are some dodgy tables.
+            # example:   http://www.cyclingnews.com/races/czech-cyclo-cross-championships-cn/stages/
+            
+            if(length(race_links) < length(races_cn$Stage)){
+              race_links <- rep_len(race_links, length(races_cn$Stage))
+              # The above isn't a fantastic result, but it deals with the odd dodgy table
+            }   # End IF statement looking for number of race weblinks lower than number of stages listed in table.
+            
             races_cn$stage_url <- race_links
-          }
+  
+          }   # End IF statement that seeks to add race_links to table
+
           
           # Convert date values to correct class using lubridate
           races_cn$date <- mdy(races_cn$date)
@@ -153,13 +165,13 @@ for(e in 1:total){
             races_cn$stage_id[n] <- paste(race_id, "_s", formatC(n, width = 2, format = "d", flag = "0"), sep = "")
             races_cn$race_id <- as.character(race_id)
             races_cn$race_details <- as.character(race_details)
-        }   # End loop for addition of my data.
+        }   # End FOR loop (n) for addition of my data.
           
-        }   # End FOR loop (n) that pulls out weblink data
+        }   # IF Statement confirming there is data in the table (Stages)
         
       }   # End IF statement checking for results column in the column names
 
-    }   # End if statement to check for table and extract data
+    }   # End if statement to check for table (FORK ONE) and extract data
 
     #######################################################################
     # 
@@ -233,8 +245,6 @@ for(e in 1:total){
 }   #   End FOR loop 'e' to run through all of the events in the calendar dataframe
 
 close(prg)   # End txt progress bar
-
-View(races_master)
 
 # Write 'race_master' dataframe to ProCycling database
 dbWriteTable(conn_local,type = 'UTF-8', name = paste("race_weblinks_", input_year, sep = ""), races_master,

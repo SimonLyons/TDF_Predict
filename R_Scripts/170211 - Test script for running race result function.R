@@ -30,7 +30,7 @@ require(RMySQL)
 
 
 # Define the year
-input_year <- 2016
+input_year <- 2010
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -46,12 +46,13 @@ GetAllRacesInAYear <- function(input_year){
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
   
+  
   for(input_year in 2016:2017){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   }
   View(Race_Weblink_Year)
   
-  e <- 39
+  e <- 14
   race_url <- "/races/santos-tour-down-under-2012"
   if(!agrepl("http", race_url) | !agrepl("www.", race_url) | is.na(race_url)){
     race_url <- race_url <- paste("http://www.cyclingnews.com", race_url, sep = "")
@@ -90,7 +91,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015;")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2010;")
   
   ########  ########  ########
   # DELETE test_test_master_results_time table AND test_test_master_results_points table
@@ -122,9 +123,9 @@ GetAllRacesInAYear <- function(input_year){
   View(my_table[[5]])
   
   Race_Weblink_Year[1185,]
-  my_url <- Race_Weblink_Year$stage_url[1185]
-  stage_id <- Race_Weblink_Year$stage_id[746]
-  stage_date <- Race_Weblink_Year$date[746]
+  my_url <- Race_Weblink_Year$stage_url[14]
+  stage_id <- Race_Weblink_Year$stage_id[14]
+  stage_date <- Race_Weblink_Year$date[14]
   
   ########################################################
   ########################################################

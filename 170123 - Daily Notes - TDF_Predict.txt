@@ -1,5 +1,36 @@
 
 
+
+------------------------------
+Notes from Thu 08 Jun - Evening
+
+I've just tried running the get weblink function for calendar year 2010. It's immediately run into some new use-case errors:
+
+- Non-complete race weblink data, resulting in less race weblinks than stages.
+    example at row 14: http://www.cyclingnews.com/races/czech-cyclo-cross-championships-cn/stages/
+- Error 404 non-existing page
+    example at row 39: http://www.cyclingnews.com/races/croatian-cyclo-cross-championships-cn/stages
+
+I came up with butcher's solution for the first one - repeating the list of results weblinks to fill the number of stages. I figure this will only occur on rare occasions for smaller races. The end result will be by result scraping function will still extract all of the available race result information. The bad news is that the result weblink may not always perfectly line up with the correct stage information....
+
+The second issue is what I need to work on next, and coincidentally will likely require the 'trycatch()' function I was planning on implementing anyway. There appears to be a specific guide on using trycatch() with Error 404 problems at the following link:
+
+https://protocolvital.info/2016/04/21/404-error-handling-with-rs-download-file/
+
+Next steps:
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Improve scraping code to identify errors and report them. Function 'trycatch()' might be an option.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
 ------------------------------
 Notes from Thu 08 Jun
 
