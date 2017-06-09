@@ -77,6 +77,17 @@ if(!is.na(my_url)){
       first_header <- first_header[[1]]
     }
     
+    # On rare occasions a 'h3' node is used for the 'Results' header
+    # and there is no 'h4' node header
+    if(length(first_header) == 0){
+      first_header <- "my_html.xml" %>% 
+        read_html() %>% 
+        html_nodes(xpath="//h3[contains(text(),'Results')]") %>% 
+        html_text()
+    }   # End 'h3' IF statement
+    
+    # Insert the first header into the captions list if the number of captions
+    # doesn't match the number of tables. 
     if (length(my_captions) == table_no){   
       my_captions <- my_captions
     } else{
@@ -104,11 +115,20 @@ if(!is.na(my_url)){
             colnames(my_table[[t]]) <- c("#", "Rider Name (Country) Team", "Result")
           }
           
-          
+          # Rename the first column from '#' to 'Pos'
           my_table[[t]] <- rename(my_table[[t]], "Pos" = `#`)
           
+          # We want to force the rider column to be called 'Rider Name (Country) Team'
+          # despite this not being the case in rare occasions.
+          # Example:   
+          # http://www.cyclingnews.com/races/cycling-australia-road-national-championships-2014-2014/under-23-mens-time-trial/results/
+          # 
+          loc <- agrep("Rider", colnames(my_table[[t]]))
+          colnames(my_table[[t]])[[loc]] <- "Rider Name (Country) Team"
+          
           # Split the 'Rider Name (Country) Team' column using the 'separate' function from Hadley's 'tidyr' package
-          my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
+          my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), 
+                                    sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
           my_table[[t]] <- separate(data = my_table[[t]], into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
           
           # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name

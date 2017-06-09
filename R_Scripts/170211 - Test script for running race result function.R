@@ -30,7 +30,7 @@ require(RMySQL)
 
 
 # Define the year
-input_year <- 2010
+input_year <- 2014
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -91,7 +91,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2010;")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2014;")
   
   ########  ########  ########
   # DELETE test_test_master_results_time table AND test_test_master_results_points table
@@ -122,10 +122,10 @@ GetAllRacesInAYear <- function(input_year){
   
   View(my_table[[5]])
   
-  Race_Weblink_Year[1185,]
-  my_url <- Race_Weblink_Year$stage_url[14]
-  stage_id <- Race_Weblink_Year$stage_id[14]
-  stage_date <- Race_Weblink_Year$date[14]
+  Race_Weblink_Year[24,]
+  my_url <- Race_Weblink_Year$stage_url[24]
+  stage_id <- Race_Weblink_Year$stage_id[24]
+  stage_date <- Race_Weblink_Year$date[24]
   
   ########################################################
   ########################################################
@@ -140,7 +140,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 1183: nrow(Race_Weblink_Year)){
+  for (r in 159: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
