@@ -30,7 +30,7 @@ require(RMySQL)
 
 
 # Define the year
-input_year <- 2014
+input_year <- 2005
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -45,9 +45,7 @@ GetAllRacesInAYear <- function(input_year){
 # Create a dataframe for each event with columns for the race weblink, date, start_location, finish_location
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
-  
-  
-  for(input_year in 2016:2017){
+  for(input_year in 2006:2011){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   }
   View(Race_Weblink_Year)
@@ -57,12 +55,6 @@ GetAllRacesInAYear <- function(input_year){
   if(!agrepl("http", race_url) | !agrepl("www.", race_url) | is.na(race_url)){
     race_url <- race_url <- paste("http://www.cyclingnews.com", race_url, sep = "")
   }
-  
-  
-  class(Race_Weblink_Year$stage_date[23])
-  new_date <- as_date(Race_Weblink_Year$stage_date[23])
-  class(new_date)
-
   
 # Open each race weblink and extract tables
 # 03_function_race_results_table.R
@@ -91,7 +83,8 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2014;")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2012")
+  View(Race_Weblink_Year)
   
   ########  ########  ########
   # DELETE test_test_master_results_time table AND test_test_master_results_points table
@@ -122,10 +115,10 @@ GetAllRacesInAYear <- function(input_year){
   
   View(my_table[[5]])
   
-  Race_Weblink_Year[24,]
-  my_url <- Race_Weblink_Year$stage_url[24]
-  stage_id <- Race_Weblink_Year$stage_id[24]
-  stage_date <- Race_Weblink_Year$date[24]
+  Race_Weblink_Year[902,]
+  my_url <- Race_Weblink_Year$stage_url[902]
+  stage_id <- Race_Weblink_Year$stage_id[902]
+  stage_date <- Race_Weblink_Year$date[902]
   
   ########################################################
   ########################################################
@@ -140,7 +133,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 159: nrow(Race_Weblink_Year)){
+  for (r in 901: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)

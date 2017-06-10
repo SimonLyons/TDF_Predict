@@ -110,10 +110,13 @@ if(!is.na(my_url)){
         # Exit if the table is empty (nrow = 0)
         if(nrow(my_table[[t]]) > 0){
           
-          # Rename first column from '#' to 'Pos'
-          if(colnames(my_table[[t]][1]) == "X1"){
+          # I've decided to force the column names
+          # There are some odd, rare exceptions and so far I don't think it's worth
+          # writing extensive code when I still want a uniform end result.
+          # 
+          # if(colnames(my_table[[t]][1]) == "X1"){
             colnames(my_table[[t]]) <- c("#", "Rider Name (Country) Team", "Result")
-          }
+          # }
           
           # Rename the first column from '#' to 'Pos'
           my_table[[t]] <- rename(my_table[[t]], "Pos" = `#`)
@@ -123,8 +126,8 @@ if(!is.na(my_url)){
           # Example:   
           # http://www.cyclingnews.com/races/cycling-australia-road-national-championships-2014-2014/under-23-mens-time-trial/results/
           # 
-          loc <- agrep("Rider", colnames(my_table[[t]]))
-          colnames(my_table[[t]])[[loc]] <- "Rider Name (Country) Team"
+          # loc <- agrep("Rider", colnames(my_table[[t]]))
+          # colnames(my_table[[t]])[[loc]] <- "Rider Name (Country) Team"
           
           # Split the 'Rider Name (Country) Team' column using the 'separate' function from Hadley's 'tidyr' package
           my_table[[t]] <- separate(data = my_table[[t]], into = c("Rider", "Remaining"), 
