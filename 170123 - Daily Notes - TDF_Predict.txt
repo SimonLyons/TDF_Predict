@@ -7,6 +7,8 @@ The latest error kicked up was thanks to one (of ten) tables on a results page m
 
 These might be famous last words - but I think I'm close to being ready to scrape the full set of race weblinks and then the full set of race results tables shortly there after. 
 
+### I was running from 2006 to 2012 and hit my first error in the middle of 2009, which is pretty good really. The issue was an 'Article 404' webpage. I've inserted 'RCurl::url.exists(race_url)' into the 'stages' check, which will hopefully sort it out.
+
 
 
 

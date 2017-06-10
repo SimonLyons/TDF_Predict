@@ -84,9 +84,13 @@ for(e in 1:total){
     # with the html from the stage web link
     if(length(race_stages_link) > 0){
       race_url <- paste("http://www.cyclingnews.com", race_stages_link, sep = "")
-      download.file(race_url, "race_url.xml")
-      race_html <- read_html("race_url.xml")
-    }
+      
+      if(RCurl::url.exists(race_url)){
+        suppressWarnings(download.file(race_url, "race_url.xml", quiet = TRUE))
+        race_html <- read_html("race_url.xml")
+        }   # End IF statement checking for website errors
+      
+    }   # End IF statement checking for link to race stages
     #######################################################################
     
    
