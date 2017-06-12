@@ -1,6 +1,14 @@
 
 
 ------------------------------
+Notes from Tue 13 Jun
+
+I've just re-run race weblinks for 2011. It needs checking.
+
+
+
+
+------------------------------
 Notes from Mon 12 Jun
 
 I ran into problems on Sunday with R crashing (aborting). I haven't had time yet to work out what's going on. It crashed in 2011 and I think in 2013 and 2016. I've written a short bit of script to return the status of race weblink tables from the database. Non-complete tables are obvious because they have only 5 columns (instead of the new 8 column format) and don't  have a full completment of rows.
