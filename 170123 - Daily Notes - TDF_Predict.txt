@@ -1,6 +1,17 @@
 
 
 ------------------------------
+Notes from Mon 12 Jun
+
+I ran into problems on Sunday with R crashing (aborting). I haven't had time yet to work out what's going on. It crashed in 2011 and I think in 2013 and 2016. I've written a short bit of script to return the status of race weblink tables from the database. Non-complete tables are obvious because they have only 5 columns (instead of the new 8 column format) and don't  have a full completment of rows.
+
+I think the 2016 run of the race weblink function may have aborted on row 412.
+
+Years to be run for the race weblinks function are: 2011, 2013, 2016 & 2017
+
+
+
+------------------------------
 Notes from Sun 11 Jun
 
 The latest error kicked up was thanks to one (of ten) tables on a results page missing the column name '#' on the first column. I've decided to do away with the smarts and force the columns names to "#", "Rider Name (Country) Team", "Result". I figure even in the rare occasions this is different, ultimately I want uniformity so the tables will bind correctly and then upload to the database. 

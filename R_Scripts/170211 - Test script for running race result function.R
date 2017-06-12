@@ -30,7 +30,7 @@ require(RMySQL)
 
 
 # Define the year
-input_year <- 2009
+input_year <- 2013
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -65,7 +65,7 @@ GetAllRacesInAYear <- function(input_year){
   # Read database password file
   psswd <- read.csv("passwords_db.csv", header = TRUE)
   
-  input_year <- 2012   # Manual input of selected year
+  input_year <- 2013   # Manual input of selected year
   
   # Create connection to database 
   conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , 
