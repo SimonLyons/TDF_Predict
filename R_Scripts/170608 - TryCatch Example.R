@@ -5,6 +5,7 @@
 
 # Get any arguments
 arguments <- commandArgs(trailingOnly=TRUE)
+?commandArgs
 a <- arguments[1]
 
 # Define a division function that can issue warnings and errors
@@ -24,6 +25,7 @@ myDivide <- function(d, a) {
 # Evalute the desired series of expressions inside of tryCatch
 result <- tryCatch({
   
+  a <- 23
   b <- 2
   c <- b^2
   d <- c+2
