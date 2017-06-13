@@ -1,11 +1,24 @@
 
 
+
+------------------------------
+Notes from Tue 13 Jun @ work
+
+I've been experimenting with the TryCatch() function, which has been going okay. I've not yet worked out how to record the errors (to a dataframe). Apparently any executed work within the error function stays inside.
+
+The good news is that with either 'try' or 'tryCatch' I should be able to run long webscraping scripts and have them continue, even if they run into an error. 
+
+
+Next steps:
+
+- Continue working on how to record error and warning outputs
+
+
+
 ------------------------------
 Notes from Tue 13 Jun
 
 I've just re-run race weblinks for 2011. It needs checking.
-
-
 
 
 ------------------------------
