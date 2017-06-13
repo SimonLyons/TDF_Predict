@@ -102,7 +102,9 @@ for(e in 1:total){
     # Now remove the duplicates. The length should now match the correct number of stages.
     race_links <- race_links[!duplicated(race_links)]
     
-
+    # Insert try() function. Possibly consider use of tryCatch() function once
+    # I'm confident in its use.
+    # try(   # I've inserted this to allow the weblinks function to progress past errors
     
     #######################################################################
     #
@@ -117,7 +119,7 @@ for(e in 1:total){
     # 
     # Do a test for the 'table' node to see if a table exists.
     # If it does, use the table method to extract the stage dates and other data.
-    if(length(html_nodes(race_html, xpath="//table")) > 0){
+    try(if(length(html_nodes(race_html, xpath="//table")) > 0){
       # Extract information when stored in table
       races_cn <- race_html %>% 
         html_nodes(xpath="//table") %>% 
@@ -175,7 +177,8 @@ for(e in 1:total){
         
       }   # End IF statement checking for results column in the column names
 
-    }   # End if statement to check for table (FORK ONE) and extract data
+    })   # End if statement to check for table (FORK ONE) and extract data
+    # Also ends try() function
 
     #######################################################################
     # 
@@ -183,7 +186,7 @@ for(e in 1:total){
     #     
     
     # Extract the stage dates. Convert to correct date format using lubridate.
-    if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("date" %in% colnames(races_cn))){
+    try(if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("date" %in% colnames(races_cn))){
       stage_dates <- race_html %>% 
         html_nodes(xpath="//time[@class='datetime small']") %>% 
         html_text() %>% 
@@ -219,8 +222,9 @@ for(e in 1:total){
       
       }   #  END IF statement relating to whether race links exist in the HTML data
       
-    }   # End IF statement for FORK TWO
-      
+    })   # End IF statement for FORK TWO
+    # Also ends try() function 
+    
     # Row bind the small races_cn dataframe to the races_master dataframe
     # Unfortunately I've got two IF statements
     # The first checks that I've actually got a dataframe with a column for 'Stage' and
@@ -236,6 +240,9 @@ for(e in 1:total){
         races_master <- rbind(races_master, races_cn)
       }   # End IF statement checking if dataframe is empty
     }   # End IF statement looking for a complete table (with column 'Stage') ready for binding
+    
+    # )   # End TRY function
+    
     
     }   # End IF statement identifying whether a race result link exists for each calendar entry
     

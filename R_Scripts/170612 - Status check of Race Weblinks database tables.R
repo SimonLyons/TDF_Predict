@@ -28,4 +28,4 @@ for(s in 2005:2017){
 setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
 write.csv(race_weblinks_status, file = "race_weblinks_status.csv", row.names = FALSE)
 
-getwd()
+View(race_weblinks_status)

@@ -2,6 +2,30 @@
 
 
 ------------------------------
+Notes from Wed 14 Jun
+
+I'm running into a number of issues trying to close out my race weblinks scrape and completing writing them to the database. The most troubling one is RStudio aborting in the middle of the race weblinks script running. 
+
+I solved a more minor issue today. The script stopped with an error on a webpage containing a funny mix. It had a table with past winners of the race (not a table with stages and race results weblinks) and then the stages in the usual webpage format. So my script isn't built to deal with tables on the page for another purpose.
+
+Anyway - I think these will be in the vast minority. This race was the USA cyclocross championships in 2016. I've decided not to try and solve this specific issue and instead implemented the use of the 'try()' function. I wrapped two 'try()' functions around "Fork One" and around "Fork Two" do deal with errors being thrown out. Ideally I want to use 'tryCatch()' instead but I've not yet worked out how to write the location of errors to table. Essentially my own version of an error log. This would allow the script to progress without stopping for errors, but then giving me details of the error location at the end so I can go and fault find. I'm not so worried about the race weblinks function, as I think I've got all of the needed races, but I want to make sure I've got a 100% solution for the race/stage result tables scraping function.
+
+The race weblinks function is now running for 2013. I have 2011, 2013 and 2017 to complete. I'm working from home this morning and will hopefully be able to run these while I'm working.
+
+Next steps:
+
+- Continue working on how to record error and warning outputs (tryCatch)
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
 Notes from Tue 13 Jun @ work
 
 I've been experimenting with the TryCatch() function, which has been going okay. I've not yet worked out how to record the errors (to a dataframe). Apparently any executed work within the error function stays inside.

@@ -84,7 +84,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2012")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2016")
   View(Race_Weblink_Year)
   
   ########  ########  ########
