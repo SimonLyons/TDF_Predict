@@ -84,8 +84,9 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2005")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2010")
   View(Race_Weblink_Year)
+  glimpse(Race_Weblink_Year)
   
   ########  ########  ########
   # DELETE test_test_master_results_time table AND test_test_master_results_points table
@@ -134,7 +135,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 901: nrow(Race_Weblink_Year)){
+  for (r in 2170: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
