@@ -237,13 +237,13 @@ if(!is.na(my_url)){
       
       # Write the 'times' table to the MySQL ProCyling database
       if(!is.null(time_tables)){
-        dbWriteTable(conn_local, name = "test_test_master_results_time",
+        dbWriteTable(conn_local, name = "master_results_time",
                      time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master time table
       
       # Write the 'points' table to the MySQL ProCyling database
       if(!is.null(points_tables)){
-        dbWriteTable(conn_local, name = "test_test_master_results_points",
+        dbWriteTable(conn_local, name = "master_results_points",
                      points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master points table
       

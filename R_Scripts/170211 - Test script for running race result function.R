@@ -30,7 +30,7 @@ require(RMySQL)
 
 
 # Define the year
-input_year <- 2011
+input_year <- 2017
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -84,7 +84,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2016")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2005")
   View(Race_Weblink_Year)
   
   ########  ########  ########
