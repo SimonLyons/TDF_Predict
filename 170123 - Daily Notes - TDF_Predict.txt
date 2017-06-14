@@ -2,6 +2,502 @@
 
 
 ------------------------------
+Notes from Wed 14 Jun
+
+I'm running into a number of issues trying to close out my race weblinks scrape and completing writing them to the database. The most troubling one is RStudio aborting in the middle of the race weblinks script running. 
+
+I solved a more minor issue today. The script stopped with an error on a webpage containing a funny mix. It had a table with past winners of the race (not a table with stages and race results weblinks) and then the stages in the usual webpage format. So my script isn't built to deal with tables on the page for another purpose.
+
+Anyway - I think these will be in the vast minority. This race was the USA cyclocross championships in 2016. I've decided not to try and solve this specific issue and instead implemented the use of the 'try()' function. I wrapped two 'try()' functions around "Fork One" and around "Fork Two" do deal with errors being thrown out. Ideally I want to use 'tryCatch()' instead but I've not yet worked out how to write the location of errors to table. Essentially my own version of an error log. This would allow the script to progress without stopping for errors, but then giving me details of the error location at the end so I can go and fault find. I'm not so worried about the race weblinks function, as I think I've got all of the needed races, but I want to make sure I've got a 100% solution for the race/stage result tables scraping function.
+
+The race weblinks function is now running for 2013. I have 2011, 2013 and 2017 to complete. I'm working from home this morning and will hopefully be able to run these while I'm working.
+
+Next steps:
+
+- Continue working on how to record error and warning outputs (tryCatch)
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Tue 13 Jun @ work
+
+I've been experimenting with the TryCatch() function, which has been going okay. I've not yet worked out how to record the errors (to a dataframe). Apparently any executed work within the error function stays inside.
+
+The good news is that with either 'try' or 'tryCatch' I should be able to run long webscraping scripts and have them continue, even if they run into an error. 
+
+
+Next steps:
+
+- Continue working on how to record error and warning outputs
+
+
+
+------------------------------
+Notes from Tue 13 Jun
+
+I've just re-run race weblinks for 2011. It needs checking.
+
+
+------------------------------
+Notes from Mon 12 Jun
+
+I ran into problems on Sunday with R crashing (aborting). I haven't had time yet to work out what's going on. It crashed in 2011 and I think in 2013 and 2016. I've written a short bit of script to return the status of race weblink tables from the database. Non-complete tables are obvious because they have only 5 columns (instead of the new 8 column format) and don't  have a full completment of rows.
+
+I think the 2016 run of the race weblink function may have aborted on row 412.
+
+Years to be run for the race weblinks function are: 2011, 2013, 2016 & 2017
+
+
+
+------------------------------
+Notes from Sun 11 Jun
+
+The latest error kicked up was thanks to one (of ten) tables on a results page missing the column name '#' on the first column. I've decided to do away with the smarts and force the columns names to "#", "Rider Name (Country) Team", "Result". I figure even in the rare occasions this is different, ultimately I want uniformity so the tables will bind correctly and then upload to the database. 
+
+These might be famous last words - but I think I'm close to being ready to scrape the full set of race weblinks and then the full set of race results tables shortly there after. 
+
+### I was running from 2006 to 2012 and hit my first error in the middle of 2009, which is pretty good really. The issue was an 'Article 404' webpage. I've inserted 'RCurl::url.exists(race_url)' into the 'stages' check, which will hopefully sort it out.
+
+
+
+
+------------------------------
+Notes from Sat 10 Jun
+
+I've been working on the race results tables function. I encountered an error last time at row 24 of the 2014 weblinks table. The use case error could be traced to a non-standard column for the Rider Name (Country) Team. In this case it was the Australian national championships and the column was titled 'Rider Name (State)' with no 'Team'.  I've decided to force the column title to match all the others, firstly to ensure uniformity across all the race results tables and to make sure these tables are combined and loaded up to the database without issue. 
+
+Next steps:
+
+- It would be really good to sort out the trycatch() function so I can run long web scrpaes and have the errors returned for sorting out afterwards.
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+
+------------------------------
+Notes from Thu 08 Jun - Evening
+
+I've just tried running the get weblink function for calendar year 2010. It's immediately run into some new use-case errors:
+
+- Non-complete race weblink data, resulting in less race weblinks than stages.
+    example at row 14: http://www.cyclingnews.com/races/czech-cyclo-cross-championships-cn/stages/
+- Error 404 non-existing page
+    example at row 39: http://www.cyclingnews.com/races/croatian-cyclo-cross-championships-cn/stages
+
+I came up with butcher's solution for the first one - repeating the list of results weblinks to fill the number of stages. I figure this will only occur on rare occasions for smaller races. The end result will be by result scraping function will still extract all of the available race result information. The bad news is that the result weblink may not always perfectly line up with the correct stage information....
+
+The second issue is what I need to work on next, and coincidentally will likely require the 'trycatch()' function I was planning on implementing anyway. There appears to be a specific guide on using trycatch() with Error 404 problems at the following link:
+
+https://protocolvital.info/2016/04/21/404-error-handling-with-rs-download-file/
+
+Next steps:
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Improve scraping code to identify errors and report them. Function 'trycatch()' might be an option.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+------------------------------
+Notes from Thu 08 Jun
+
+So it looks like I've got mostly operational functions to go and get all of the data I require. I started running the raec weblink function for Year 2012 and ran into an issue where the (number of) stage weblinks does not match the number of stages in the Stage table. I found the table had a duplicate stage and I inserted a line of code to fix this issue. I'm now running Year 2012 race weblink again.
+
+I've realised it is important to learn how to write webscraping script that collects and returns data on errors and (if possible) continues running. Essentially, if I'm running through a loop and it fails, so collect identifying information for the failing row and then to continue to the next one.
+
+Need to check 2012 race weblinks completed successfully.
+
+
+Next steps:
+
+- Check Race Calendars. Combine into master calendar
+
+- Check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Improve scraping code to identify errors and report them. Function 'trycatch()' might be an option.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Wed 07 Jun - Sunrise session
+
+I've firstly dealt with the error generated at row 746. 
+
+ Error in matrix(NA_character_, nrow = n, ncol = p) : 
+  invalid 'ncol' value (too large or NA)
+
+I discovered the last table in the following page is empty
+http://www.cyclingnews.com/races/prudential-ride-london-classic-2015/ridelondon-classic/results/
+
+Despite being empty, the annoying table has the sub-node 'tbody', which was my previous discriminator for eliminating empty tables. I've now extended the xpath identifier to contain '/tr' as well:
+xpath="//table[.//tbody/tr]"
+
+I'm a bit worried this might exclude some tables I want to keep, if they are missing the '/tr', but I actually doubt there are any of these.
+
+I'm now running the rest of the race calendar. I will, however, have to carry out thorough accuracy testing. I think it actually works! Lots of testing to do yet.....
+
+Next steps:
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- Look at combining the race weblink table into a single master table.
+
+- Work on combining the calendar tables into a master table. 
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+
+------------------------------
+Notes from Tue 06 Jun - End of day
+
+The race result table script has been running relatively well. The latest error is at row 746.
+
+
+------------------------------
+Notes from Tue 06 Jun - Midday
+
+I inserted some code dealing with completely empty 'Result' columns, including no 'Result' column name. Now we're getting somewhere. I started the complete calendar test again and reached row number 85, which is the following event result:
+
+http://www.cyclingnews.com/races/etoile-de-besseges-2015/stage-2/results/
+
+The issue is almost certainly that the Sprint 1 table has no rows (after the columns headings), because the sprint was nulified. I'm sure we'll come across this again. So I need to sort this use-case out too.
+
+
+------------------------------
+Notes from Tue 06 Jun - Midday
+
+Going okay. I sorted the early error, but have now run into the special case of race results tables with no times or points. In this case the track world championship Keirin event!
+http://www.cyclingnews.com/races/uci-track-world-cup-iii-2014-1/day-1/results/
+
+I think the lubridate duration function doesn't like being passed NULL values. 
+
+
+------------------------------
+Notes from Tue 06 Jun - Sunrise session
+
+
+I think I've a reasonably elegant solution to the task of only extracting tables with content. By modifying the xpath selector I'm able to only extract table nodes with the correct child element, in this case a 'tbody' node. 
+
+html_nodes(xpath="//table[.//body]")
+
+So I started running tests and got plenty of problems, but I think I've managed to sort most of them. I'm about to run a bigger test on a whole calendar year, while we go and have breakfast. I anticipate problems!!
+
+I just started it and got my first error stopping everything - at row 6!
+
+
+------------------------------
+Notes from Mon 05 Jun
+
+I think I've sorted the issue of dodgy webpages. I ran my test again and it progressed past the nasty extra 2012 Paris Roubaix race. 
+
+Next problem:  Some result pages apparently have empty table nodes. The one that's causing me grief at present is:
+http://www.cyclingnews.com/races/gp-de-denain-porte-du-hainaut-2015/results
+
+It returns to tables (even though there is a single results table on the page). The first table node is empty, and is causing an immediate error in the rvest 'html_table' function towards the top of the function_race_results_table_V2 function.
+
+Next steps:
+
+- Sort out a method for eliminating the empty table.
+
+- Continue on the Next Steps list below
+
+
+
+------------------------------
+Notes from Sat 03 Jun
+
+I've hopefully solved some interesting problems today.
+
+The main one was I found and issue writing to the database and traced it to results pages not containing and 'points' results. The one I came across was for the Ronde van Drenthe race in 2015 which only has a single results table, for finishing time. This means the 'points_tables' is empty (NULL) and the dbWriteTable function spits the dummy when presented with no data. This was easy enough to solve with an appropriate 'IF' statement. Good to know, as there will be plenty of these results across the calendar.
+
+The earlier problem metastasised when I was dealing with non-breaking spaces in the 'Result' and 'result_type' columns. I (had previously) inserted a clever
+
+I've run a longer test and I think I've come into the issue of a dodgy URL link:
+http://www.cyclingnews.com/races/paris-roubaix-2012/results
+
+The above link has a number of issues. Firstly (and most importantly), it's got the full URL and not just the bit after 'cyclingnews.com'. The second issue is it's for the 2012 Paris-Roubaix and this URL is in the middle of the 2015 Race Weblink table.
+
+Anyway, I think I need to put in a test for URL EXISTS going forward. I can't yet find one that weeds out clearly non-functioning websites....
+
+Next steps:
+
+- Identify and implement a robust url checking decision process
+
+- A full run of the race weblinks functions for all calendar years. (This will take some time!)
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- Look at combining the race weblink table into a single master table.
+
+- Work on combining the calendar tables into a master table. 
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+------------------------------
+Notes from Thu 01 Jun - Day Session (WPD)
+
+I'm about to take a break to go and pick up my wheel from Tom Wallace Cycles. I'm having problems with the race results tables function, I think due to issues clearing the database connections...
+
+
+I've since identified that the issue is the 'Result' column is being created as a list. I had a solution that turned it into an integer, but then this wrecked the 'time' based Result values.
+
+I'll need an IF statement of some type.
+
+
+
+
+
+------------------------------
+Notes from Thu 01 Jun - Sunrise Session
+
+I'm running a test of data from the new race weblinks data being fed into the race table extract. I'm getting a number of issues:
+
+- Problems writing to the database with the updated race table data
+- Issues with my script splitting 'points' tables from 'time' based tables.
+
+Next steps:
+
+- First I'm working on sorting out the 'points' vs 'time' split
+
+
+
+------------------------------
+Notes from Tue 30 May
+
+I've made further refinements to the race weblinks function to correct errors and improve the outcome. 
+
+The main initial error not having 'dplyr' called as a required package at the start of the function. The first time the function was loaded cleanly and needed to 'filter' some rows the code threw out an error that was initially hard to identify. Having 'rvest' loaded meant the piping was working, but the dplyr specific functions were not. I guess when I was writing and testing development of this function I probably had dplyr loaded into the environment. It's definitely been useful working from several computers and getting the code to robustly execute.
+
+Improvements included pulling through the race location from the calendar file for stages where no location data is scraped from the race or stage webpage. I also inserted the 'text_clean' function to uniformly sort out location data.
+
+There was already the usual include script for a delay between webscraping. 
+
+I now need to look at combining the race/stage weblink data for individual years into a master table. This should be able to occur immediately as I think each row entry is already unique and has a PRIMARY KEY column (stage-id). With the dates included for every row, it will be open to immediate filtering and analysis.
+
+I've just run a test of the function using the full 2015 race calendar. I'll save this Daily Notes file before I see the end result.
+
+Next steps:
+
+- A full run of the race weblinks functions for all calendar years. (This will take some time!)
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- Look at combining the race weblink table into a single master table.
+
+- Work on combining the calendar tables into a master table. 
+
+
+------------------------------
+Notes from Mon 29 May @ work
+
+Further testing and refinement of 02_function_obtain_event_race_results_weblinks.R.
+
+Some of the issues I've dealt with include:
+* Some race pages not having any results at all (!!) - e.g. Milan San Remo 2015
+* Some race pages with result links not having a date (at least in the right format)
+
+Next steps:
+
+- Insert time delay script for webscraping
+
+- Further testing and fault finding on 02_function_obtain_event_race_results_weblinks.R
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+------------------------------
+Notes from Sat 27 May
+
+I believe I've got the race weblink extraction function (#02) reasonably functional. I need to do some more testing.
+
+
+
+
+------------------------------
+Notes from Fri 26 May @ work
+
+I've made some improvements to the race weblinks function that essentially deal with the scenario where race_links = 0, i.e. there are no race weblinks. Some 'if' statements did the trick.
+
+I've just tested the function again and it's improved, but it's encountered an error with the 2015 TDF. It can't see the column "results" in the extracted table. I need to look at whether it's picking up an incorrect table as the one loaded in has overall race results....
+
+Next steps:
+
+- Further testing and fault finding on 02_function_obtain_event_race_results_weblinks.R
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Thu 25 May @ work
+
+I made good progress on developing the race weblinks function and think I have it close.
+Initial testing has been positive. I've run into an early issue with testing on the 2015 TDF.
+It appears the race link for the TDF goes to some form of "countdown page":
+# http://www.cyclingnews.com//races/2015-tour-de-france-countdown-2015
+This appears to be more of an issues for the race calendar function than the race weblinks function.
+Anyway - I'll keep testing and see where I get to.
+
+Next steps:
+
+- Continue testing on updated race weblinks function: 02_function_obtain_event_race_results_weblinks.R
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Thu 25 May
+
+I'm making progress on the 02_function_obtain_event_race_results_weblinks.R file. I've inserted IF/ELSE statements and the code to deal with date formats in both table and non-table arrangements. At the moment I'm sorting out the non-table format.
+
+Next steps:
+
+- Finish insertion of new code into race result weblink function dealing with alternate storage of date data. Test and debug.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Wed 24 May @ work
+
+I made some updates to the following test script, in support of sorting out the race weblinks function
+
+170523 - Test script for extracting race weblinks.R
+
+I managed to clean up the table-based data extraction:
+- Deleting Rest Day rows
+- combining table with weblinks
+
+
+------------------------------
+Notes from Tue 23 May @ work
+
+Just when I thought I'd licked this one I discover and issue and open a can of worms. Of course data for multi-race/stage races are stored in different formats. The main obvious difference is that stage races (Grand Tours, etc) are stored in a table, whilst multi-event races (such as National Championships) are stored in a divided page layout.
+
+Next steps:
+
+- Continue work I'm progressing on extracting the data I need from table-based pages.
+
+- Create some sort of test (if statement possibly) to distinguish between the two types.
+
+- Carry out testing. I possibly need to send a race calendar file to work.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Tue 23 May
+
+I managed to fix the main issues with 02_function_obtain_event_race_results_weblinks.R regarding the date extraction. I inserted a suitable bit for single dates (I needed to adjust the html reference and adjust the format of the lubridate conversion to handle dates with a time as well as a date).
+
+Next steps:
+
+- Do a bigger test of the improved 02_function_obtain_event_race_results_weblinks.R function.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Sat 20 May
+
+I carried on testing and improving the race result weblink function. 
+
+Still working on the following function:
+02_function_obtain_event_race_results_weblinks.R
+
+I'm running a limited test (10 rows from 2011) and the function is not returning a correct table. It's not returning the target year data and it's missing the new stage_date column
+
+Next steps:
+
+- Assess changes to race weblink extract function and whether dates (and raceweblinks) are being pulled in accurately). 
+
+- Fix missing single date races and ensure dates are being converted to correct class.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Fri 19 May @ work
+
+
+I did some mild messing around with the race weblinks script, but spent most of the time trying to sort out the issues I had with RStudio freezing on opening.
+
+The good news is that the git process appears to be working well.
+
+
+------------------------------
+Notes from Fri 19 May
+
+I'm getting the race weblinks function updated to pull in the stage dates as well. There are a couple of challenges I've identified. 
+
+The first is the stage dates are apparently displayed only once on the web page, but the race weblinks are usually duplicated. This means when I combine the two sets of lists into a dataframe, they are difference lengths. At the moment the dataframe stops building after it runs out of dates and (as far as I can tell from a short test) I end up with the correct table. However this is a bit of a butcher's method and I don't like it.
+
+The second problem (I'm not certain it's a problem yet) is what happens when there are no race weblinks. I think the stages just get ignored, but I'm a bit worried the previous races' dataframe will be pulled in. 
+
+The first test (for 2011) has just finished and it largely looks successful. The most obvious issue is that single date races (i.e. not stage races) don't have a date. This is probably because a date isn't listed on the race webpage. Dates are also in a straight numeric class. 
+
+Next steps:
+
+- Assess changes to race weblink extract function and whether dates (and raceweblinks) are being pulled in accurately). 
+
+- Fix missing single date races and ensure dates are being converted to correct class.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
+Notes from Thu 18 May - at work
+
+First clone of TDF_Predict git repository from work computer.
+
+Next steps:
+
+- Ensure git is working correctly.
+
+
+------------------------------
+Notes from Thu 18 May
+
+I was away in Canberra for the first part of this week. I did not have any success remotely connecting to my database on the home Study PC.
+
+I've started working on the "02_function_obtain_event_race_results_weblinks.R" function to pull in stage date information so it can be used later in the race result table.
+
+
+Next steps:
+
+- Continue working on modification of race weblink function to pull in stage date information.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+------------------------------
 Notes from Sat 13 May
 
 This morning I've worked on allowing remote connection to my MySQL database. The primary actions performed were creating a function that sets the location of the database password file on both the Windows PC and the Linux laptop, and to modify the race_results_tables_V2 file to point to the results of this new function:
@@ -11,7 +507,6 @@ Next steps:
 - Test remote connection from outside of home WiFI to see if I'm going through the firewall okay.
 
 - Start working on testing webscrape of race results tables.
-
 
 
 ------------------------------
@@ -30,7 +525,6 @@ Next steps:
 - Combine all 'time' tables and 'points' tables into two master tables.
 
 
-
 ------------------------------
 Notes from Wed 10 May
 
@@ -43,9 +537,6 @@ The cool bit I worked out today is how to split a combined column (in this case 
 Next steps:
 
 - Combine the script I developed today to separate columns with the other new script I've developed recently to use rvest to download race result tables, correctly assign headers and assign columns for pts/time and race_id.
-
-
-
 
 
 ------------------------------

@@ -37,6 +37,10 @@ race_results_t01 <- dbFetch(race_results_t01, n=-1)
 View(race_results_t01)
 
 
+race_weblinks_2015 <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 50;")
+View(race_weblinks_2015)
+
+
 # Delete tables from Procycling database
 # I've chosen NOT to use 'IF EXISTS' statement as I want an error generated
 # if the table does not exist

@@ -26,8 +26,11 @@ prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The No
 #################################################
 
 # Function to go and extract all of the race results tables for an entire calendar year
+require(RMySQL)
+
+
 # Define the year
-input_year <- 2013
+input_year <- 2017
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -43,10 +46,16 @@ GetAllRacesInAYear <- function(input_year){
 # 02_function_obtain_event_race_results_weblinks.R   has the function 'write_race_results_tables'
   
   
-  for(input_year in 2016:2017){
+  for(input_year in 2009:2011){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   }
   View(Race_Weblink_Year)
+  
+  e <- 497
+  race_url <- "/races/santos-tour-down-under-2012"
+  if(!agrepl("http", race_url) | !agrepl("www.", race_url) | is.na(race_url)){
+    race_url <- race_url <- paste("http://www.cyclingnews.com", race_url, sep = "")
+  }
   
 # Open each race weblink and extract tables
 # 03_function_race_results_table.R
@@ -56,7 +65,7 @@ GetAllRacesInAYear <- function(input_year){
   # Read database password file
   psswd <- read.csv("passwords_db.csv", header = TRUE)
   
-  input_year <- 2016   # Manual input of selected year
+  input_year <- 2013   # Manual input of selected year
   
   # Create connection to database 
   conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , 
@@ -66,19 +75,72 @@ GetAllRacesInAYear <- function(input_year){
                        LIMIT 10 OFFSET 2200;")
   Race_Weblink_Year <- dbFetch(query, n=-1)
   View(Race_Weblink_Year)
-
   
+  ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+  
+  # Testing with new race weblink format
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2010")
+  View(Race_Weblink_Year)
+  glimpse(Race_Weblink_Year)
+  
+  ########  ########  ########
+  # DELETE test_test_master_results_time table AND test_test_master_results_points table
+  dbSendQuery(conn_local, "DROP table if exists test_test_master_results_time;")
+  dbSendQuery(conn_local, "DROP table if exists test_test_master_results_points;")
+  ########  ########  ########
+  
+  test_test <- dbGetQuery(conn_local, "SELECT * FROM test_test_master_results_time;")
+  View(test_test)
+  
+  rohandennis <- test_test %>% 
+    filter(Rider == "Rohan Dennis")
+  View(rohandennis)
+  
+  simonyates <- test_test %>% 
+    filter(Rider == "Simon Yates")
+  View(simonyates)
+  
+  
+  View(Race_Weblink_Year)
+  glimpse(points_tables)
+  as.integer(points_tables$Result)
+  points_tables$Rider
+  glimpse(time_tables)
+  
+  t <- 1
+  r <- 8
+  
+  View(my_table[[5]])
+  
+  Race_Weblink_Year[902,]
+  my_url <- Race_Weblink_Year$stage_url[902]
+  stage_id <- Race_Weblink_Year$stage_id[902]
+  stage_date <- Race_Weblink_Year$date[902]
+  
+  ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+  ########################################################
+
+    
   # Use Text Progress Bar
   total <- nrow(Race_Weblink_Year)
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 1: nrow(Race_Weblink_Year)){
+  for (r in 2170: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
     
-    write_race_results_tables(Race_Weblink_Year[r, "stage_url"], Race_Weblink_Year[r, "race_id"])
+    write_race_results_tables(Race_Weblink_Year[r, "stage_url"], Race_Weblink_Year[r, "stage_id"], Race_Weblink_Year[r, "date"])
     
     # Sleep function to randomise web queries
     sleep <- abs(rnorm(1)) + runif(1, 0, .25)
