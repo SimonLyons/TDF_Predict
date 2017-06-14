@@ -1,6 +1,32 @@
 
 
 
+
+
+------------------------------
+Notes from Fri 15 Jun
+
+A fairly unproductice morning. A script I was running last night for the race results tables for 2010 was interrupted. Then the computer restarted. I'm not sure where that script got up to (I guess I can check in the database) and the computer took ages to reboot completely. I started using the laptop and then this lead to challenges merging my GitHub files. I spent most of the morning learning more about merging and recovering files on the git. I've got more to learn!
+
+It is positive to have so many results now populating my master_results_time and master_results_points tables in the database. I did a quick check and the master_results_time table has 827,531 rows/entries!! (And I'm only up to 2010). I did a quick dplyr filter on Richie Porte (which worked) but then it became quickly clear I need to work out how to convert the time values back into the correct class as they are stored as a character, in the unique lubridate format. 
+
+Next steps:
+
+- More to learn on merging git branches.
+
+- Work out how to convert back Duration values stored in the database results tables (currently a character).
+
+- Continue working on how to record error and warning outputs (tryCatch)
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
 ------------------------------
 Notes from Wed 14 Jun
 

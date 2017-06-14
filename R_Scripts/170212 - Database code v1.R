@@ -123,3 +123,14 @@ View(new_df2)
 query3 <- dbSendQuery(conn_local, "SELECT * FROM race_weblinks_2017;")
 new_df3 <- dbFetch(query3, n=-1)
 View(new_df3)
+
+
+master_time <- dbGetQuery(conn_local, "SELECT* FROM master_results_time;")
+summary(master_time)
+
+library(dplyr)
+library(lubridate)
+richie_porte <- master_time %>%
+  filter(Rider == "Richie Porte") %>% 
+  summarise(Total_Time = sum(dseconds(richie_porte$Duration)))
+lubridate::
