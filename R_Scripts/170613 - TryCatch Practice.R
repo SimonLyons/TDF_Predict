@@ -4,10 +4,10 @@
 # Set up a dataframe with some test cycling news calendar weblinks
 my_url <- as.data.frame(matrix(data = NA, nrow = 3, ncol = 2))
 colnames(my_url) <- c("Year", "url")
-my_url[ , 1] <- 2013:2015
+my_url[ , 1] <- 2016:2018
 my_url[ , 2] <- paste0("http://www.cyclingnews.com/road/races/calendar/", my_url[ , 1], "/")
 
-# Set the working directory
+# Set the working directory (for work laptop)
 setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.1 Sandpit/")
 
 
@@ -38,7 +38,7 @@ for(c in 1:length(my_url)){
   }, finally = {
     
     print(paste0("Through round: ", c))
-    
+    ?warning
   }   # End FINALLY
     
   ))   # End TryCatch
