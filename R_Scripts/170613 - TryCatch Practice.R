@@ -12,6 +12,8 @@ my_url[ , 2] <- paste0("http://www.cyclingnews.com/road/races/calendar/", my_url
 
 # Set the working directory (for work laptop)
 setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.1 Sandpit/")
+# Set the working directory (for Study PC)
+setwd("C:/b_Data_Analysis/Sandpit/")
 
 # Prepare a dataframe to collect error messages and locations
 # error_counter <- 1
