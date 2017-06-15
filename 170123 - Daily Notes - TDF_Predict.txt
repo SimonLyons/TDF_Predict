@@ -1,10 +1,21 @@
 
 
+------------------------------
+Notes from Thu 15 Jun @ work
+
+I've had a crack at improving my understanding and use of the tryCatch() function and made some progress. The solution to capturing the error/warning apparently seems to be putting a robust file access solution into the tryCatch() function, in this case accessing a .csv file and then writing new error/warning message to this file.
+
+Next steps:
+
+- Sort out why it's only recording the first warning message (but still recording the year and error counter numbers just fine. It's recording <NA> of the rest. 
+
+- Looking at extending this to my TDF webscraping functions.
+
 
 
 
 ------------------------------
-Notes from Fri 15 Jun
+Notes from Thu 15 Jun
 
 A fairly unproductice morning. A script I was running last night for the race results tables for 2010 was interrupted. Then the computer restarted. I'm not sure where that script got up to (I guess I can check in the database) and the computer took ages to reboot completely. I started using the laptop and then this lead to challenges merging my GitHub files. I spent most of the morning learning more about merging and recovering files on the git. I've got more to learn!
 
