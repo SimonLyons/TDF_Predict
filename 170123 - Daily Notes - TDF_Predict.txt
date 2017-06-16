@@ -1,5 +1,40 @@
 
 
+
+------------------------------
+Notes from Sat 17 Jun
+
+I've updated the race weblinks script to include the tryCatch() function. This is meant to create a method of capturing errors in an error log file (weblinks_error_list.csv) and allow the script to continue scraping further weblinks.
+
+I've just watched the script run into a warning at row 21 of 1274 for 2013 and it's printed my warning script to the console and continued to the next row. I've just checked the error log and it's empty! Time to check whether I create a blank error log everytime a new row is started.....
+
+Upon running the new function for 2013, it's caused R to abort when running Row 43. I've just it a second time and the issue happens at exactly the same point. This is frustrating as it's very difficult to determine what is causing the abort.
+
+I've looked at the diagnostics reports (which have nothing useful) and tried emptying the Global Environment. I really don't think it's a memory issue as the system memory is at less than half capacity during the script execution.
+
+I'm now doing an update to both R and R Studio to see if this helps.
+
+Next steps:
+
+- More to learn on merging git branches.
+
+- Work out how to convert back Duration values stored in the database results tables (currently a character).
+
+- Continue working on how to record error and warning outputs (tryCatch) (I think I've got this going)
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+
+
+
+
+
 ------------------------------
 Notes from Thu 15 Jun @ work
 

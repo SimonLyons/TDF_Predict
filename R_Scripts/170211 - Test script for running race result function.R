@@ -30,7 +30,7 @@ require(RMySQL)
 
 
 # Define the year
-input_year <- 2017
+input_year <- 2013
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){

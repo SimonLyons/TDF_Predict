@@ -106,6 +106,12 @@ for(e in 1:total){
     # I'm confident in its use.
     # try(   # I've inserted this to allow the weblinks function to progress past errors
     
+    # Set the working directory to the location of the error log CSV file
+    setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
+    # error_list <- as.data.frame(matrix(data = NA, nrow = 0, ncol = 6))
+    # colnames(error_list) <- c("Year", "Row_No", "Error", "Error_Counter", "Fork_No", "race_url")
+    # write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+    
     #######################################################################
     #
     # There are two forks here. One for dates (and stage data) stored in a table
@@ -119,7 +125,7 @@ for(e in 1:total){
     # 
     # Do a test for the 'table' node to see if a table exists.
     # If it does, use the table method to extract the stage dates and other data.
-    try(if(length(html_nodes(race_html, xpath="//table")) > 0){
+    tryCatch({if(length(html_nodes(race_html, xpath="//table")) > 0){
       # Extract information when stored in table
       races_cn <- race_html %>% 
         html_nodes(xpath="//table") %>% 
@@ -155,7 +161,6 @@ for(e in 1:total){
             races_cn$stage_url <- race_links
   
           }   # End IF statement that seeks to add race_links to table
-
           
           # Convert date values to correct class using lubridate
           races_cn$date <- mdy(races_cn$date)
@@ -177,8 +182,34 @@ for(e in 1:total){
         
       }   # End IF statement checking for results column in the column names
 
-    })   # End if statement to check for table (FORK ONE) and extract data
-    # Also ends try() function
+      # End IF statement and start WARNING and ERROR component of tryCatch() function
+    }
+      }, warning = function(war) {   # Ends IF statement to check for table (FORK ONE) and extract data
+      print(paste0("Calendar Year ", input_year, ", row ", e, ", WARNING: ", war))
+      error_list <- read.csv(file = "weblinks_error_list.csv")
+      error_counter <- nrow(error_list) + 1
+      error_list[error_counter, 1] <- input_year
+      error_list[error_counter, 2] <- e
+      error_list[error_counter, 3] <- war
+      error_list[error_counter, 4] <- error_counter
+      error_list[error_counter, 5] <- 2
+      error_list[error_counter, 6] <- race_url
+      write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+      
+    }, error = function(err) {
+      print(paste0("Calendar Year ", input_year, ", row ", e, ", ERROR: ", err))
+      error_list <- read.csv(file = "weblinks_error_list.csv")
+      error_counter <- nrow(error_list) + 1
+      error_list[error_counter, 1] <- input_year
+      error_list[error_counter, 2] <- e
+      error_list[error_counter, 3] <- err
+      error_list[error_counter, 4] <- error_counter
+      error_list[error_counter, 5] <- 2
+      error_list[error_counter, 6] <- race_url
+      write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+    
+    }   # End 'error' section
+    )   # End tryCatch() function
 
     #######################################################################
     # 
@@ -186,7 +217,7 @@ for(e in 1:total){
     #     
     
     # Extract the stage dates. Convert to correct date format using lubridate.
-    try(if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("date" %in% colnames(races_cn))){
+    tryCatch({if(!(length(html_nodes(race_html, xpath="//table")) > 0) | !("date" %in% colnames(races_cn))){
       stage_dates <- race_html %>% 
         html_nodes(xpath="//time[@class='datetime small']") %>% 
         html_text() %>% 
@@ -222,8 +253,33 @@ for(e in 1:total){
       
       }   #  END IF statement relating to whether race links exist in the HTML data
       
-    })   # End IF statement for FORK TWO
-    # Also ends try() function 
+      # End IF statement (FORK TWO) and start WARNING and ERROR component of tryCatch() function
+    }
+      }, warning = function(war) {   # Ends IF statement (FORK TWO) to check for table (FORK ONE) and extract data
+      print(paste("Calendar Year ", input_year, ", row ", e, ", WARNING: ", war))
+      error_list <- read.csv(file = "weblinks_error_list.csv")
+      error_counter <- nrow(error_list) + 1
+      error_list[error_counter, 1] <- input_year
+      error_list[error_counter, 2] <- e
+      error_list[error_counter, 3] <- war
+      error_list[error_counter, 4] <- error_counter
+      error_list[error_counter, 5] <- 2
+      error_list[error_counter, 6] <- race_url
+      write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+      
+    }, error = function(err) {
+      print(paste("Calendar Year ", input_year, ", row ", e, ", ERROR: ", err))
+      error_list <- read.csv(file = "weblinks_error_list.csv")
+      error_counter <- nrow(error_list) + 1
+      error_list[error_counter, 1] <- input_year
+      error_list[error_counter, 2] <- e
+      error_list[error_counter, 3] <- err
+      error_list[error_counter, 4] <- error_counter
+      error_list[error_counter, 5] <- 2
+      error_list[error_counter, 6] <- race_url
+      write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+      
+    })   # End tryCatch() function
     
     # Row bind the small races_cn dataframe to the races_master dataframe
     # Unfortunately I've got two IF statements
