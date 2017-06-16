@@ -33,6 +33,7 @@ for(c in 1:nrow(my_url)){
     error_list <- read.csv(file = "error_list.csv")
     error_counter <- nrow(error_list) + 1
     error_list[error_counter, 1] <- my_url[c, 1]
+    print(war)
     error_list[error_counter, 2] <- war
     error_list[error_counter, 3] <- error_counter
     write.csv(error_list, "error_list.csv", row.names = FALSE)
