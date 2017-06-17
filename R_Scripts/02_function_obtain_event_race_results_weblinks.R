@@ -11,22 +11,24 @@ require(rvest)
 require(lubridate)
 require(dplyr)
   
-# Set working directory to user passwords location
-setwd("C:/b_Data_Analysis/Database")
-# Read password file
+# Set working directory to user passwords location (Study PC)
+# setwd("C:/b_Data_Analysis/Database")
+# Set working directory for HP Laptop
+setwd("/home/data_analysis/database")
+
+# Read password file (local connection)
 psswd <- read.csv("passwords_db.csv", header = TRUE)
-conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]),
-                        password = as.character(psswd[psswd$type == "Manager", "password"]),
-                        dbname='ProCycling', host='localhost')  
+# conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]),
+                        # password = as.character(psswd[psswd$type == "Manager", "password"]),
+                        # dbname='ProCycling', host='localhost')  
+
+# Read password file (remote connection)
+conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
+                        password = as.character(psswd[psswd$type == "Manager", "password"]),  
+                        dbname='ProCycling', host='192.168.1.1', port=3306) 
+
 # Read in calendar dataframe from the ProCycling database
-# query <- dbSendQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, ";", sep = ""))
-# Note the 'n=-1' is required to return all rows, otherwise the database only returns a max of 500.
-# calendar_CN <- dbFetch(query, n=-1)
-
-# Instead use combined 'dbGetQuery' to both query and retrieve database calendar table
-##### Set to a limit of 3 rows for testing purposes #######################################
 calendar_CN <- dbGetQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, " ;", sep = ""))
-
 
 # Create a counter that keeps a running tally of the columns in the master dataframe
 # Starts at 1 (obviously) and then adds a row with each new race weblink
@@ -34,15 +36,7 @@ col_counter <- 1
 
 # Create an empty master dataframe
 races_master <- as.data.frame(matrix(data = NA, 0, ncol = 8 ))
-# colnames(races_master)[1] <- "stage_url"
-# colnames(races_master)[2] <- "stage_id"
-# colnames(races_master)[3] <- "race_id"
-# colnames(races_master)[4] <- "race_details"
-# colnames(races_master)[5] <- "stage_date"
 colnames(races_master) <- c("Stage", "date", "location", "distance", "stage_url", "stage_id", "race_id", "race_details")
-
-
-
 
 # Use Text Progress Bar
 total <- nrow(calendar_CN)
@@ -61,7 +55,6 @@ for(e in 1:total){
   if (!is.na(calendar_CN$web_link[e])){
     # Extract relevant weblink and race name
     race_url <- paste("http://www.cyclingnews.com", calendar_CN$web_link[e], sep = "") 
-    # race_url <- "http://www.cyclingnews.com/races/tour-de-san-luis-2013/"
     race_details <- calendar_CN$race_details[e]
     race_id <- calendar_CN$race_id[e]
 
@@ -106,11 +99,20 @@ for(e in 1:total){
     # I'm confident in its use.
     # try(   # I've inserted this to allow the weblinks function to progress past errors
     
-    # Set the working directory to the location of the error log CSV file
-    setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
-    # error_list <- as.data.frame(matrix(data = NA, nrow = 0, ncol = 6))
-    # colnames(error_list) <- c("Year", "Row_No", "Error", "Error_Counter", "Fork_No", "race_url")
-    # write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+    # Set the working directory to the location of the error log CSV file (Study PC)
+    # setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
+    # Set the working directory to the location of the error log CSV file (HP Laptop)
+    setwd("/home/data_analysis/projects/TDF_Predict/")
+    
+    #######################################################################
+    # The following script is used to create a new weblinks error list csv file
+    # It's not required after the computer being used has a file
+    # 
+    error_list <- as.data.frame(matrix(data = NA, nrow = 0, ncol = 6))
+    colnames(error_list) <- c("Year", "Row_No", "Error", "Error_Counter", "Fork_No", "race_url")
+    write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+    # 
+    #######################################################################
     
     #######################################################################
     #
