@@ -8,7 +8,7 @@ set_db_password <- function(){
     # Linux laptop
     dbpsswddir <- "/home/a_friend/data_analysis/database/",
     # Windows PC
-    dbpsswddir <- "C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files"
+    dbpsswddir <- "C:/b_Data_Analysis/Database/"
   )   # End 'ifelse' statement
   print(paste("You have set the location of the database password file as: ", dbpsswddir, sep = ""))
   return(dbpsswddir)

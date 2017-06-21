@@ -16,7 +16,7 @@ conn_local <- dbConnect(MySQL(), user='test_DB_manager', password='db_manager_45
 # Remote machine
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                         password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                        dbname='ProCycling', host='192.168.1.1', port=3306) 
+                        dbname='ProCycling', host='192.168.1.5', port=3306) 
 
 # Create ProCycling stats database
 dbSendQuery(conn_local, "CREATE DATABASE ProCycling;")
