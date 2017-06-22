@@ -1,6 +1,41 @@
 
 
 
+
+------------------------------
+Notes from Thu 22 Jun
+
+I'm apparently still muddling through my use of git when it comes to multiple computers. This Daily Notes file is the best example as I managed to lose a couple of days notes when dealing with out of phase updates between the HP Laptop and Study PC. I didn't think I was working on different files or really even updating stuff at different times. Anyway - more learning there which I'll defer until after I've got the full dataset scraped for the first time. 
+
+I believe I've sorted out converting durations stored in the database back to the correct class/format. Sadly, I haven't discovered an elegant function that does this easily. It's a bit frustrating that a lubridate function doesn't do this. There's some irony in the fact lubridate recongnises time/date formats in strings in so many formats.... other than it's own duration!!
+
+My new script for dealing with duration is in the following working file:
+
+170622 - Working with lubridate duration.R
+
+Next steps:
+
+- Integrate my new duration conversion into script accessing the database.
+
+- Possible consider storing race times as lubridate::seconds instead of lubridate::duration.
+
+- Scrape 2013 race weblinks data
+
+- Continue working on how to record error and warning outputs (tryCatch) (I think I've got this going)
+
+- Check Race Calendars. Combine into master calendar
+
+- Continue evolution and check existing Race Weblink tables. Combine into master. Scrape the rest (which is most)
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+
+
+
 ------------------------------
 Notes from Sat 17 Jun
 
