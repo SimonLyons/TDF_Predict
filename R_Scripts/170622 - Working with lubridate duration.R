@@ -22,16 +22,19 @@ regexpr("s", dur10)
 
 # Ths IF statement checks for the existence of the seconds 's' and if TRUE, does the conversion to
 # lubridate 'seconds'. It can then be manipulated as a time variable.
-if(regexpr("s", dur10)){
-  dur10 <- seconds(substr(dur10, 0, regexpr("s", dur10)-1))
-}
-class(dur10)
+
+dur_to_sec <- function(u){
+  if(regexpr("s", u)){
+    u <- seconds(substr(u, 0, regexpr("s", u)-1))
+  }   # end IF statement checking for seconds, 's'
+  return(u)
+}   # end function 'dur_to_sec'
+
 
 # Convert variable 'dur05' as well.
 if(regexpr("s", dur05)){
   dur05 <- seconds(substr(dur05, 0, regexpr("s", dur05)-1))
 }
-
 
 # Some practice manipulation.
 

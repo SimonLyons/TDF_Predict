@@ -131,6 +131,20 @@ summary(master_time)
 library(dplyr)
 library(lubridate)
 richie_porte <- master_time %>%
-  filter(Rider == "Richie Porte") %>% 
-  summarise(Total_Time = sum(dseconds(richie_porte$Duration)))
+  filter(Rider == "Richie Porte") 
+%>% 
+  # summarise(Total_Time = sum(dseconds(richie_porte$Duration)))
+
+  richie_porte$Duration_s
+
+richie_porte$Duration_s <- dur_to_sec(richie_porte$Duration)
+
+richie_porte$Duration_s[10] + richie_porte$Duration_s[2]
+
+total_duration_rp <- seconds(sum(richie_porte$Duration_s[!is.na(richie_porte$Duration_s)]))
+class(total_duration_rp)
+as.period(total_duration_rp)
+
 lubridate::
+
+lapply(richie_porte$Duration, dur_to_sec)
