@@ -51,7 +51,7 @@ GetAllRacesInAYear <- function(input_year){
   }
   View(Race_Weblink_Year)
   
-  e <- 497
+  e <- 693
   race_url <- "/races/santos-tour-down-under-2012"
   if(!agrepl("http", race_url) | !agrepl("www.", race_url) | is.na(race_url)){
     race_url <- race_url <- paste("http://www.cyclingnews.com", race_url, sep = "")

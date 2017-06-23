@@ -1,5 +1,32 @@
 
 
+------------------------------
+Notes from Sat 24 Jun
+
+I've spent the morning running the race weblinks function through the 2013 calendar entries. I've run into some problems, but it would appear the script wasn't dealing with them thanks to the updates I'd lost through merging to git.
+
+Anyway - I think I've got it running again. I needed to insert two items back:
+
+1. A logical test at the first IF statement to check the race url is longer than 7 characters. The error I've encountered is some race links are pointing to the head cyclingnews.com/races page, which is both live and contains an overload of stage data.
+2. Some weird race tables are not binding with the race master. I decided to avoid having to come up with some complex solution for very rare (and uneeded) cases by inserting a tryCatch() around the rbind.
+
+I've now got the race weblinks function running again for 2013.
+
+Simultaneously I've been working on how to deal with durations in the master_time table. I wrote a small function at work designed to convert durations (stored as strings in the database) back into a time format. That seems to work, but I'm considering what the best method for storing will be long term. It might be preferable to just convert all durations to seconds (at the moment of source) and then convert to a numeric or interger, and then store them as a number in the database. 
+
+Next steps:
+
+- Integrate my new duration conversion into script accessing the database.
+
+- Possible consider storing race times as lubridate::seconds instead of lubridate::duration.
+
+- Check Race Calendars. Combine into master calendar
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
 
 
 ------------------------------

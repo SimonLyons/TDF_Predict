@@ -14,7 +14,8 @@ require(dplyr)
 # Set working directory to user passwords location (Study PC)
 # setwd("C:/b_Data_Analysis/Database")
 # Set working directory for HP Laptop
-setwd("/home/data_analysis/database")
+# setwd("/home/data_analysis/database")
+setwd("/home/a_friend/data_analysis/database/")
 
 # Read password file (local connection)
 psswd <- read.csv("passwords_db.csv", header = TRUE)
@@ -25,7 +26,7 @@ psswd <- read.csv("passwords_db.csv", header = TRUE)
 # Read password file (remote connection)
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                         password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                        dbname='ProCycling', host='192.168.1.1', port=3306) 
+                        dbname='ProCycling', host='192.168.1.5', port=3306) 
 
 # Read in calendar dataframe from the ProCycling database
 calendar_CN <- dbGetQuery(conn_local, paste("SELECT * FROM race_calendar_", input_year, " ;", sep = ""))
@@ -52,7 +53,7 @@ for(e in 1:total){
   races_cn <- NA
 
   # The LOOP needs to ignore events with no weblink
-  if (!is.na(calendar_CN$web_link[e])){
+  if ((!is.na(calendar_CN$web_link[e])) && (nchar(calendar_CN$web_link[e]) > 7)){
     # Extract relevant weblink and race name
     race_url <- paste("http://www.cyclingnews.com", calendar_CN$web_link[e], sep = "") 
     race_details <- calendar_CN$race_details[e]
@@ -102,7 +103,7 @@ for(e in 1:total){
     # Set the working directory to the location of the error log CSV file (Study PC)
     # setwd("C:/b_Data_Analysis/Projects/TDF_Predict/Data_Files/")
     # Set the working directory to the location of the error log CSV file (HP Laptop)
-    setwd("/home/data_analysis/projects/TDF_Predict/")
+    setwd("/home/a_friend/data_analysis/projects/TDF_Predict/")
     
     #######################################################################
     # The following script is used to create a new weblinks error list csv file
@@ -295,7 +296,34 @@ for(e in 1:total){
         # Set location from Calendar dataframe if scraped location is empty
         races_cn[is.na(races_cn$location), "location"] <- calendar_CN$location[e]
         
-        races_master <- rbind(races_master, races_cn)
+        # We'll use tryCatch() to deal with issues binding tables
+        tryCatch({
+          races_master <- rbind(races_master, races_cn)
+        }, warning = function(war) {   # Ends IF statement (FORK TWO) to check for table (FORK ONE) and extract data
+          print(paste("Calendar Year ", input_year, ", row ", e, ", WARNING: ", war))
+          error_list <- read.csv(file = "weblinks_error_list.csv")
+          error_counter <- nrow(error_list) + 1
+          error_list[error_counter, 1] <- input_year
+          error_list[error_counter, 2] <- e
+          error_list[error_counter, 3] <- war
+          error_list[error_counter, 4] <- error_counter
+          error_list[error_counter, 5] <- 3
+          error_list[error_counter, 6] <- race_url
+          write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+          
+        }, error = function(err) {
+          print(paste("Calendar Year ", input_year, ", row ", e, ", ERROR: ", err))
+          error_list <- read.csv(file = "weblinks_error_list.csv")
+          error_counter <- nrow(error_list) + 1
+          error_list[error_counter, 1] <- input_year
+          error_list[error_counter, 2] <- e
+          error_list[error_counter, 3] <- err
+          error_list[error_counter, 4] <- error_counter
+          error_list[error_counter, 5] <- 3
+          error_list[error_counter, 6] <- race_url
+          write.csv(error_list, "weblinks_error_list.csv", row.names = FALSE)
+        })   # End tryCatch() for rbind
+        
       }   # End IF statement checking if dataframe is empty
     }   # End IF statement looking for a complete table (with column 'Stage') ready for binding
     
