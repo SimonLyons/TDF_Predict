@@ -4,8 +4,8 @@
 # Function write_race_results_tables
 
 # Build function to take results url from Cycling News and save database tables with each race result. 
-# Input variables are the race results URL and the unique stage_id code.
-# This is my unique race code, to be used in the database as a KEY identifier.
+# Input variables are the race results URL, unique stage_id code and the stage date.
+# This is my unique stage code, to be used in the database as a KEY identifier.
 write_race_results_tables <- function(my_url, stage_id, stage_date){
   
 require(RMySQL)    # For database functions
@@ -68,10 +68,12 @@ if(!is.na(my_url)){
     
     # Read in the header artifact - often the name of the first table ('Full Results')
     # I've made an adjustment (06JUN17) to the xpath selector to refine the list
-    # of header nodes to only those after a 'div' separator of class 'results'
+    # of header nodes to only those containing the text 'results'
+    # Further adjustment (26JUN17) to account for case insensitive search using 'translate'
+    # https://stackoverflow.com/questions/8474031/case-insensitive-xpath-contains-possible
     first_header <- "my_html.xml" %>% 
       read_html() %>% 
-      html_nodes(xpath="//h4[contains(text(),'Results')]") %>% 
+      html_nodes(xpath="//h4[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'results')]") %>% 
       html_text()
     if(length(first_header) > 0){
       first_header <- first_header[[1]]
@@ -82,7 +84,7 @@ if(!is.na(my_url)){
     if(length(first_header) == 0){
       first_header <- "my_html.xml" %>% 
         read_html() %>% 
-        html_nodes(xpath="//h3[contains(text(),'Results')]") %>% 
+        html_nodes(xpath="//h3[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'results')]") %>% 
         html_text()
     }   # End 'h3' IF statement
     
@@ -169,19 +171,47 @@ if(!is.na(my_url)){
             # and therefore the "Result" title is missing.
             colnames(my_table[[t]])[5] <-  "Result"
             
-            # Use lubridate::as.duration::hms to do time class conversion
-            my_table[[t]]$Result <- as.duration(hms(my_table[[t]]$Result))
+            # Use lubridate::seconds::hms to do time class conversion
+            # I previously used 'lubridate::as.duration' but didn't like working with the format
+            my_table[[t]]$result_seconds <- seconds(hms(my_table[[t]]$Result))
             
             ##################################
-            # 6. Create new column 'Duration' with cumulative time
+            # 6. Create new column 'duration' with cumulative time
             ##################################
             # Change NA columns to value (numeric) '0'
-            NA_rows <- is.na(my_table[[t]]$Result)
-            my_table[[t]]$Result[NA_rows] <- 0
-            # dplyr::mutate new "Duration" column
-            my_table[[t]] <- mutate(my_table[[t]], Duration = cumsum(Result))
-            # Convert new column into correct date format
-            my_table[[t]]$Duration <- duration(my_table[[t]]$Duration)
+            NA_rows <- is.na(my_table[[t]]$result_seconds)
+            my_table[[t]]$result_seconds[NA_rows] <- 0
+            
+            
+            
+            ########################################################
+            ########################################################
+            ########################################################
+            ########################################################
+            
+            # I need to do some testing to validate this section
+            # In particular, I don't think it will cope with non-numeric values
+            # such as may be introduced by DNFs.
+            
+            # Create new 'duration' column with cumulative time
+            # Set the first 'duration' row value as the first 'result_seconds' value
+            my_table[[t]]$duration[1] <- as.integer(my_table[[t]]$result_seconds[1])
+            for(s in 2:nrow(my_table[[t]])){
+              if(as.numeric(my_table[[t]]$result_seconds[s]) == 0){
+                my_table[[t]]$duration[s] <- as.integer(my_table[[t]]$duration[(s-1)])
+              } else {
+                my_table[[t]]$duration[s] <- as.integer(my_table[[t]]$duration[1] + my_table[[t]]$result_seconds[s])
+              }   # End ELSE statement
+            }   # End FOR statement running through 'duration' column
+            
+            ########################################################
+            ########################################################
+            ########################################################
+            ########################################################
+            
+            
+            
+            
             
             ##################################
             # 7. Correct non-finishing entries (e.g. DNF, DNS & DSQ).
@@ -221,7 +251,6 @@ if(!is.na(my_url)){
         ifelse(my_table[[t]]$result_type[1] == "time", time_tables <- rbind(time_tables, my_table[[t]]), points_tables <- rbind(points_tables, my_table[[t]]))
       }
       
-      
       # View(points_tables)
       # View(time_tables)
       # class(time_tables)
@@ -229,11 +258,6 @@ if(!is.na(my_url)){
       ##################################
       # 9. Write two sets of tables to database
       ##################################
-      
-      # I think I might need to use the 'dbSendQuery' function to make ammendments to an existing table
-      
-      # dbSendQuery(conn_local, "")
-      
       
       # Write the 'times' table to the MySQL ProCyling database
       if(!is.null(time_tables)){

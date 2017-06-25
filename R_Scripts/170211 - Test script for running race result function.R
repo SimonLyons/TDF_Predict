@@ -84,7 +84,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2010")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2013")
   View(Race_Weblink_Year)
   dplyr::glimpse(Race_Weblink_Year)
   
@@ -97,11 +97,15 @@ GetAllRacesInAYear <- function(input_year){
   test_test <- dbGetQuery(conn_local, "SELECT * FROM test_test_master_results_time;")
   View(test_test)
   
-  rohandennis <- test_test %>% 
+  
+  master_results_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
+  dplyr::glimpse(master_results_time)
+  
+  rohandennis <- master_results_time %>% 
     filter(Rider == "Rohan Dennis")
   View(rohandennis)
   
-  simonyates <- test_test %>% 
+  simonyates <- master_results_time %>% 
     filter(Rider == "Simon Yates")
   View(simonyates)
   
@@ -112,13 +116,13 @@ GetAllRacesInAYear <- function(input_year){
   points_tables$Rider
   glimpse(time_tables)
   
-  t <- 1
+  t <- 3
   r <- 8
   
   View(my_table[[5]])
   
-  Race_Weblink_Year[902,]
-  my_url <- Race_Weblink_Year$stage_url[902]
+  Race_Weblink_Year[901,]
+  my_url <- Race_Weblink_Year$stage_url[845]
   stage_id <- Race_Weblink_Year$stage_id[902]
   stage_date <- Race_Weblink_Year$date[902]
   
