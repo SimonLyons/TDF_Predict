@@ -19,6 +19,11 @@ setwd("C:/b_Data_Analysis/Database")
 # Read database password file
 psswd <- read.csv("passwords_db.csv", header = TRUE)
 
+# Clear database connections
+all_cons <- dbListConnections(MySQL())
+for(con in all_cons) 
+  dbDisconnect(con)
+
 # Create connection to database 
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                         password = as.character(psswd[psswd$type == "Manager", "password"]),  
@@ -97,6 +102,10 @@ if(!is.na(my_url)){
       my_captions <- c(first_header, my_captions)
     }
     
+    # On rare occasions captions have invalid UTF-8 characters
+    # e.g. http://www.cyclingnews.com/races/etoile-de-bessges-2013/stage-1/results/
+    my_captions <- text_clean(my_captions)
+    
     # If there are no tables, the rest of the function can be skipped
     # An example is Stage 2 of the 2015 Mitchelton Bay Cycling Classic
     # http://www.cyclingnews.com/races/mitchelton-bay-cycling-classic-2015/race-2/results/
@@ -136,8 +145,12 @@ if(!is.na(my_url)){
                                     sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
           my_table[[t]] <- separate(data = my_table[[t]], into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
           
-          # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name
+          # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name and team name
           my_table[[t]]$Rider <- text_clean(my_table[[t]]$Rider)
+          my_table[[t]]$Team <- text_clean(my_table[[t]]$Team)
+          
+          # Remove '(' from Country column
+          my_table[[t]]$Country <- gsub("\\)", "", my_table[[t]]$Country)
           
           # Assign (an entire) column to the table title, so this can be filtered for analysis
           my_table[[t]][,"result_class"] <- my_captions[t]
@@ -183,34 +196,19 @@ if(!is.na(my_url)){
             my_table[[t]]$result_seconds[NA_rows] <- 0
             
             
-            
-            ########################################################
-            ########################################################
-            ########################################################
-            ########################################################
-            
-            # I need to do some testing to validate this section
-            # In particular, I don't think it will cope with non-numeric values
-            # such as may be introduced by DNFs.
-            
             # Create new 'duration' column with cumulative time
             # Set the first 'duration' row value as the first 'result_seconds' value
             my_table[[t]]$duration[1] <- as.integer(my_table[[t]]$result_seconds[1])
-            for(s in 2:nrow(my_table[[t]])){
-              if(as.numeric(my_table[[t]]$result_seconds[s]) == 0){
-                my_table[[t]]$duration[s] <- as.integer(my_table[[t]]$duration[(s-1)])
-              } else {
-                my_table[[t]]$duration[s] <- as.integer(my_table[[t]]$duration[1] + my_table[[t]]$result_seconds[s])
-              }   # End ELSE statement
-            }   # End FOR statement running through 'duration' column
-            
-            ########################################################
-            ########################################################
-            ########################################################
-            ########################################################
-            
-            
-            
+            if(nrow(my_table[[t]]) > 1){
+              for(s in 2:nrow(my_table[[t]])){
+                if(as.numeric(my_table[[t]]$result_seconds[s]) == 0){
+                  my_table[[t]]$duration[s] <- as.integer(my_table[[t]]$duration[(s-1)])
+                } else {
+                  my_table[[t]]$duration[s] <- as.integer(my_table[[t]]$duration[1] + my_table[[t]]$result_seconds[s])
+                }   # End ELSE statement
+              }   # End FOR loop running from row '2' to the end of the table
+            }   # End IF statement checking for table length greater than '1'
+               # End FOR statement running through 'duration' column
             
             
             ##################################
@@ -218,8 +216,8 @@ if(!is.na(my_url)){
             ##################################
             if(any(c("DSQ", "DNF", "DNS") %in% my_table[[t]]$Pos)){
               change_row <- my_table[[t]]$Pos %in% c("DSQ", "DNF", "DNS")
-              my_table[[t]][change_row, "Result"] <- NA
-              my_table[[t]][change_row, "Duration"] <- NA
+              my_table[[t]][change_row, "result_seconds"] <- NA
+              my_table[[t]][change_row, "duration"] <- NA
             }   # End IF statement looking for non-finishers
             
           }   # End IF statement selecting 'time' based tables only (not points)
@@ -261,13 +259,13 @@ if(!is.na(my_url)){
       
       # Write the 'times' table to the MySQL ProCyling database
       if(!is.null(time_tables)){
-        dbWriteTable(conn_local, name = "master_results_time",
+        dbWriteTable(conn_local, name = "test_test_master_results_time",
                      time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master time table
       
       # Write the 'points' table to the MySQL ProCyling database
       if(!is.null(points_tables)){
-        dbWriteTable(conn_local, name = "master_results_points",
+        dbWriteTable(conn_local, name = "test_test_master_results_points",
                      points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master points table
       

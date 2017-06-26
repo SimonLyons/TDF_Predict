@@ -116,15 +116,23 @@ GetAllRacesInAYear <- function(input_year){
   points_tables$Rider
   glimpse(time_tables)
   
-  t <- 3
+  t <- 1
   r <- 8
   
   View(my_table[[5]])
   
-  Race_Weblink_Year[901,]
-  my_url <- Race_Weblink_Year$stage_url[845]
-  stage_id <- Race_Weblink_Year$stage_id[902]
-  stage_date <- Race_Weblink_Year$date[902]
+  my_url <- "http://www.cyclingnews.com/races/rund-um-den-finanzplatz-eschborn-frankfurt-2017/results/"
+  stage_id <- "simon_stage_id"
+  stage_date <- "14/03/1977"
+  
+  
+  Race_Weblink_Year[175,]
+  my_url <- Race_Weblink_Year$stage_url[175]
+  stage_id <- Race_Weblink_Year$stage_id[175]
+  stage_date <- Race_Weblink_Year$date[175]
+  
+  Race_Weblink_Year[1:5,]
+  
   
   ########################################################
   ########################################################
@@ -139,7 +147,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 2170: nrow(Race_Weblink_Year)){
+  for (r in 137: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)

@@ -1,5 +1,47 @@
 
 
+
+------------------------------
+Notes from Tue 27 Jun
+
+Firstly - I've changed how race time is handled by the race results table function. I've made the following adjustments:
+a. I've decided to retain the original time entry from the website, in the original 'Result' column
+b. I'm converting the time using lubridate::seconds (new column 'result_seconds') and then leaving the value as an integer (seconds)
+c. Creating a new 'duration' column with the correct cumulative number of seconds for each rider.
+
+I've addressed a variety of issues with the race results tables function and I'm sure I'll run into a few more use case issues with the new functionality I've added. 
+
+I'm having problems with connections to the database (too many connections). I've fiddled with the close all connections script, but in the end I restarted the database.
+
+I'd addressed an issue by extending the text_clean function to the 'Team' column and the captions and I inserted a gsub to remove the parentheses on the 'Country' column (occurs when there is no team).
+
+Inserted IF script to deal with duration conversion on tables with only one row....
+
+Next steps:
+
+- Attempt to work out why I'm getting the following error:
+ Error in .local(conn, statement, ...) : 
+  could not run statement: Lost connection to MySQL server during query
+It's weird because it doesn't look like there are too many connections and if I start running the script again (just prior to the error point) it continues on its merry way.
+
+- Looks like there are more invalide UTF-8 issues with the race results tables function. Latest is at Row 175 of Race_Weblinks 2013.
+http://www.cyclingnews.com/races/24-hours-of-old-pueblo-2013/results
+This race is a MTB endurance race and has tables with 'laps' in them!!! Arrrghh!
+
+- Check Race Calendars. Combine into master calendar
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+
+
+
+
+
+
 ------------------------------
 Notes from Sat 24 Jun
 
