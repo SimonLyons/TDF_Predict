@@ -147,7 +147,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 137: nrow(Race_Weblink_Year)){
+  for (r in 290: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)

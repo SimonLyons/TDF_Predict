@@ -1,5 +1,34 @@
 
 
+------------------------------
+Notes from Thu 29 Jun
+
+Updates to race_results_tables_V2 function. Added text_clean to Country and moved database open and close script to where it is used.
+
+So I worked out the issue with the non-UTF character problem (as usual, not writing to the database). I needed to run the text_clean function on the 'Country' column as well. This normally isn't required, as the 'Country' is normally a CAPS three-letter country code, but in the case of the Old Pueblo 24hr mountain bike race, the Country column contained the team names which were a range of weird and wonderful titles. This race also had the anomaly of 'laps' being used for the result column. I've decided to leave this alone (and not create an entirely new master table in the database for 'lap' result info) as I'm unlikely to ever need this data. It gets categorised as 'pts'. There are four-man teams in some of the tables, which means the 'Rider' column has four riders. Again, I'm not worried as I don't think I'll ever need data from races like these..... (famous last words!)
+
+I'm still writing race results data to the 'test_test' tables in the database. Once I'm happy the function is scraping effectively, I'll do some testing on the results and hopefully the use of the data. Perhaps some prelimary summarising and plotting. If that works out then I'll sort out doing a clean scrape of all the race results data....
+
+The Tour De France starts in two days. My target was to have analysis up and running and possibly even having a go at some predictions at this point. I'm a long way behind that, but it's still satisfying to be on the cusp of having the complete database of race results stored and ready for analysis. Phew!
+
+It's hard to know what to do with the problems I'm having with the connection to the database. I'm finding it difficult to isolate what's causing the error. I feel like my database connection code is nice and clean. Anyway, I'm trying a fix where I've moved the database connection and close script to directly where it's used in the race results function. Opening and closing the connection exactly when needed. 
+
+Next steps:
+
+- Further testing of race results scraping function. Look out for database connection error. Once a large amount of data is scraped (perhaps a few years of results), test out the stored data for correctness and then use in analysis.
+
+- Check Race Calendars. Combine into master calendar
+
+- Go and get race results tables for all races. Already setup to go into master table. It should be +1M rows when complete!
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+
+
+
+
 
 ------------------------------
 Notes from Tue 27 Jun
@@ -35,11 +64,6 @@ This race is a MTB endurance race and has tables with 'laps' in them!!! Arrrghh!
 - Work out a secure connection process for accessing the database from offsite.
 
 - More to learn on merging git branches.
-
-
-
-
-
 
 
 ------------------------------
