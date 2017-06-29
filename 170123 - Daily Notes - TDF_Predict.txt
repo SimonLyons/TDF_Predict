@@ -1,5 +1,21 @@
 
 
+
+------------------------------
+Notes from Fri 30 Jun
+
+I've just been running the race results script for 2015. It crashes on occasion with the database connection error. This is annoying and I might next try running it from the laptop to see what happens.
+
+I also had a crash on row 1076 of the 2015 race weblinks table, which corresponds to the following results:
+
+http://www.cyclingnews.com/races/bpost-bank-trofee-koppenbergcross-2015/elite-women/results/
+
+This results table (there's only one) has a mix of time and laps in the result column!! I've just skipped it at the moment.....
+
+I've finished running all the results scrape for 2015.
+
+
+
 ------------------------------
 Notes from Thu 29 Jun
 
