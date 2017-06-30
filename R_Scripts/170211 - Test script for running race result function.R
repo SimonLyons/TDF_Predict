@@ -71,6 +71,8 @@ GetAllRacesInAYear <- function(input_year){
   conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]) , 
                           password = as.character(psswd[psswd$type == "Manager", "password"]),  
                           dbname='ProCycling', host='localhost')   
+  
+
   query <- dbSendQuery(conn_local, "SELECT * FROM race_weblinks_Master
                        LIMIT 10 OFFSET 2200;")
   Race_Weblink_Year <- dbFetch(query, n=-1)
@@ -84,7 +86,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2013")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015")
   View(Race_Weblink_Year)
   dplyr::glimpse(Race_Weblink_Year)
   
@@ -125,11 +127,11 @@ GetAllRacesInAYear <- function(input_year){
   stage_id <- "simon_stage_id"
   stage_date <- "14/03/1977"
   
-  
-  Race_Weblink_Year[175,]
-  my_url <- Race_Weblink_Year$stage_url[175]
-  stage_id <- Race_Weblink_Year$stage_id[175]
-  stage_date <- Race_Weblink_Year$date[175]
+  # This one has a mix of time and laps in the result column!!!
+  Race_Weblink_Year[1076,]
+  my_url <- Race_Weblink_Year$stage_url[1076]
+  stage_id <- Race_Weblink_Year$stage_id[1076]
+  stage_date <- Race_Weblink_Year$date[1076]
   
   Race_Weblink_Year[1:5,]
   
@@ -147,7 +149,7 @@ GetAllRacesInAYear <- function(input_year){
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 137: nrow(Race_Weblink_Year)){
+  for (r in 1077: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)

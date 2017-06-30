@@ -14,20 +14,10 @@ require(tidyr)     # For tidying up and wrangling scraped dataframes - I use the
 require(lubridate) # For assigning time/date properties
 require(dplyr)     # For manipulating and filtering tables
   
-# Set working directory to user passwords location
-setwd("C:/b_Data_Analysis/Database")
-# Read database password file
-psswd <- read.csv("passwords_db.csv", header = TRUE)
-
-# Clear database connections
-all_cons <- dbListConnections(MySQL())
-for(con in all_cons) 
-  dbDisconnect(con)
-
-# Create connection to database 
-conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
-                        password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                        dbname='ProCycling', host='localhost') 
+  # Clear database connections
+  all_cons <- dbListConnections(MySQL())
+  for(con in all_cons) 
+    dbDisconnect(con)
 
 ##################################
 # 1. Download and extract tables
@@ -148,6 +138,7 @@ if(!is.na(my_url)){
           # Use my 'text_clean' function to remove special and non UTF-8 characters from the rider name and team name
           my_table[[t]]$Rider <- text_clean(my_table[[t]]$Rider)
           my_table[[t]]$Team <- text_clean(my_table[[t]]$Team)
+          my_table[[t]]$Country <- text_clean(my_table[[t]]$Country)
           
           # Remove '(' from Country column
           my_table[[t]]$Country <- gsub("\\)", "", my_table[[t]]$Country)
@@ -257,6 +248,17 @@ if(!is.na(my_url)){
       # 9. Write two sets of tables to database
       ##################################
       
+      
+      # Set working directory to user passwords location
+      setwd("C:/b_Data_Analysis/Database")
+      # Read database password file
+      psswd <- read.csv("passwords_db.csv", header = TRUE)
+      
+      # Create connection to database 
+      conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
+                              password = as.character(psswd[psswd$type == "Manager", "password"]),  
+                              dbname='ProCycling', host='localhost')
+      
       # Write the 'times' table to the MySQL ProCyling database
       if(!is.null(time_tables)){
         dbWriteTable(conn_local, name = "test_test_master_results_time",
@@ -269,15 +271,17 @@ if(!is.na(my_url)){
                      points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master points table
       
+      dbDisconnect(conn_local)   # Close connection to database
+      
     }   # Close IF statement checking for existence of results tables.
     
   }   # Close IF statement checking if URL exists
   
   
   # Script for closing all active connections to MySQL databases.
-  all_cons <- dbListConnections(MySQL())
-  for(con in all_cons) 
-    dbDisconnect(con)
+  # all_cons <- dbListConnections(MySQL())
+  # for(con in all_cons) 
+  #   dbDisconnect(con)
 
   }   # End IF statement checking for NA my_url values
 
