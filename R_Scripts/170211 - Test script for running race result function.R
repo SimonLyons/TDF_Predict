@@ -50,6 +50,7 @@ GetAllRacesInAYear <- function(input_year){
 
   # Set working directory to user passwords location
   setwd("C:/b_Data_Analysis/Database")
+  setwd("/home/a_friend/data_analysis/database/")
   # Read database password file
   psswd <- read.csv("passwords_db.csv", header = TRUE)
   
@@ -74,7 +75,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2016")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2008")
   View(Race_Weblink_Year)
   dplyr::glimpse(Race_Weblink_Year)
   
