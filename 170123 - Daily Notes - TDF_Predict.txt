@@ -1,5 +1,12 @@
 
 
+
+------------------------------
+Notes from Thu 06 Jul @work
+
+I'm testing out working with a git branch. I've created and checkout out a branch called 'test-branch-01'. I'm now making file changes, in this case just to this Daily Notes file. 
+
+
 ------------------------------
 Notes from Tue 27 Jun @work
 
