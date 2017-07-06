@@ -122,14 +122,14 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
 
   # Set Race_Weblink_Year for extraction of race results tables below
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2009")  
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2014")  
   
   # Use Text Progress Bar
   total <- nrow(Race_Weblink_Year)
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 79: nrow(Race_Weblink_Year)){
+  for (r in 1: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)
