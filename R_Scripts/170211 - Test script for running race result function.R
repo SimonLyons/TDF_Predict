@@ -14,23 +14,13 @@ end_year <- 2017
 # and remove problem characters (including 'removeDiscritics')
 initialCNCalendar(start_year, end_year)
 
-tad2 <- initialCNCalendar(start_year, end_year)
-View(tad2 %>% select(race_details, location))
-
-require(dplyr)
-require(stringr)
-prob <- tad %>% select(race_details) %>% filter(str_detect(race_details, "The Noreaster"))
-
-
-
 #################################################
 
 # Function to go and extract all of the race results tables for an entire calendar year
 require(RMySQL)
 
-
 # Define the year
-input_year <- 2013
+input_year <- 2016
 
 # Begin function
 GetAllRacesInAYear <- function(input_year){
@@ -49,10 +39,8 @@ GetAllRacesInAYear <- function(input_year){
   for(input_year in 2009:2011){
   Race_Weblink_Year <- GetRaceWebLinks(input_year)  
   }
-  View(Race_Weblink_Year)
+  # View(Race_Weblink_Year)
   
-  e <- 693
-  race_url <- "/races/santos-tour-down-under-2012"
   if(!agrepl("http", race_url) | !agrepl("www.", race_url) | is.na(race_url)){
     race_url <- race_url <- paste("http://www.cyclingnews.com", race_url, sep = "")
   }
@@ -62,6 +50,7 @@ GetAllRacesInAYear <- function(input_year){
 
   # Set working directory to user passwords location
   setwd("C:/b_Data_Analysis/Database")
+  setwd("/home/a_friend/data_analysis/database/")
   # Read database password file
   psswd <- read.csv("passwords_db.csv", header = TRUE)
   
@@ -86,7 +75,7 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   
   # Testing with new race weblink format
-  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015")
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2011")
   View(Race_Weblink_Year)
   dplyr::glimpse(Race_Weblink_Year)
   
@@ -111,21 +100,10 @@ GetAllRacesInAYear <- function(input_year){
     filter(Rider == "Simon Yates")
   View(simonyates)
   
-  
-  View(Race_Weblink_Year)
-  glimpse(points_tables)
-  as.integer(points_tables$Result)
-  points_tables$Rider
-  glimpse(time_tables)
-  
   t <- 1
   r <- 8
   
   View(my_table[[5]])
-  
-  my_url <- "http://www.cyclingnews.com/races/rund-um-den-finanzplatz-eschborn-frankfurt-2017/results/"
-  stage_id <- "simon_stage_id"
-  stage_date <- "14/03/1977"
   
   # This one has a mix of time and laps in the result column!!!
   Race_Weblink_Year[1076,]
@@ -143,13 +121,15 @@ GetAllRacesInAYear <- function(input_year){
   ########################################################
   ########################################################
 
-    
+  # Set Race_Weblink_Year for extraction of race results tables below
+  Race_Weblink_Year <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2009")  
+  
   # Use Text Progress Bar
   total <- nrow(Race_Weblink_Year)
   # create text progress bar
   prg <- txtProgressBar(min = 0, max = total, style = 3)
   
-  for (r in 1077: nrow(Race_Weblink_Year)){
+  for (r in 79: nrow(Race_Weblink_Year)){
     Sys.sleep(0.1)
     # Setup text-based progress bar
     setTxtProgressBar(prg, r)

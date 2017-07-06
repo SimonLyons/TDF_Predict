@@ -250,24 +250,25 @@ if(!is.na(my_url)){
       
       
       # Set working directory to user passwords location
-      setwd("C:/b_Data_Analysis/Database")
+      # setwd("C:/b_Data_Analysis/Database")
+      setwd("/home/a_friend/data_analysis/database/")
       # Read database password file
       psswd <- read.csv("passwords_db.csv", header = TRUE)
       
       # Create connection to database 
       conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                               password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                              dbname='ProCycling', host='localhost')
+                              dbname='ProCycling', host='192.168.1.5', port=3306)
       
       # Write the 'times' table to the MySQL ProCyling database
       if(!is.null(time_tables)){
-        dbWriteTable(conn_local, name = "test_test_master_results_time",
+        dbWriteTable(conn_local, name = "master_results_time",
                      time_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master time table
       
       # Write the 'points' table to the MySQL ProCyling database
       if(!is.null(points_tables)){
-        dbWriteTable(conn_local, name = "test_test_master_results_points",
+        dbWriteTable(conn_local, name = "master_results_points",
                      points_tables, overwrite = FALSE, row.names = FALSE, append = TRUE)
       }   # End of script writing to master points table
       
