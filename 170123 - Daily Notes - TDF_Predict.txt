@@ -2,6 +2,26 @@
 
 
 ------------------------------
+Notes from Sat 08 Jul
+
+I'm about to run the last year (2017) of the race table cycling news scrape to update the master tables and therefore complete the first important stage of my TDF Prediction project. Yay!! I'm currently just doing an update to the race weblinks data so I've got up to the lastest race for 2017. I started the race table webscrape before I realised I needed to do this and got through 6 rows before stopping it. I'll have to go and delete what I presume will be duplicates from the master tables later on.
+
+Now it's time to start the real business - of analysis the data and working on methods for running predictive algorithms. It's evident from my first attempts and summarising and testing the data I've got my work cut out initially just searching, filtering and organsing the data I want. I'll need to get back up to speed on my MySQL skills so I can join tables. I'm sure I'll also be tested regarding the accuracy and consistency of this data. I think developing some sort of decent fuzzy search will be necessary in order to correctly obtain data - and example would be for riders having variations on their names, either through spelling mistakes in the raw data or (more likely) the alternative variations on long European names....
+
+Next steps:
+
+- Check Race Calendars. Combine into master calendar
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Start searching, filtering and summarising data. Get back up to speed on MySQL skills.
+
+- Time to get into analysis. I probably need to develop a plan for this.
+
+
+------------------------------
 Notes from Thu 06 Jul @work
 
 I'm testing out working with a git branch. I've created and checkout out a branch called 'test-branch-01'. I'm now making file changes, in this case just to this Daily Notes file. 
@@ -138,7 +158,7 @@ Next steps:
 
 - Integrate my new duration conversion into script accessing the database.
 
-- Possible consider storing race times as lubridate::seconds instead of lubridate::duration.
+- Possibly consider storing race times as lubridate::seconds instead of lubridate::duration.
 
 - Scrape 2013 race weblinks data
 
