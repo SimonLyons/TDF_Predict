@@ -1,4 +1,7 @@
 
+require(RMySQL)
+require(lubridate)
+require(dplyr)
 
 # Setup database connection
 dbpsswddir <- set_db_password()
@@ -19,18 +22,54 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 
 
 master_time <- dbGetQuery(conn_local, "SELECT * 
-                          FROM test_test_master_results_time 
-                          WHERE (stage_date BETWEEN '2016-06-01' AND 2016-12-31');")
+                          FROM master_results_time 
+                          WHERE (convert(stage_date,date) BETWEEN convert('2016-06-01', date), AND  convert('2016-12-31', date));")
 
-master_time <- dbGetQuery(conn_local, "SELECT * 
-                          FROM test_test_master_results_time 
-                          WHERE stage_date = '2009-06-01';")
+# THis one works! The 'convert' function in MySQL does a good job of converting the text
+# date to a correct MySQL date format, so I can then use MySQL functions to filter the date.
+date_query_01 <- dbGetQuery(conn_local, "SELECT * 
+                          FROM master_results_time 
+                          WHERE convert(stage_date,date) = '2017-06-01';")
+View(date_query_01)
 
-sub_time <- dbGetQuery(conn_local, "SELECT stage_date
+
+# Select some data for test conversion of data and insertion back into database
+get_headings <- dbGetQuery(conn_local, "SELECT *
+                             FROM master_results_time
+                           LIMIT 1000
+                           OFFSET 20000;")
+View(get_headings)
+
+# Create the dummy table
+dbSendQuery(conn_local, "CREATE TABLE aa_date_convert (`stage_date` Date);")
+# Check to see if table is created
+pull_date_convert <- dbGetQuery(conn_local, "SELECT *
+           FROM aa_date_convert;")
+View(pull_date_convert)
+
+sub_time_f <- dbGetQuery(conn_local, "SELECT stage_date
                        FROM test_test_master_results_time;")
+glimpse(sub_time_f)
+
+
+View(sub_time)
+summary(sub_time)
+sub_time_d <- as.data.frame(as.list(sub_time))
+sub_time_d[,2] <- as_date(sub_time_d[,1])
+head(sub_time_d)
+glimpse(sub_time_d)
+colnames(sub_time_d)[2] <- "date_converted"
+
+
+sub_time_subset <- sub_time_d %>% 
+  filter(date_converted == "2015-03-14")
+View(sub_time_subset)
+head(sub_time_subset)
+glimpse(sub_time_subset)
 
 sub_rider <- dbGetQuery(conn_local, "SELECT Rider
                        FROM test_test_master_results_time;")
+
 
 
 LA_select <- dbGetQuery(conn_local, "SELECT *

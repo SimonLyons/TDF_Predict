@@ -1,6 +1,39 @@
 
 
 
+
+------------------------------
+Notes from Tue 11 Jul
+
+I've got the entire dataset in the database (as of Saturday)!! I'm now commencing initial preparation for analysis, which at this stage is only getting to grips with pulling and subsetting data from my database.
+
+The first problem is I will almost always be using a date subset, and I've immediately discovered my dates are stored as character type and aren't therefore available for MySQL date functions.
+
+I'll have to think about my approach for this. After plenty of messing about, I discovered a straight forward MySQL conversion that changes the 'stage_date' value into the correct format:
+
+convert(stage_date,date)
+
+I can use this on queries (at least I've had it work for filtering on a single specific date). 
+
+I need to decide whether I convert the entire date range in the database permanently to date type, or leave it as a character type and do the conversion everytime. I think the permanent change is the best answer, but I'll need to do some testing before making adjustments to the main dataset.
+
+Next steps:
+
+- Draw up analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. Work on some dummy tables first.
+
+- Check Race Calendars. Combine into master calendar
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Start searching, filtering and summarising data. Get back up to speed on MySQL skills.
+
+- Time to get into analysis. I probably need to develop a plan for this.
+
+
 ------------------------------
 Notes from Sat 08 Jul
 
