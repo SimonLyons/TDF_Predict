@@ -1,5 +1,39 @@
 
 
+------------------------------
+Notes from Thu 13 Jul
+
+Time to start working with my data. I've decided it would help having an initial analysis to conduct, and to use this as a real test case for collating the required data. I haven't written out the hypothesis until now:
+
+Hypothesis: The final rider finishing position in prior editions of the Tour De France is correlated to the final finishing position of the rider in the upcoming Tour De France race.
+
+The first thing I've identified is the data I will need is spread across several tables (but I knew this would be the case when I constructed the ProCycling database). The master_results_time table doesn't have the race name (race_details) which is contained in the master_race_weblinks table and originates from the race_calendar table. So I'm immediately going to need to start working with MySQL join commands. I've got one running at the moment, which is taking a long time - most obviously because I didn't limit the query and it's looking at all +1M rows of the master_results_time table....  
+
+The result was the query looking like it was going to run pretty much indefinitely, so I had to force R to close in the end. Which led me to attempting to find out if the query was still running on my MySQL server. Apparently I'm meant to use the following MySQL commands to show open queries and kill off the ones I want to close:
+
+show processlist
+KILL QUERY **Id** where Id is connection id from show processlist
+
+Anyway - more work to do. 
+
+Next steps:
+
+- Check whether my big JOIN query is still sitting on the database server.
+
+- Draw up analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. Work on some dummy tables first.
+
+- Check Race Calendars. Combine into master calendar
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Start searching, filtering and summarising data. Get back up to speed on MySQL skills.
+
+
+
 
 
 ------------------------------

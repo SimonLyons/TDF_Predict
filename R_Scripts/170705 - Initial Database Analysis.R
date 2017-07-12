@@ -7,17 +7,46 @@ require(dplyr)
 dbpsswddir <- set_db_password()
 setwd(dbpsswddir)
 psswd <- read.csv("passwords_db.csv")
-conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
-                        password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                        dbname='ProCycling', host='192.168.1.5', port=3306, timeout=3600) 
 
 # Script for closing all active connections to MySQL databases.
 all_cons <- dbListConnections(MySQL())
 for(con in all_cons) 
   dbDisconnect(con)
+# Open connection to ProCyling database
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                         password = as.character(psswd[psswd$type == "Manager", "password"]),  
                         dbname='ProCycling', host='192.168.1.5', port=3306, timeout=3600)
+
+# Show exsiting tables
+procycling_tables <- dbGetQuery(conn_local, "SHOW tables;")
+View(procycling_tables)
+
+# Retrieve the master Race Weblinks table
+master_race_weblinks <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_master;")
+View(master_race_weblinks)
+summary(master_race_weblinks)
+head(master_race_weblinks)
+
+# Pull first 10,000 entries from master_results_time table
+master_results_time <- dbGetQuery(conn_local, "SELECT *
+                       FROM master_results_time
+                         LIMIT 10000;")
+View(master_results_time)
+
+
+process_list <- dbGetQuery(conn_local, "SHOW PROCESSLIST;")
+kill_query <- dbSendQuery(conn_local, "KILL QUERY 5;")
+
+
+
+# Create JOIN(ed) table between 'master_race_weblinks' and 'master_results_time' using 'stage_id' as the key
+master_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team, t.Result, t.result_type, t.result_class, t.result_seconds,
+                                        t.duration, t.stage_date, w.race_id
+                          FROM master_results_time t JOIN race_weblinks_master w
+                          ON t.stage_id = w.stage_id;")
+
+
+
 
 
 
