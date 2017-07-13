@@ -41,13 +41,13 @@ kill_query <- dbSendQuery(conn_local, "KILL QUERY 5;")
 
 # Create JOIN(ed) table between 'master_race_weblinks' and 'master_results_time' using 'stage_id' as the key
 master_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team, t.Result, t.result_type, t.result_class, t.result_seconds,
-                                        t.duration, t.stage_date, w.race_id
+                                        t.duration, t.stage_date, w.race_id, t.stage_id
                           FROM master_results_time t JOIN race_weblinks_master w
                           ON t.stage_id = w.stage_id
-                          LIMIT 1000;")
-
-
-
+                          LIMIT 10000;")
+View(master_join)
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data")
+write.csv(master_join, "master_join.csv", row.names = FALSE)
 
 
 
