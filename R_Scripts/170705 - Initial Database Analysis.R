@@ -43,7 +43,8 @@ kill_query <- dbSendQuery(conn_local, "KILL QUERY 5;")
 master_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team, t.Result, t.result_type, t.result_class, t.result_seconds,
                                         t.duration, t.stage_date, w.race_id
                           FROM master_results_time t JOIN race_weblinks_master w
-                          ON t.stage_id = w.stage_id;")
+                          ON t.stage_id = w.stage_id
+                          LIMIT 1000;")
 
 
 
