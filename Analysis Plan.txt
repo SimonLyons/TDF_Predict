@@ -1,0 +1,21 @@
+
+
+
+
+Analysis Plan
+
+
+
+I want the ability to predict the final GC result for riders in the Tour De France. I intend to do this by identifying a relationship between this result and range of related variables. 
+
+These variables could include (but not be limited to):
+
+a. Previous TDF GC finishing position
+b. Average previous GC finishing of current team
+c. Finishing position of key races (Dauphine, etc)
+d. Total race miles that year
+
+
+
+
+

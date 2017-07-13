@@ -1,5 +1,13 @@
 
 
+
+
+------------------------------
+Notes from Thu 13 Jul @ work
+
+I've started an analysis plan and added it to my git repository.
+
+
 ------------------------------
 Notes from Thu 13 Jul
 
@@ -31,9 +39,6 @@ Next steps:
 - More to learn on merging git branches.
 
 - Start searching, filtering and summarising data. Get back up to speed on MySQL skills.
-
-
-
 
 
 ------------------------------
