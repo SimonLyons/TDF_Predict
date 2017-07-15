@@ -24,18 +24,14 @@ View(procycling_tables)
 # Retrieve the master Race Weblinks table
 master_race_weblinks <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_master;")
 View(master_race_weblinks)
-summary(master_race_weblinks)
-head(master_race_weblinks)
 
-# Pull first 10,000 entries from master_results_time table
-master_results_time <- dbGetQuery(conn_local, "SELECT *
-                       FROM master_results_time
-                         LIMIT 10000;")
+# Pull the master_results_time table
+master_results_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
 View(master_results_time)
 
-
+# The following is meant to kill off open processes on the database.
 process_list <- dbGetQuery(conn_local, "SHOW PROCESSLIST;")
-kill_query <- dbSendQuery(conn_local, "KILL QUERY 5;")
+kill_query <- dbSendQuery(conn_local, "KILL QUERY 4;")
 
 
 
@@ -48,6 +44,79 @@ master_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team,
 View(master_join)
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data")
 write.csv(master_join, "master_join.csv", row.names = FALSE)
+
+# Read the stored master_join.csv file
+master_join <- read.csv("master_join.csv", header = TRUE)
+# It's obvious there are dupicate entries in the master table.
+master_join <- unique(master_join)
+
+
+########################################################################
+########################################################################
+
+# THIS SECTION DEALS WITH CORRECTING THE DATE FORMAT
+
+# Retrieve the entire master_results_time table from the database
+master_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
+
+# Corect the date format for stage_date
+require(lubridate)
+master_time_cdf <- master_time
+master_time_cdf$stage_date <- as_date(master_time_cdf$stage_date)
+nrow(master_time_cdf)
+
+# Select a subset of the full master_time dataframe
+master_time_cdf_reduced <- master_time_cdf[456:3245, ]
+
+# I'm going to create a dummary master_results_time table and attempt to
+# convert the stage_date column format to date type. 
+dbWriteTable(conn_local, name = "master_results_time_cdf",
+             master_time_cdf_reduced, overwrite = FALSE, row.names = FALSE, append = TRUE)
+
+# Now go and convert the format of the stage_date column
+dbSendQuery(conn_local, "ALTER TABLE master_results_time_cdf MODIFY stage_date date;")
+
+# Pull the entire new correct date format table from the database (master_results_time_cdf)
+master_results_time_retrieve <- dbGetQuery(conn_local, "SELECT * FROM master_results_time_cdf;")
+View(master_results_time_retrieve)
+class(master_results_time_retrieve$stage_date)  # Confirms stage_date as 'character'
+
+# Retrieve a subset of data from the corrected date format database table using a date filter
+
+# Firstly with a specific date
+master_results_time_retrieve <- dbGetQuery(conn_local, "SELECT * 
+                          FROM master_results_time_cdf 
+                          WHERE stage_date = convert('2009-06-15', date);")
+
+# Next within a range of dates (both appear to work)
+master_results_time_retrieve <- dbGetQuery(conn_local, "SELECT * 
+                          FROM master_results_time_cdf 
+                          WHERE stage_date BETWEEN convert('2009-06-08', date) AND  convert('2009-06-15', date);")
+View(master_results_time_retrieve)
+
+########################################################################
+########################################################################
+
+
+
+# Change the stage_date column to class 'date'
+master_join$stage_date <- as.Date(master_join$stage_date)
+
+# Results on a particular date
+part_date <- master_join %>% 
+  filter(stage_date >= "2010-01-01" & stage_date <= "2012-01-23")
+View(part_date)
+
+# It's obvious there are dupicate entries in the master table.
+master_join <- unique(master_join)
+
+# Results in a particular year, using lubridate 'year' function.
+# This is great as it appears as though lubridate filtering will allow me to 
+# perform a large variety of date filtering.
+part_year <- master_join %>% 
+  filter(year(stage_date) == "2013")
+View(part_year)
+
 
 
 

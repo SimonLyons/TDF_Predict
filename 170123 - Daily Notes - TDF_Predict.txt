@@ -3,6 +3,38 @@
 
 
 ------------------------------
+Notes from Sun 16 Jul
+
+I've had some success today attempting to sort out dates within the MySQL database. I've been working with the following file:
+
+170705 - Initial Database Analysis.R
+
+I've been doing work on a (reduced rows) copy of the master_results_time table, called master_results_time_cdf.
+
+The good news appears to be realtively straight forward to convert the format/type of the stage_date column, using the following MySQL query.
+
+dbSendQuery(conn_local, "ALTER TABLE master_results_time_cdf MODIFY stage_date date;")
+
+Once I've done this it's been possible to perform standard MySQL queries filtering for dates and date ranges.
+
+Next steps:
+
+- Check whether my big JOIN query is still sitting on the database server.
+
+- Draw up analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. More testing on dummy tables required before changing master_results_time & points tables.
+
+- Check Race Calendars. Combine into master calendar
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Start searching, filtering and summarising data. Get back up to speed on MySQL skills.
+
+
+------------------------------
 Notes from Thu 13 Jul @ work
 
 I've started an analysis plan and added it to my git repository.
