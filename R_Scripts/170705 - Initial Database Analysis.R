@@ -49,6 +49,20 @@ write.csv(master_join, "master_join.csv", row.names = FALSE)
 master_join <- read.csv("master_join.csv", header = TRUE)
 # It's obvious there are dupicate entries in the master table.
 master_join <- unique(master_join)
+View(master_join)
+glimpse(master_join)
+# Convert stage_date (table read from .csv file) to date format
+master_join$stage_date <- as_date(master_join$stage_date)
+
+# Practice subsetting using dplyr filter
+my_races <- master_join %>% 
+  filter(year(stage_date) == '2013' & Country == 'Aus' & grepl("Jack", Rider))
+View(my_races)
+
+# Experimenting with fuzzy searches
+filter_jack <- master_join %>% 
+  filter(agrepl("jack", Rider, max.distance = 0.05))
+View(filter_jack)
 
 
 ########################################################################
