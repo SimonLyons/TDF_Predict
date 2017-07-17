@@ -1,6 +1,42 @@
 
 
 
+------------------------------
+Notes from Tue 18 Jul
+
+I've been doing a number of things today, all with respect to database queries and organising data for analysis. 
+
+170705 - Initial Database Analysis.R
+
+The first was checking the 'race_calendar_master' table against all the individual year race_calendar files. I was able to confirm the name number of entries/rows for each year, the results stored in the following file:
+
+home/a_friend/data_analysis/projects/TDF_Predict/working_data/master_calendar_count.csv
+
+So it looks like I can use the race_calendar_master table for my analysis.
+
+The other activity I've been working on today is creating a JOIN between the race_calendar_master, race_weblinks_master and master_results_time tables. This is required as I don't think the name of the race (race_details) is stored in the race_weblinks_master table (need to check) in addition to the fact I'm sure I'll need other information in the race_calendar_master table at some point (such as race discipline and location). 
+
+I initially thought I need to run two separate JOIN queries or do something clever within R, but it looks like multiple joins can be executed within MySQL. 
+
+This forum post has details, although it's not clear whether it works for them!
+https://www.reddit.com/r/mysql/comments/5zj92d/joining_three_tables_together_while_using_a_where/
+
+I've got a query running now and of course it's been taking a while...
+
+The join query finished.... and WORKED!!! Hooray!!
+
+Next steps:
+
+- Run a bigger super join query.
+
+- Continue work on analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. More testing on dummy tables required before changing master_results_time & points tables.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
 
 ------------------------------
 Notes from Sun 16 Jul

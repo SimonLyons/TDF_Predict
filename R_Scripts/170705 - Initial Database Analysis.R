@@ -64,6 +64,22 @@ filter_jack <- master_join %>%
   filter(agrepl("jack", Rider, max.distance = 0.05))
 View(filter_jack)
 
+# BIG AND NASTY
+# This is my attempt to join three tables at once, in this case:
+# race_calendar_master, master_results_time_cdf, race_calendar_master
+#  using 'stage_id' as the key and 'race_id' as the other key
+super_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team, t.Result, 
+                                        t.result_type, t.result_class, t.result_seconds,
+                                        t.duration, t.stage_date, w.race_id, t.stage_id,
+                                        c.race_details, c.discipline, c.location
+                          FROM master_results_time t 
+                          JOIN race_weblinks_master w
+                          ON t.stage_id = w.stage_id
+                          JOIN race_calendar_master c
+                          ON w.race_id = c.race_id
+                          LIMIT 1000;")
+View(super_join)
+
 
 ########################################################################
 ########################################################################
@@ -111,6 +127,48 @@ View(master_results_time_retrieve)
 ########################################################################
 ########################################################################
 
+# THIS SECTION DEALS WITH SORTING OUT THE RACE CALENDARS
+
+race_calendar_master <- dbGetQuery(conn_local, "SELECT * 
+                          FROM race_calendar_master;")
+View(race_calendar_master)
+nrow(race_calendar_master)
+
+# Convert 'start_date' to correct date format
+race_calendar_master$start_date <- as.Date(race_calendar_master$start_date)
+class(race_calendar_master$start_date)
+
+# Create table with number of races for each year from race_calendar_master
+race_master_count <- race_calendar_master %>% 
+  group_by("Year" = year(start_date)) %>% 
+  summarise("No of Races" = n())
+View(race_master_count)
+race_master_count <- race_master_count[-14, ]
+
+# Create table with number of races for each year from individual year race calendars
+# Create blank race_year_count table
+race_year_count <- as.data.frame(matrix(data = NA, nrow = 1, ncol = 2))
+colnames(race_year_count) <- c("Year_y", "No_of_Races_y")
+row_counter <- 1
+# Loop through each of the race calendar tables and count the number of rows
+for(y in 2005:2017){
+  race_calendar_y <- dbGetQuery(conn_local, paste0("SELECT * 
+                          FROM race_calendar_", y, ";"))
+  race_year_count[row_counter, 1] <- y
+  race_year_count[row_counter, 2] <- nrow(race_calendar_y)
+  row_counter <- row_counter + 1   # Increase row counter by one
+}
+
+# Combine two tables for comparison
+master_count <- cbind(race_master_count, race_year_count)
+master_count <- master_count %>% mutate("Delta_Count" = `No of Races` - No_of_Races_y)
+View(master_count)
+# Save to local working directory
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+write.csv(master_count, "master_calendar_count.csv", row.names = FALSE)
+
+########################################################################
+########################################################################
 
 
 # Change the stage_date column to class 'date'
