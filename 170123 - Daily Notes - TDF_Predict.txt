@@ -2,6 +2,14 @@
 
 
 ------------------------------
+Notes from Tue 18 Jul (short night-time session)
+
+I've had a quick go whilst watching MasterChef with Liz. In the Initial Database Analysis file I've inserted a quick MySQL join script that seeks to perform a complete join between the race_calendar_master and race_weblinks_master tables. I don't have the Study PC turned on so I haven't run it on the database.
+
+Next steps per below.
+
+
+------------------------------
 Notes from Tue 18 Jul
 
 I've been doing a number of things today, all with respect to database queries and organising data for analysis. 

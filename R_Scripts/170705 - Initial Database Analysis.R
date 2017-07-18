@@ -81,6 +81,18 @@ super_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team, 
 View(super_join)
 
 
+# CALENDAR TO WEBLINKS JOIN
+# Create total JOIN between race_calendar_master and race_weblinks_master
+calendar_weblinks_join <- dbGetQuery(conn_local, "SELECT w.race_id, w.stage_id,
+                                        c.race_details, c.discipline, c.location
+## Need to add complete set of columns from both tables ##
+                                     FROM race_calendar_master c
+                                     JOIN race_weblinks_master w
+                                     ON w.race_id = c.race_id;")
+View(calendar_weblinks_join)
+
+
+
 ########################################################################
 ########################################################################
 
@@ -196,7 +208,7 @@ master_time <- dbGetQuery(conn_local, "SELECT *
                           FROM master_results_time 
                           WHERE (convert(stage_date,date) BETWEEN convert('2016-06-01', date), AND  convert('2016-12-31', date));")
 
-# THis one works! The 'convert' function in MySQL does a good job of converting the text
+# This one works! The 'convert' function in MySQL does a good job of converting the text
 # date to a correct MySQL date format, so I can then use MySQL functions to filter the date.
 date_query_01 <- dbGetQuery(conn_local, "SELECT * 
                           FROM master_results_time 
