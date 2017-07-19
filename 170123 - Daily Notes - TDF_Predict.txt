@@ -2,6 +2,25 @@
 
 
 ------------------------------
+
+
+------------------------------
+Notes from Thu 20 Jul
+
+I've just discovered the master_race_weblinks doesn't have the completely updated data. The master file only has four columns (stage_url, stage_id, race_id, race_details) where the updated individual year race weblinks tables have eight.
+
+"Stage"        "date"         "location"     "distance"     "stage_url"    "stage_id"     "race_id"      "race_details"
+
+So I've been working on solving this by writing a new race_weblinks_master table to the database, using the following script:
+
+170720 - Race Weblinks Master - create new master table.R
+
+I've run into a weird problem. I had no problems pulling all the individual tables from the database and putting them into a new master dataframe, however I can't successfully write this back to the database. It's throwing it's old invalid UTF-8 character fit, and it appears to be all on the first "Stage" column which has a range of descriptive titles in there. I think there are a range of unacceptable characters in there ("\", etc) but this is weird given I think they were in the database in the first place! More work to do.
+
+Next steps per below.
+
+
+------------------------------
 Notes from Tue 18 Jul (short night-time session)
 
 I've had a quick go whilst watching MasterChef with Liz. In the Initial Database Analysis file I've inserted a quick MySQL join script that seeks to perform a complete join between the race_calendar_master and race_weblinks_master tables. I don't have the Study PC turned on so I haven't run it on the database.

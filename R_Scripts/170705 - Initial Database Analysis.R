@@ -22,12 +22,24 @@ procycling_tables <- dbGetQuery(conn_local, "SHOW tables;")
 View(procycling_tables)
 
 # Retrieve the master Race Weblinks table
-master_race_weblinks <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_master;")
+master_race_weblinks <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_master LIMIT 10;")
 View(master_race_weblinks)
 
 # Pull the master_results_time table
 master_results_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
 View(master_results_time)
+
+# Pull the race_calendar_master table
+race_calendar_master <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master LIMIT 10;")
+View(race_calendar_master)
+
+# Pull the race_weblinks_2016 table
+race_weblinks_2016 <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2016 LIMIT 10;")
+View(race_weblinks_2016)
+ncol(race_weblinks_2016)
+colnames(race_weblinks_2016)
+
+
 
 # The following is meant to kill off open processes on the database.
 process_list <- dbGetQuery(conn_local, "SHOW PROCESSLIST;")
