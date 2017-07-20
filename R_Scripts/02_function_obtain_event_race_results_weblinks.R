@@ -293,6 +293,10 @@ for(e in 1:total){
         # Clean out special characters from the newly scraped stage location data
         races_cn$location <- text_clean(races_cn$location)
         
+        # I haven't done it yet - but it seems apparent I probably should have 
+        # set up a text clean or the Stage details as well.
+        # I discovered this whilst attempting to build a master race weblinks table
+        
         # Set location from Calendar dataframe if scraped location is empty
         races_cn[is.na(races_cn$location), "location"] <- calendar_CN$location[e]
         
