@@ -34,10 +34,10 @@ race_calendar_master <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_mast
 View(race_calendar_master)
 
 # Pull the race_weblinks_2016 table
-race_weblinks_2016 <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2016 LIMIT 10;")
-View(race_weblinks_2016)
-ncol(race_weblinks_2016)
-colnames(race_weblinks_2016)
+new_race_weblinks_master <- dbGetQuery(conn_local, "SELECT * FROM new_race_weblinks_master LIMIT 10;")
+View(new_race_weblinks_master)
+ncol(new_race_weblinks_master)
+colnames(new_race_weblinks_master)
 
 
 
@@ -94,15 +94,16 @@ View(super_join)
 
 
 # CALENDAR TO WEBLINKS JOIN
-# Create total JOIN between race_calendar_master and race_weblinks_master
-calendar_weblinks_join <- dbGetQuery(conn_local, "SELECT w.race_id, w.stage_id,
-                                        c.race_details, c.discipline, c.location
-## Need to add complete set of columns from both tables ##
+# Create total JOIN between race_calendar_master and new_race_weblinks_master
+calendar_weblinks_join <- dbGetQuery(conn_local, "SELECT w.race_id, w.stage_id, w.stage, w.date, w.distance, 
+                                        c.race_details, c.discipline, c.location, c.uci_code, c.start_date, c.end_date
                                      FROM race_calendar_master c
-                                     JOIN race_weblinks_master w
+                                     JOIN new_race_weblinks_master w
                                      ON w.race_id = c.race_id;")
 View(calendar_weblinks_join)
 
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/")
+write.csv(calendar_weblinks_join, "calendar_weblinks_join.csv", row.names = FALSE)
 
 
 ########################################################################

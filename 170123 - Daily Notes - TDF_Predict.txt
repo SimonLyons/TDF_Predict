@@ -2,7 +2,13 @@
 
 
 ------------------------------
+Notes from Fri 21 Jul
 
+I've completed the full join between the new_race_weblinks_master table and the race_calendar_master table. The join worked first go and appears at first glance to be okay! The resulting table () is 16,435 rows, which makes sense I think. I need to check that against the total number of rows in the new_race_weblinks_master as I think they should match.
+
+Next steps:
+
+- Running the big and nasty full join between three tables!
 
 ------------------------------
 Notes from Thu 20 Jul
