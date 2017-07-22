@@ -2,6 +2,36 @@
 
 
 ------------------------------
+Notes from Sat 22 Jul
+
+Right-o. Not the most focused TDF_Predict session, but productive and very useful none-the-less. I've been watching last night's Tour De France Stage 19 on the Study PC at the same time. Although it was a flat stage with no impact on GC, a large breakaway managed to stay away and Edvald Boasson Hagen did a huge solo effort to escape within the last couple of kilometres to take the stage victory. 
+
+This morning I've been looking to get my 'super join' to work, which is a join between the three key tables:
+
+race_calendar_master
+new_race_weblinks_master
+master_results_time
+
+I initially ran the query with the master_results_time_cdf (corrected date format) table which returned very quickly a table with just over 19,000 rows. Obiously a lot smaller than the +2.5M rows in the master table. I eventually discovered the master_results_time_cdf table is a subset of the entire master_results_time table, probably because I was using it to experiment with sorting out the format of the date column.
+
+Anyway - a new super join query is running now (it has been for quite a few minutes). It will be interesting to see if it runs okay, the memory is able to handle it and if we get something sensible out at the end.
+
+Next steps:
+
+- Testing on super join query.
+
+- Continue work on analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. More testing on dummy tables required before changing master_results_time & points tables.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Preparation for initial subsetting of analysis data and simple predictive analysis.
+
+
+------------------------------
 Notes from Fri 21 Jul
 
 I've completed the full join between the new_race_weblinks_master table and the race_calendar_master table. The join worked first go and appears at first glance to be okay! The resulting table () is 16,435 rows, which makes sense I think. I need to check that against the total number of rows in the new_race_weblinks_master as I think they should match.
