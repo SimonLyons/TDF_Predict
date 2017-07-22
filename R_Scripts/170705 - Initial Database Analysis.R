@@ -27,7 +27,11 @@ View(master_race_weblinks)
 
 # Pull the master_results_time table
 master_results_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
+nrow(master_results_time)
 View(master_results_time)
+master_results_time_cdf <- dbGetQuery(conn_local, "SELECT * FROM master_results_time_cdf;")
+nrow(master_results_time_cdf)
+View(master_results_time_cdf)
 
 # Pull the race_calendar_master table
 race_calendar_master <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master LIMIT 10;")
@@ -82,17 +86,22 @@ View(filter_jack)
 #  using 'stage_id' as the key and 'race_id' as the other key
 super_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team, t.Result, 
                                         t.result_type, t.result_class, t.result_seconds,
-                                        t.duration, t.stage_date, w.race_id, t.stage_id,
-                                        c.race_details, c.discipline, c.location
-                          FROM master_results_time t 
-                          JOIN race_weblinks_master w
-                          ON t.stage_id = w.stage_id
-                          JOIN race_calendar_master c
+                                        t.duration, t.stage_date, 
+                                        w.race_id, t.stage_id, w.stage, w.date, w.distance,
+                                        c.race_details, c.discipline, c.location, c.uci_code, c.start_date, c.end_date
+                          FROM new_race_weblinks_master w 
+                          LEFT JOIN race_calendar_master c
                           ON w.race_id = c.race_id
-                          LIMIT 1000;")
+                          LEFT JOIN master_results_time t
+                          ON t.stage_id = w.stage_id;")
 View(super_join)
+nrow(super_join)
+# Write the results to a local .csv file for future analysis
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/")
+write.csv(super_join, "super_join.csv", row.names = FALSE)
 
 
+calendar_weblinks_join <- NA
 # CALENDAR TO WEBLINKS JOIN
 # Create total JOIN between race_calendar_master and new_race_weblinks_master
 calendar_weblinks_join <- dbGetQuery(conn_local, "SELECT w.race_id, w.stage_id, w.stage, w.date, w.distance, 
