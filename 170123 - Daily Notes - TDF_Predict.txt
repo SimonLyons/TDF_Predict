@@ -1,5 +1,28 @@
 
 
+------------------------------
+Notes from Tue 25 Jul
+
+Only a short session this morning. I'm quite sick and only got up when Liz got up for her run. 
+
+I loaded up the huge (650MB) "super_join.csv" file that has a triple MySQL join between all of the calendar, race weblinks and results tables.  It naturally sucks up a fair bit of memory when loaded. 
+
+This morning I've been practicing some subsetting. From the super_join table I narrowed it down to Tour de France results for Chris Froome (and Christopher Froome) in specific years. I needed to convert the 'date' column to class date.
+
+Next steps:
+
+- More subsetting practice.
+
+- Continue work on analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. More testing on dummy tables required before changing master_results_time & points tables.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Preparation for initial subsetting of analysis data and simple predictive analysis.
+
 
 ------------------------------
 Notes from Sat 22 Jul

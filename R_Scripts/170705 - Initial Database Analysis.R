@@ -100,9 +100,28 @@ nrow(super_join)
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/")
 write.csv(super_join, "super_join.csv", row.names = FALSE)
 
+super_join <- read.csv("super_join.csv", header = TRUE)
 
-calendar_weblinks_join <- NA
+head(super_join)
+
+cf_super <- super_join %>% filter(Rider %in% c("Chris Froome", "Christopher Froome")) %>% 
+  filter(race_details == "Tour de France") %>% filter(date > as.Date("2015-01-01") & date < as.Date("2015-12-31"))
+View(cf_super)
+
+class(cf_super$date)
+super_join$date <- as.Date(super_join$date)
+
+
+
+
+
+
+
+
+
 # CALENDAR TO WEBLINKS JOIN
+calendar_weblinks_join <- NA
+
 # Create total JOIN between race_calendar_master and new_race_weblinks_master
 calendar_weblinks_join <- dbGetQuery(conn_local, "SELECT w.race_id, w.stage_id, w.stage, w.date, w.distance, 
                                         c.race_details, c.discipline, c.location, c.uci_code, c.start_date, c.end_date
