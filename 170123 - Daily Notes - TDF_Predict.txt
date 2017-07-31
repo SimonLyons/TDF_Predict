@@ -1,4 +1,14 @@
 
+------------------------------
+Notes from Tue 01 Aug
+
+Okay - I'm underway with some better queries. In the hour I've had this morning I created a subsetting MySQL query that pulled rows from the race_calendar_master_cdf table that matched a date range and the text 'Tour de France'.  I needed to create a corrected date format (cdf) version of the race_calendar_master table first. I discovered (as far as I can initially tell) that the text search is not case sensitive and apparently doens't mind extra spaces. With this search I was able to identify the race_id values for the Tour De France which I'm taking to the next search.
+
+Unfortunately I've just discovered the race_weblinks_master table on the database is empty. I'm now working on combining the individual year tables, but of course when I go to write them back to the database, I encounter UTF-8 isssues even though I've just pulled this data from the database!!
+
+
+
+
 
 ------------------------------
 Notes from Mon 31 Jul

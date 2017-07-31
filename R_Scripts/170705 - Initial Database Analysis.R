@@ -126,15 +126,46 @@ super_join$date <- as.Date(super_join$date)
 # Need to perform a search of the race_calendar_master_cdf table. Not sure how to perform a fuzzy search in MySQL.
 
 
+# master_results_time_cdf, race_calendar_master_cdf, race_weblinks_master
+
+# Pull the race_id for Tour de France events between 2011 and 2016
+tdf_query <- dbGetQuery(conn_local, "SELECT * 
+           FROM race_calendar_master_cdf
+           WHERE 
+              (YEAR(start_date) >= '2011' AND YEAR(start_date) < '2017') AND
+              (race_details = 'tour de france')
+                        ;")
+View(tdf_query)
+
+# Pull the stage_id for these events from the race_weblinks_master table
+
+stage_id_query <- dbGetQuery(conn_local, "SELECT *
+                             FROM race_weblinks_master
+                             ;")
+View(stage_id_query)
 
 
+tdf_query$race_id
 
 
+y <- 2005
+race_weblinks_master <- NA
 
 
+for (y in 2005:2017){
+  my_table <- dbGetQuery(conn_local, paste0("SELECT * FROM race_weblinks_", y , ";"))
+  race_weblinks_master <- rbind(race_weblinks_master, my_table)
+}
 
+race_weblinks_master$location <- text_clean(race_weblinks_master$location)
+race_weblinks_master$Stage <- text_clean(race_weblinks_master$Stage)
+race_weblinks_master[809,]
 
+dbWriteTable(conn_local, "race_weblinks_master", race_weblinks_master, overwrite = TRUE, row.names = FALSE)
+View(race_weblinks_master)
 
+filter(race_weblinks_master, stage)
+race_weblinks_master %>% filter(grepl("Workers", Stage))
 
 
 # CALENDAR TO WEBLINKS JOIN
@@ -160,7 +191,7 @@ write.csv(calendar_weblinks_join, "calendar_weblinks_join.csv", row.names = FALS
 # Retrieve the entire master_results_time table from the database
 master_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
 
-# Corect the date format for stage_date
+# Correct the date format for stage_date
 require(lubridate)
 master_time_cdf <- master_time
 master_time_cdf$stage_date <- as_date(master_time_cdf$stage_date)
@@ -194,6 +225,20 @@ master_results_time_retrieve <- dbGetQuery(conn_local, "SELECT *
                           FROM master_results_time_cdf 
                           WHERE stage_date BETWEEN convert('2009-06-08', date) AND  convert('2009-06-15', date);")
 View(master_results_time_retrieve)
+
+
+# Do the same for the race_calendar_master table. We'll create correct date format (cdf) version as well.
+# Firstly pull in the existing race_calendar_master from the database and check it visually
+race_calendar_master <- dbGetQuery(conn_local, "SELECT * 
+                          FROM race_calendar_master;")
+View(race_calendar_master)
+# Now write the race_calendar_master data back to the database, but in another table named 'race_calendar_master_cdf'
+dbWriteTable(conn_local, name = "race_calendar_master_cdf",
+             race_calendar_master, overwrite = FALSE, row.names = FALSE, append = TRUE)
+# Now go and convert the format of the start_date and end_date columns
+dbSendQuery(conn_local, "ALTER TABLE race_calendar_master_cdf MODIFY start_date date;")
+dbSendQuery(conn_local, "ALTER TABLE race_calendar_master_cdf MODIFY end_date date;")
+
 
 ########################################################################
 ########################################################################
