@@ -44,11 +44,9 @@ ncol(new_race_weblinks_master)
 colnames(new_race_weblinks_master)
 
 
-
 # The following is meant to kill off open processes on the database.
 process_list <- dbGetQuery(conn_local, "SHOW PROCESSLIST;")
 kill_query <- dbSendQuery(conn_local, "KILL QUERY 4;")
-
 
 
 # Create JOIN(ed) table between 'master_race_weblinks' and 'master_results_time' using 'stage_id' as the key
@@ -60,6 +58,7 @@ master_join <- dbGetQuery(conn_local, "SELECT t.Pos, t.Rider, t.Country, t.Team,
 View(master_join)
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data")
 write.csv(master_join, "master_join.csv", row.names = FALSE)
+
 
 # Read the stored master_join.csv file
 master_join <- read.csv("master_join.csv", header = TRUE)
@@ -110,6 +109,25 @@ View(cf_super)
 
 class(cf_super$date)
 super_join$date <- as.Date(super_join$date)
+
+
+
+########################################################################
+########################################################################
+
+# Subsetting query
+# Tour De France, Stage 21 Overall Results for years 2011 through 2016
+
+# date:  year = 2011:2016
+# race details:  Tour De France (obviously need to check this)
+#                then use it to determine the relevant race_id
+# stage_id: This is where we'll isolate to Stage 21 only.
+
+# Need to perform a search of the race_calendar_master_cdf table. Not sure how to perform a fuzzy search in MySQL.
+
+
+
+
 
 
 
