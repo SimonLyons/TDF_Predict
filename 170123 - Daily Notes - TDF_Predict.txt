@@ -7,6 +7,28 @@ Okay - I'm underway with some better queries. In the hour I've had this morning 
 Unfortunately I've just discovered the race_weblinks_master table on the database is empty. I'm now working on combining the individual year tables, but of course when I go to write them back to the database, I encounter UTF-8 isssues even though I've just pulled this data from the database!!
 
 
+Okay - my notes from the end of the day. I've had some wins and some frustrations. The main win is I worked out a reasonably elegant method for creating race_weblinks_master table. I combined the existing individual year tables through a UNION command in the MySQL query, which thereby avoided the need to download each table to the R console and combine them before writing a master table back. This also avoids the UTF-8 dramas that seem to be introduced during the process.
+
+I've since been working on subsetting queries. I successfully idenfied the race_id values for the Tour de France within a certain year range. This meant setting up appropriate WHERE conditions for the race_details and start_date fields. I've also learnt how to use the wildcard '%' and LIKE command for fuzzy searches within MySQL queries, which helps a lot.
+
+I'm now stuck trying to elegantly isolate the stage_id for the final stage of each of my race_id range. I had a butcher's method I thought would work, but quickly discovered the suffix 's21' doesn't match up to the last stage. In one case (at least) this is because the Tour only had 20 stages! Anyway - more work to do, but it is improving my MySQL query skills, which is critically important for current and future analysis.
+
+Next steps:
+
+- Continue on current Tour de France subsetting task. Currently looking to isolate correct stage_id's.
+
+- More subsetting practice.
+
+- Continue work on analysis plan.
+
+- Convert 'stage_date' in database to 'date' type. More testing on dummy tables required before changing master_results_time & points tables.
+
+- Work out a secure connection process for accessing the database from offsite.
+
+- More to learn on merging git branches.
+
+- Preparation for initial subsetting of analysis data and simple predictive analysis.
+
 
 
 

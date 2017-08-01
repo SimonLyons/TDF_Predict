@@ -139,33 +139,69 @@ View(tdf_query)
 
 # Pull the stage_id for these events from the race_weblinks_master table
 
+# Create the race_weblinks_master table in the database by combining all the individual year race_weblinks tables
+delete_tables <- dbSendQuery(conn_local, "DROP TABLE race_weblinks_master;")
+my_table <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_2015 LIMIT 0;")
+dbWriteTable(conn_local, type = 'UTF-8', name = "race_weblinks_master", my_table, overwrite = TRUE, row.names = FALSE)
+
+dbSendQuery(conn_local, "INSERT INTO race_weblinks_master
+            SELECT * FROM race_weblinks_2005
+            UNION
+            SELECT * FROM race_weblinks_2006
+            UNION
+            SELECT * FROM race_weblinks_2007
+            UNION
+            SELECT * FROM race_weblinks_2008
+            UNION
+            SELECT * FROM race_weblinks_2009
+            UNION
+            SELECT * FROM race_weblinks_2010
+            UNION
+            SELECT * FROM race_weblinks_2011
+            UNION
+            SELECT * FROM race_weblinks_2012
+            UNION
+            SELECT * FROM race_weblinks_2013
+            UNION
+            SELECT * FROM race_weblinks_2014
+            UNION
+            SELECT * FROM race_weblinks_2015
+            UNION
+            SELECT * FROM race_weblinks_2016
+            UNION
+            SELECT * FROM race_weblinks_2017
+            ;")
+
+# Need to identify the stage_id for Stage 21 of each Tour De France race.
+tdf_query$race_id[1]
+length(tdf_query$race_id)
+
+for (r in 1:length(tdf_query$race_id)){
+  stage_id_list <- dbGetQuery(conn_local, paste0("SELECT stage_id FROM w"))
+  tdf_query$my_stage_id[r] <- dbGetQuery(conn_local, paste0("SELECT stage_id FROM race_weblinks_master WHERE race_id = '", tdf_query$race_id[r],  "' AND stage_url LIKE '%stage-21/results%';"))
+}
+
+check_race_id <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_master WHERE race_id = 'race_2012_0702';")
+View(check_race_id)
+race_2012_0702
+
+View(tdf_query)
+
+tdf_query$my_stage_id <- paste0(tdf_query$race_id, "_s21")
+
+tdf_query$my_stage_id[2]
+
 stage_id_query <- dbGetQuery(conn_local, "SELECT *
-                             FROM race_weblinks_master
+                             FROM master_results_time
+                             WHERE stage_id = 'race_2012_0702_s21' AND result_class LIKE '%General classification%'
                              ;")
 View(stage_id_query)
 
 
-tdf_query$race_id
+stage_id_query$stage_id
 
 
-y <- 2005
-race_weblinks_master <- NA
 
-
-for (y in 2005:2017){
-  my_table <- dbGetQuery(conn_local, paste0("SELECT * FROM race_weblinks_", y , ";"))
-  race_weblinks_master <- rbind(race_weblinks_master, my_table)
-}
-
-race_weblinks_master$location <- text_clean(race_weblinks_master$location)
-race_weblinks_master$Stage <- text_clean(race_weblinks_master$Stage)
-race_weblinks_master[809,]
-
-dbWriteTable(conn_local, "race_weblinks_master", race_weblinks_master, overwrite = TRUE, row.names = FALSE)
-View(race_weblinks_master)
-
-filter(race_weblinks_master, stage)
-race_weblinks_master %>% filter(grepl("Workers", Stage))
 
 
 # CALENDAR TO WEBLINKS JOIN
