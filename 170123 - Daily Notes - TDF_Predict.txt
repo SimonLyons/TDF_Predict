@@ -1,4 +1,19 @@
 
+
+------------------------------
+Notes from Thu 03 Aug
+
+It's gone pretty well this morning. I was able to isolate the correct stage_id for the final stage of each year's TDF (by collecting all of the stage_id's and just taking the last one) and then with this information I built two queries for extracting a dataframe with the final stage General Classification results for the Tour de France between 2011 and 2016. I used two methods, both of which worked. The first looped through each year and then combined the tables in R. The second was a single MySQL query which had all of the stage_id's built into a single query.
+
+I've now taken this data and built my first analysis subset, which has the Rider and finishing position for the 2016 TDF, and then matches their finishing position (in the table) for previous years between 2011 and 2015. It's already interesting just looking at the results and observing the different finishing positions. It's a pretty messy affair. It's also super clear how few riders have competed in every tour from 2011 to 2016. It's going to be interesting doing some preliminary analysis on this data.
+
+Anyway - it's been great to finally work through a practical subsetting exercise and come out with my desired data subset, ready for analysis. It's been excellent to test my database query skills as well as put into action my data wrangling skills (using packages like dplyr), which are of course going to be critical as things get more detailed on the analysis front.
+
+Next steps:
+
+- Aside from the bigger list below, take my initial data subset and perform some intiial regression analysis to see if there is any discernible relationship between a Rider's overall GC finishing position and their GC finishing position in previous years.
+
+
 ------------------------------
 Notes from Tue 01 Aug
 
