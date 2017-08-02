@@ -125,7 +125,6 @@ super_join$date <- as.Date(super_join$date)
 
 # Need to perform a search of the race_calendar_master_cdf table. Not sure how to perform a fuzzy search in MySQL.
 
-
 # master_results_time_cdf, race_calendar_master_cdf, race_weblinks_master
 
 # Pull the race_id for Tour de France events between 2011 and 2016
@@ -173,33 +172,64 @@ dbSendQuery(conn_local, "INSERT INTO race_weblinks_master
             ;")
 
 # Need to identify the stage_id for Stage 21 of each Tour De France race.
-tdf_query$race_id[1]
-length(tdf_query$race_id)
 
+stage_id_list <- NA   # Create an empty list. It will hold a list of every stage_id associated with each of my race_id's.
+
+# Run a loop, collecting all the stage_id's for each race_id and then taking the last stage_id for each and
+# recording it in the existing tdf_query dataframe.
 for (r in 1:length(tdf_query$race_id)){
-  stage_id_list <- dbGetQuery(conn_local, paste0("SELECT stage_id FROM w"))
-  tdf_query$my_stage_id[r] <- dbGetQuery(conn_local, paste0("SELECT stage_id FROM race_weblinks_master WHERE race_id = '", tdf_query$race_id[r],  "' AND stage_url LIKE '%stage-21/results%';"))
+  stage_id_list[r] <- dbGetQuery(conn_local, paste0("SELECT stage_id FROM race_weblinks_master WHERE race_id = '", 
+                                                 tdf_query$race_id[r], "';"))
+  tdf_query$my_stage_id[r] <- stage_id_list[[r]][[length(stage_id_list[[r]])]]
 }
-
-check_race_id <- dbGetQuery(conn_local, "SELECT * FROM race_weblinks_master WHERE race_id = 'race_2012_0702';")
-View(check_race_id)
-race_2012_0702
-
 View(tdf_query)
 
-tdf_query$my_stage_id <- paste0(tdf_query$race_id, "_s21")
+# Build a new dataframe, with the General Classification results for the final stage of the Tour de France
+# for each of the years in my query. We'll run a loop through each year, retrieve the final table for each year
+# and then row bind them all together for a new, single dataframe with the subsetted data.
 
-tdf_query$my_stage_id[2]
+final_results_df <- NA
+for (y in 1:length(tdf_query$my_stage_id)){
+  single_year_df <- dbGetQuery(conn_local, paste0("SELECT * FROM master_results_time WHERE stage_id = '", 
+                              tdf_query$my_stage_id[y], "' AND result_class LIKE '%General classification%';"))
+  final_results_df <- rbind(final_results_df, single_year_df)
+}
+final_results_df <- final_results_df %>% filter(!is.na(Rider))   # Get rid of the first row, which is all 'NA'
+View(final_results_df)
 
-stage_id_query <- dbGetQuery(conn_local, "SELECT *
+# Now attempt to do the same with a single query
+final_results_df_02 <- dbGetQuery(conn_local, "SELECT *
                              FROM master_results_time
-                             WHERE stage_id = 'race_2012_0702_s21' AND result_class LIKE '%General classification%'
+                             WHERE (stage_id = 'race_2011_0741_s22' OR stage_id = 'race_2012_0702_s21' OR 
+                              stage_id = 'race_2013_0681_s21' OR stage_id = 'race_2014_0397_s21' OR
+                              stage_id = 'race_2015_0240_s21' OR stage_id = 'race_2016_0221_s24')
+                              AND result_class LIKE '%General classification%'
                              ;")
-View(stage_id_query)
+# 'Pos' column with rider standings needs to be converted to class 'integer'
+final_results_df$Pos <- as.integer(final_results_df$Pos)
+final_results_df_02$Pos <- as.integer(final_results_df_02$Pos)
+final_results_df$stage_date <- as.Date(final_results_df$stage_date)
+final_results_df_02$stage_date <- as.Date(final_results_df_02$stage_date)
+
+# Perform a subset to just the podium positions on each dataset for a check (looks good)
+podium_spots_01 <- final_results_df %>% 
+  filter(Pos < 4)
+View(podium_spots_01)
+
+podium_spots_02 <- final_results_df_02 %>% 
+  filter(Pos < 4)
+View(podium_spots_02)
+
+head(final_results_df)
+glimpse(final_results_df)
+
+# Not sure why the 2016 final TDF results have no date, but I'm temporarily insert one:  2016-07-24
+final_results_df[final_results_df$stage_id == 'race_2016_0221_s24', 'stage_date'] <- as.Date('2016-07-24')
 
 
-stage_id_query$stage_id
+### Time to build my analysis table ###
 
+# Firstly take the riders and their finishing position in the latest year (2016)
 
 
 
