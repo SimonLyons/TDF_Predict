@@ -1,6 +1,26 @@
 
 
 ------------------------------
+Notes from Sat 05 Aug
+
+Okay, off to a rocky start. The first main problem is the data I've got contains plenty of 'NAs' and this means most of the the predictive models I'm using spit the dummy. If I reduce the dataset down to those riders who have been in every TDF for the last six years I'm left with only 9 riders. So I need to investigate predictive modelling methods that allow a bunch of empty data fields. Or at least determine a method that appropriately includes this type of data in the analysis. It might require more pre-processing, such as inserting some sort of data field for NA results. I don't want to get into the business of predicting the empty fields, as I think this is a slippery slope likely to invalidate my analysis pretty quickly.
+
+But it's great to be actually off and attempting analysis. Good fun!
+
+The second drama I've encountered this morning is just a coding one. I thought it would be straight forward to go and extract a table with available predictive methods for the caret package. However, I'm using rvest and I can't isolate the 'table' nodes in the html. The page has some sort of special floating html widget table.
+
+"https://topepo.github.io/caret/available-models.html"
+
+The weird bit is that a 'table' node appears when I'm inspecting the html code on through Mozilla, but I don't think it's actually in the source code. Anyway - it's a little bit frustrating being hampered on what should now (for me) be a straight forward task.
+
+So I need to do some more research on predictive modelling techniques - particularly dealing with incomplete data sets. This is going to be my daily routine, as riders will have patchy competition histories. In fact - this is probably a fundamental part component of determining influencing factors on TDF performance. For example, whether GC contenders ride the Dauphine or not is a factor I want to understand.
+
+Next steps:
+
+- More from the list below. Continuing on regression analysis and other steps.
+
+
+------------------------------
 Notes from Thu 03 Aug
 
 It's gone pretty well this morning. I was able to isolate the correct stage_id for the final stage of each year's TDF (by collecting all of the stage_id's and just taking the last one) and then with this information I built two queries for extracting a dataframe with the final stage General Classification results for the Tour de France between 2011 and 2016. I used two methods, both of which worked. The first looped through each year and then combined the tables in R. The second was a single MySQL query which had all of the stage_id's built into a single query.

@@ -15,7 +15,7 @@ InTrain <- createDataPartition(y = results_df$X2016_FP, p = 0.7, list = FALSE)  
 results_test <- results_df[-InTrain, ]
 results_train <- results_df[InTrain, ]
 
-mostly_data<-results_df[apply(is.na(results_df),1,sum)<3, ]
+mostly_data<-results_df[apply(is.na(results_df),1,sum)<1, ]
 InTrain_mostlydata <- createDataPartition(y = mostly_data$X2016_FP, p = 0.7, list = FALSE)
 mostlydata_train <- mostly_data[InTrain_mostlydata, ]
 mostlydata_test <- mostly_data[-InTrain_mostlydata, ]
