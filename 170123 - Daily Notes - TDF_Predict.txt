@@ -1,5 +1,22 @@
 
 
+
+------------------------------
+Notes from Tue 08 Aug
+
+I've been working on the frustrating activity of extracting json data from the following website and attempting to get it into a dataframe in R:
+
+https://topepo.github.io/caret/available-models.html
+
+I've finally been able to isolate the json data and now convert it into a matrix in R. I next need to work out how to convert this into a neat dataframe. The matrix isn't correct. It's got lists of what should be row data.
+
+Next steps:
+
+- Sort out how to convert json derived matrix into a neat dataframe.
+
+- Continue on developing predictive analysis for basic TdF overall GC results data.
+
+
 ------------------------------
 Notes from Sat 05 Aug
 
