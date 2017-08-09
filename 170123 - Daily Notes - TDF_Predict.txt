@@ -2,6 +2,18 @@
 
 
 ------------------------------
+Notes from Thu 10 Aug
+
+Finally - I managed to work out a method for extracting the table on caret packages. The matrix could be converted easily to a dataframe and then it was simple to transpose the dataframe using t() into the correct format. 
+
+I still can't extract the table column names directly from the html which is frustrating. I've saved the table to a local .csv file.
+
+Next steps:
+
+- Not sure. Need to look through my previously listed Next Steps. I think I'll be getting back into analysis.
+
+
+------------------------------
 Notes from Tue 08 Aug
 
 I've been working on the frustrating activity of extracting json data from the following website and attempting to get it into a dataframe in R:

@@ -2,6 +2,7 @@
 
 require(rvest)
 require(dplyr)
+require(tidyr)
 library(jsonlite)
 
 # Download HTML data
@@ -21,34 +22,19 @@ my_json <- model_table %>% fromJSON(flatten = FALSE)
 # Take data only
 my_json_data <- my_json$x$data
 # Convert matrix into dataframe
+my_json_data <- as.data.frame(my_json_data)
 
-# NEXT SECTION THAT REQUIRES WORK
+# transpose dataframe
+my_json_data <- t(my_json_data)
+colnames(my_json_data) <- c("Model", "method_Value", "Type", "Libraries", "UNKNOWN")
 
+# Write .csv file locally
+write.csv(my_json_data, "my_json_data.csv", row.names = FALSE)
 
-
-
-View(model_table)
-
-# Treating data as JSON and using something other than 'rvest' to retrieve data:
-library(httr)
-
-library(rtypeform)
-
-res <- GET(machine_learning_models_url)
-
-status_code(res)
-headers(res)
-stringi::stri_enc_detect(content(res, "raw"))
-str(content(res, 'text', encoding = "ISO-8859-1")) %>% fromJSON(flatten = FALSE)
+# I'm attempting to extact the column names from the XML code, but I'm not having much success
+model_headings <- "machine_learning_models_url.xml" %>%
+  read_html() %>% 
+  html_node(xpath="//table[@class='table table-striped table-hover']") %>% 
+  html_text()
 
 
-out <- content(res, as = "text") %>% fromJSON(flatten = FALSE)
-
-out <- res %>% get_results("4ac25b7d7d3dfc41f8b4")
-
-out <- model_table %>% fromJSON(flatten = FALSE)
-
-content(model_table, as = 'text')
-
-
-yelp <- flatten(model_table)
