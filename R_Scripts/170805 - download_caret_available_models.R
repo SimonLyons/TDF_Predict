@@ -7,7 +7,13 @@ library(jsonlite)
 
 # Download HTML data
 machine_learning_models_url <- "https://topepo.github.io/caret/available-models.html"
+
+# Set working directory for linux HP laptop
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+
+# Set working directory for work laptop
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_files/")
+
 download.file(machine_learning_models_url, "machine_learning_models_url.xml")
 
 # Read in the text containing the json table data
@@ -26,15 +32,25 @@ my_json_data <- as.data.frame(my_json_data)
 
 # transpose dataframe
 my_json_data <- t(my_json_data)
-colnames(my_json_data) <- c("Model", "method_Value", "Type", "Libraries", "UNKNOWN")
+colnames(my_json_data) <- c("Model", "method_Value", "Type", "Libraries", "Tuning Parameters")
+
+View(my_json_data)
 
 # Write .csv file locally
 write.csv(my_json_data, "my_json_data.csv", row.names = FALSE)
+
+
+
 
 # I'm attempting to extact the column names from the XML code, but I'm not having much success
 model_headings <- "machine_learning_models_url.xml" %>%
   read_html() %>% 
   html_node(xpath="//table[@class='table table-striped table-hover']") %>% 
   html_text()
+
+table_nodes <- "machine_learning_models_url.xml" %>%
+  read_html() %>% 
+  html_nodes(xpath="//script[@type='application/json']") %>% 
+  html_structure()
 
 
