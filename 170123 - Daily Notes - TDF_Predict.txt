@@ -2,6 +2,21 @@
 
 
 ------------------------------
+Notes from Tue 15 Aug
+
+I'm working on sorting out some basic analysis of my initial dataset. It appears my primary hurdle is overcoming how the large number of NAs are treated. I don't really want to impute a value for the NAs, as I don't think a remotely appropriate value will be determined. I don't want the NAs removed, as the result set is reduced to an almost uselessly small dataset. Either way - the predicted results are heavily influenced.
+
+It looks like I may need to deal with predictive analysis outside the caret package, as I'm finding stuff online that says caret doesn't deal with NAs very well. Anyway, more research and testing required. I've added the dataset and my list of caret analysis packages to the git.
+
+Tutorial on 5 Powerful R Packages used for imputing missing values
+https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
+
+Breaking Down the process of Predictive Modeling
+https://www.analyticsvidhya.com/blog/2015/09/perfect-build-predictive-model-10-minutes/
+
+
+
+------------------------------
 Notes from Thu 10 Aug
 
 Finally - I managed to work out a method for extracting the table on caret packages. The matrix could be converted easily to a dataframe and then it was simple to transpose the dataframe using t() into the correct format. 

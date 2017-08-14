@@ -22,12 +22,17 @@ mostlydata_test <- mostly_data[-InTrain_mostlydata, ]
 length(mostly_data$Rider)
 
 # Create the random forest model based on the training set and using all of the GC results
-rf_model <- train(data = mostlydata_train, X2016_FP~., method = 'ada', na.action = na.pass)
-
+rf_model <- train(data = mostlydata_train, X2016_FP~., method = 'rf', na.action = na.pass)
 train_results <- predict(rf_model, mostlydata_test, type = "raw")
-
-
 head(train_results)
+
+# I'm looking for a predictive analysis method that can deal with the large number of 'NAs'
+# I have in my basic TDF results dataset.
+
+NA_model <- train(data = results_train, X2016_FP~., method = 'gbm', na.action = na.pass)
+train_NA_model <- predict(NA_model, results_test, type = "raw")
+# X2015_FP+X2014_FP+X2013_FP+X2012_FP+X2011_FP
+View(train_NA_model)
 
 # 'gbm' - gradient boosting model, 'lm' - linear regression, 'glm' - generalised linear regression, 'rf' - random forest
 # 'C5.0' - , 'adaboost' - AdaBoost Classification Trees
