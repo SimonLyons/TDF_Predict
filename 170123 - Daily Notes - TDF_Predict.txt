@@ -2,6 +2,16 @@
 
 
 ------------------------------
+Notes from Thu 17 Aug
+
+I'm progressing slowly with developing a method for predictive analysis of my basic TDF dataset. The inclusion of NAs in my data (from TDF years in which the rider did not compete or finish) is the big sticking point.
+
+This morning I've reduced my analysis to results from the previous year and a logical vector showing TRUE/FALSE for whether the rider competed the previous year. Unfortunately, if they didn't compete (and therefore have an NA in the finishing position) then there is essentially nothing to predict on and my first model (using glm) is only giving me predictions for riders who raced the previous year. 
+
+Lots more work to do.
+
+
+------------------------------
 Notes from Tue 15 Aug
 
 I'm working on sorting out some basic analysis of my initial dataset. It appears my primary hurdle is overcoming how the large number of NAs are treated. I don't really want to impute a value for the NAs, as I don't think a remotely appropriate value will be determined. I don't want the NAs removed, as the result set is reduced to an almost uselessly small dataset. Either way - the predicted results are heavily influenced.
@@ -13,7 +23,6 @@ https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing
 
 Breaking Down the process of Predictive Modeling
 https://www.analyticsvidhya.com/blog/2015/09/perfect-build-predictive-model-10-minutes/
-
 
 
 ------------------------------

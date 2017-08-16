@@ -14,6 +14,10 @@ InTrain <- createDataPartition(y = results_df$X2016_FP, p = 0.7, list = FALSE)  
 # Assign 30% of the data to the test set and 70% to the training set
 results_test <- results_df[-InTrain, ]
 results_train <- results_df[InTrain, ]
+View(results_train)
+
+results_train$X2015_competed <- is.na(results_train$X2015_FP)
+results_test$X2015_competed <- is.na(results_test$X2015_FP)
 
 mostly_data<-results_df[apply(is.na(results_df),1,sum)<1, ]
 InTrain_mostlydata <- createDataPartition(y = mostly_data$X2016_FP, p = 0.7, list = FALSE)
@@ -29,10 +33,15 @@ head(train_results)
 # I'm looking for a predictive analysis method that can deal with the large number of 'NAs'
 # I have in my basic TDF results dataset.
 
-NA_model <- train(data = results_train, X2016_FP~., method = 'gbm', na.action = na.pass)
+# This limited test reduces the analysis to the finishing position from the previous year (2015) and whether they competed.
+# Unfortunately, I get no results for an NA (which makes sense) so this is essentially the same as omitting the NAs.
+NA_model <- train(data = results_train, X2016_FP~X2015_FP + X2015_competed, method = 'glm', na.action = na.pass)
 train_NA_model <- predict(NA_model, results_test, type = "raw")
 # X2015_FP+X2014_FP+X2013_FP+X2012_FP+X2011_FP
 View(train_NA_model)
+
+# Column bind the test data with the results.
+cbind(results_test[!is.na(results_test$X2015_FP) , 1:2],round(train_NA_model,0))
 
 # 'gbm' - gradient boosting model, 'lm' - linear regression, 'glm' - generalised linear regression, 'rf' - random forest
 # 'C5.0' - , 'adaboost' - AdaBoost Classification Trees
