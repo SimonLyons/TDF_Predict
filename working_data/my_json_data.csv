@@ -1,4 +1,4 @@
-"Model","method_Value","Type","Libraries","UNKNOWN"
+"Model","method_Value","Type","Libraries","Tuning Parameters"
 "AdaBoost Classification Trees","adaboost","Classification","fastAdaboost","nIter, method"
 "AdaBoost.M1","AdaBoost.M1","Classification","adabag, plyr","mfinal, maxdepth, coeflearn"
 "Adaptive Mixture Discriminant Analysis","amdai","Classification","adaptDA","model"

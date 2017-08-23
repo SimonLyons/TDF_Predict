@@ -39,10 +39,13 @@ View(my_json_data)
 # Write .csv file locally
 write.csv(my_json_data, "my_json_data.csv", row.names = FALSE)
 
+# Set working directory for linux HP laptop
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+# Read .csv file back into R
+my_json_data <- read.csv("my_json_data.csv", header = TRUE)
 
 
-
-# I'm attempting to extact the column names from the XML code, but I'm not having much success
+# I'm attempting to extract the column names from the XML code, but I'm not having much success
 model_headings <- "machine_learning_models_url.xml" %>%
   read_html() %>% 
   html_node(xpath="//table[@class='table table-striped table-hover']") %>% 
