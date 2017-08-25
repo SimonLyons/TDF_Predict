@@ -34,6 +34,8 @@ Next steps:
 
 - Commence initial regression analysis for GC finishing position using new data fields.	
 
+ADDITION FROM HOME. I've had a quick go at some of the above.
+
 
 ------------------------------
 Notes from Thu 24 Aug
