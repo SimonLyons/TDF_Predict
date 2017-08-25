@@ -1,4 +1,40 @@
 
+
+------------------------------
+Notes from Sat 26
+
+
+
+
+------------------------------
+Notes from Thu 25 Aug @ work
+
+Last night I woke up and had some ideas of how to improve my approach for predictive analysis of the basic TDF results data I've collated. I realised I need to build something better suited to a regression analysis, and this means coming up with some categories that (to the greatest extent possible) avoid having NAs.
+
+Here are some new categories I feel could be created:
+
+- Number of completed tours (from the last five years)
+- Number of podium finishes
+- Number of top ten finishes
+- Highest finishing position
+- Average finishing position
+- Converting yes/no tests into digital 1/0's:
+     e.g.
+	Finished a specific year
+	Positive/Negative trend in finishing position
+
+I'm sure there's more. I've done some preliminary calculations in a new script file:
+170825 - Basic TDF GC Regression Analysis.R
+
+Next steps:
+
+- Sort out calculations for the rest of the categories listed above.
+
+- Write code to add these new categories to the dataframe (or a new dataframe)
+
+- Commence initial regression analysis for GC finishing position using new data fields.	
+
+
 ------------------------------
 Notes from Thu 24 Aug
 
