@@ -3,7 +3,19 @@
 ------------------------------
 Notes from Sat 26
 
+Okay - so I've got a basic linear regression predictive analysis up and running. That's a big deal I think! Although the results are embarrasingly bad, this is still a significant milestone and I'm proud to be at this point. 
 
+Using GC position for the past six years, I created a new dataset that has the GC position for each rider in the 2016 Tour de France, followed by my new predictor variables: GC_Complete, GC_Mean, best_GC and worst_GC. 
+
+The good news is the linear regression analysis (using the caret package and "glm" method) was able to run successfully. The bad news is the results are (predictably - no pun intended!) 
+
+Next steps:
+
+- Further running of current analysis with different models
+
+- Work on method for testing accuracy of results (and understanding it)
+
+- Develop a larger set of input predictor variables.
 
 
 ------------------------------
