@@ -1,21 +1,52 @@
 
 
+
 ------------------------------
-Notes from Sat 26
+Notes from Tue 29 Aug
 
-Okay - so I've got a basic linear regression predictive analysis up and running. That's a big deal I think! Although the results are embarrasingly bad, this is still a significant milestone and I'm proud to be at this point. 
+I feel like I made some rapid progress for a day or so and then have come to a grinding halt again. The epiphany I had last Thursday regarding the creation of new variables was excellent. It allowed me to create complete input variables for every rider, without NAs, hence allowing regression analysis to be run.
 
-Using GC position for the past six years, I created a new dataset that has the GC position for each rider in the 2016 Tour de France, followed by my new predictor variables: GC_Complete, GC_Mean, best_GC and worst_GC. 
+I guess I shouldn't be surprised the resulting models aren't all that fantastic. If there was a direct linear model between past TdF performance and future then the results would be intuitively easier to pick each year. 
 
-The good news is the linear regression analysis (using the caret package and "glm" method) was able to run successfully. The bad news is the results are (predictably - no pun intended!) 
+I've had a go at using a predictive regression model using four methods so far (with quoted mean deltas): glm(21.33333), ANFIS(39.38889), BstLm(37.58333) & GFS.THRIFT(52.91667).
+
+I guess I should be more positive about the learning experience. This small dataset with fairly simple inputs. I've worked out I need complete datasets and I'm about to work on testing accuracy more thoroughly.
 
 Next steps:
 
 - Further running of current analysis with different models
 
-- Work on method for testing accuracy of results (and understanding it)
+- Work on method for testing accuracy of results (and understanding it).
 
 - Develop a larger set of input predictor variables.
+
+
+------------------------------
+Notes from Mon 28 Aug
+
+I've had a go at using anothe regression model, on this occasion using the ANSIS package. The results were less accurate it seems, with a larger mean delta between my predicted and the actual finishing GC position in 2016.
+
+This is fun. More to do!
+
+
+------------------------------
+Notes from Sat 26 Aug
+
+Okay - so I've got a basic linear regression predictive analysis up and running. That's a big deal I think! Although the results are embarrasingly bad, this is still a significant milestone and I'm proud to be at this point. 
+
+Using GC position for the past six years, I created a new dataset that has the GC position for each rider in the 2016 Tour de France, followed by my new predictor variables: GC_Complete, GC_Mean, best_GC and worst_GC. 
+
+The good news is the linear regression analysis (using the caret package and "glm" method) was able to run successfully. The bad news is the results are (predictably - no pun intended!) pretty ordinary. The linear, straight-line model has an intercept of approximately 11 with the most influential predictor variables (Best GC and Average GC) both having a positive influence. This means the highest GC position can only be 11!
+
+Next steps:
+
+- Further running of current analysis with different models
+
+- Work on method for testing accuracy of results (and understanding it).
+
+- Develop a larger set of input predictor variables.
+
+- Sort out calculations for the rest of the input categories/variables listed below.
 
 
 ------------------------------
