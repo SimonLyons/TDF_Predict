@@ -2,6 +2,12 @@
 
 
 ------------------------------
+Notes from Wed 30 Aug @ work
+
+I had a quick go at extending my basic GC prediction analysis by running a random forest (rd) predictive model. The results appear similar to the simple linear regression.
+
+
+------------------------------
 Notes from Tue 29 Aug
 
 I feel like I made some rapid progress for a day or so and then have come to a grinding halt again. The epiphany I had last Thursday regarding the creation of new variables was excellent. It allowed me to create complete input variables for every rider, without NAs, hence allowing regression analysis to be run.

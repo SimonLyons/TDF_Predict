@@ -11,7 +11,7 @@ library(lattice)   # Producing scatterplots
 # Pull in results dataset with final GC results from 2011 to 2016
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
 # Set working directory for Work Laptop
-# setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_data/")
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_data/")
 results_df <- read.csv("anal_df_2016.csv", header = TRUE)
 View(results_df)
 
@@ -75,11 +75,16 @@ BstLm_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method 
 
 GFS.THRIFT_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "GFS.THRIFT")
 
+rf_model <- train(data = input_data_train, FP_2016 ~ ., method = "rf")
+
+
+
 # Use predictive model to calculate a finishing position using the test data
 lrm_results <- predict(lrm, input_data_test, type = 'raw')
 ANFIS_results <- predict(ANFIS_lrm, input_data_test, type = 'raw')
 BstLm_results <- predict(BstLm_lrm, input_data_test, type = 'raw')
 GFS.THRIFT_results <- predict(GFS.THRIFT_lrm, input_data_test, type = 'raw')
+rf_results <- predict(rf_model, input_data_test, type = 'raw')
 
 # Shift the results into the testing dataframe and create a delta column for comparison
 input_data_test$lrm_results <- round(lrm_results, 0)
@@ -94,6 +99,10 @@ input_data_test$BstLm_delta <- abs(input_data_test$BstLm_results - input_data_te
 input_data_test$GFS.THRIFT_results <- round(GFS.THRIFT_results, 0)
 input_data_test$GFS.THRIFT_delta <- abs(input_data_test$GFS.THRIFT_results - input_data_test$FP_2016)
 
+input_data_test$rf_results <- round(rf_results, 0)
+input_data_test$rf_delta <- abs(input_data_test$rf_results - input_data_test$FP_2016)
+
+
 View(input_data_test)
 
 
@@ -105,6 +114,7 @@ mean(input_data_test$lrm_delta)   # Calculate mean of the delta (how far the pre
 mean(input_data_test$ANFIS_delta)
 mean(input_data_test$BstLm_delta)
 mean(input_data_test$GFS.THRIFT_delta)
+mean(input_data_test$rf_delta)
 
 input_data_train_diff <- input_data_train %>% 
   mutate(mean(diff(as.integer([1 ,5:7]))))
