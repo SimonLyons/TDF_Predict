@@ -1,11 +1,30 @@
 
 
 
+------------------------------
+Notes from Tue 05 Sep
+
+This morning I've been doing some practice focused on understanding model accuracy better. I've created a dummy dataset (based on a very basic linear model), introduced some error and then set about predicting a model and looking at the error. My work is in the following script:
+
+170905 - Regression Prediction Accuracy Practice.R
+
+I have an understanding of RMSE again, but I'm finding a small difference between the RMSE calculated automatically in R by the model and the RMSE I calculate manually. I'm also additionally seeking to understand the normalised error (I think it's RMSED) to be able to appreciate model accuracy between datasets with different scales.
+
+Next steps:
+
+- Try and work out why my RMSE is different to the one calculated in R. They should really be the same as the formula is straight-forward.
+
+- Seek to understand RMSED better.
+
+- Try out some different prediction methods and compare the accuracy.
+
+- Refine my own method for testing and selecting the most accurate prediction methods.
+
 
 ------------------------------
 Notes from Fri 01 Sep
 
-I've enrolled in the EdX course. The reviews look good the material extremely relevant. It's all about data analytics using R.I enrolled using my Google account. The only downside appears to be that the course finished on 24 Aug, but all the material seems to be there.
+I've enrolled in the EdX course. The reviews look good, the material extremely relevant. It's all about data analytics using R. I enrolled using my Google account. The only downside appears to be that the course finished on 24 Aug, but all the material seems to be there.
 
 
 ------------------------------

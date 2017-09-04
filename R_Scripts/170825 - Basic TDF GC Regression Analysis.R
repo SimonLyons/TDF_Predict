@@ -67,6 +67,7 @@ splom(input_data_train[ , 2:6 ], data = input_data_train)
 lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "glm")
 summary(lrm)
 lrm$finalModel
+lrm$residuals
 
 # Here's a bunch of other models using alternative regression analysis packages
 ANFIS_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "ANFIS")
@@ -76,6 +77,10 @@ BstLm_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method 
 GFS.THRIFT_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "GFS.THRIFT")
 
 rf_model <- train(data = input_data_train, FP_2016 ~ ., method = "rf")
+rf_model$results
+
+
+basic_lm <- train(data = input_data, FP_2016 ~ GC_Mean + best_GC, method = "lm")
 
 
 
