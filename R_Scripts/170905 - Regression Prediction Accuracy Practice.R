@@ -4,7 +4,7 @@
 # Create dataset
 set.seed(1977)
 x <- floor(runif(100, 0, 101))
-my_error <- 100 * runif(100)
+my_error <- 10 * runif(100)
 average_error <- mean(my_error)
 y <- round((4 + (3 * x) + my_error),3)
 my_data <- as.data.frame(cbind(x,y))
@@ -25,6 +25,7 @@ my_data$predict_lm <- predict(lm_model, my_data)
 my_data$RMSE <- (my_data$y - my_data$predict_lm)^2
 mean(my_data$RMSE)
 RMSE_calc <- sqrt(mean(my_data$RMSE))
+lm_model$results$Rsquared
 lm_model$results$RMSE
 RMSE_mean <- sum(sqrt(my_data$RMSE))/nrow(my_data)
 NRMSE <- RMSE_calc/mean(my_data$y)
