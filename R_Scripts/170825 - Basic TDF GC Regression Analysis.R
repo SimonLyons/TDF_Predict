@@ -67,21 +67,26 @@ splom(input_data_train[ , 2:6 ], data = input_data_train)
 lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "glm")
 summary(lrm)
 lrm$finalModel
-lrm$residuals
+lrm$results$Rsquared
 
 # Here's a bunch of other models using alternative regression analysis packages
 ANFIS_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "ANFIS")
+ANFIS_lrm$bestTune
 
 BstLm_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "BstLm")
+BstLm_lrm$results$Rsquared
 
 GFS.THRIFT_lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "GFS.THRIFT")
+GFS.THRIFT_lrm$results
 
 rf_model <- train(data = input_data_train, FP_2016 ~ ., method = "rf")
 rf_model$results
 
 
-basic_lm <- train(data = input_data, FP_2016 ~ GC_Mean + best_GC, method = "lm")
+basic_lm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC, method = "lm")
+basic_lm$results
 
+plot(input_data_train$best_GC, input_data_train$FP_2016)
 
 
 # Use predictive model to calculate a finishing position using the test data
