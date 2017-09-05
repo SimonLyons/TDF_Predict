@@ -1,6 +1,23 @@
 
 
 
+
+------------------------------
+Notes from Tue 05 Sep @ work
+
+I've extended my work from earlier this morning on determining model accuracy. I built a loop that increases error on my basic linear model and predicts the results using a number of different methods (in this case, 'lm', 'glm' and 'rf'). 
+
+I've introduced error into my y results, increasing it by a factor of 10 three times. By the time the error gets to 1000 the plotted dataset hardly represents the underlying linear model at all, so it's not surprising the prediction models are wildly inaccurate.
+
+The results are stored in an error_df dataframe for comparison. Looking at standardised RMSE is interesting, although predictable (which is good). When the error is low (1), the residual variance is significantly less than 1% for the two linear regression predictive methods. The Random Forest method has nearly 3% variance and is therefore far less accurate. When the error increases to 10 the variances increases to roughly 2% for the linear methods and 3.5% for 'rf'. At error of 100 the linear methods are around 15% in variance and the 'rf' method 17%. Finally the 1000 error value introduces 41%, 42% and 47% variance, which isn't really any sort of accuracy at all. It's interesting to see the 'rf' method perform better (or closer to the linear models) as the error increases.
+
+So the upside is I believe I understand the use of RMSE and RMSED quite well again and I'm ready to start using these measures for testing and selecting prediction methods on my TDF analysis.
+
+Next steps:
+
+- Need to still work out why RMSE calculated in R prediction methods is slightly different to the values I manually calculate (still in R).
+
+
 ------------------------------
 Notes from Tue 05 Sep
 
