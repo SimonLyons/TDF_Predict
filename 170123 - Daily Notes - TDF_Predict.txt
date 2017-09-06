@@ -1,5 +1,21 @@
 
 
+------------------------------
+Notes from Thu 07 Sep Sep
+
+Yesterday I went back to my TDF data and built up some new variables: Team_Mean, Team_Highest, Country_Mean, Country_Highest. The point was to see whether the introduction of these new variables would improve the accuracy of my basic TDF prediction work.
+
+The effort I put into understanding model accuracy has been valuable as it's allowed me to establish a baseline (with my current predictor model) and then to test the improvements (or otherwise) of modifications and additions. 
+
+The best accurary comparison metric I've found is RSquared, which is a percentage metric. It measures the difference in added value from no-value (where the model predicts no better than the mean of the data) to 100% value (where there is zero error).
+
+For example, it's apparent the addition of Team_Mean and Country_Mean does not add value to the predicitive model. 
+FP_2016 ~ GC_Mean + best_GC
+'glm' 0.6685979, 'lm' 0.6586792
+FP_2016 ~ GC_Mean + best_GC + Team_Mean + Country_Mean
+'glm' 0.6100148, 'lm' 0.6288929
+
+It's also useful looking at the scatterplots. The plots for GC Finishing Position in 2016 (FP_2016) against the predictor variables is powerful for spotting a relationship to the predictor variables. The plots for FP_2016 against individual rider GC Mean and GC Highest Position show a clear linear relatioship, which is why these predictors add so much value. It's hard to spot any obvious (at least linear) relationship between FP_2016 and the Team and Country values, which is no doubt why they don't improve the accuaracy of the model.
 
 
 ------------------------------

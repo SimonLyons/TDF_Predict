@@ -67,7 +67,9 @@ View(input_data_train)
 
 # Create scatterplot to assist in visually identifying input
 # variables with a strong relationship with predicting final GC position.
-splom(input_data_train[ , 2:10], data = input_data_train)
+splom_data <- input_data_train %>% select(FP_2016, Team_Mean, Team_Highest, Country_Mean, Country_Highest)
+splom(input_data_train[ , 4:8])
+splom(splom_data)
 # This is interesting as it appears to indicate a strong (linear) relationship
 # between FP_2016 and GC_Mean, Best_GC & Worst_GC but not number of complete tours.
 
@@ -76,7 +78,7 @@ splom(input_data_train[ , 2:10], data = input_data_train)
 ##################################
 
 # Use caret package to create predictive model based on speficied method.
-lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC + Team_Mean + Country_Mean, method = "glm")
+lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC + Team_Mean + Country_Mean, method = "lm")
 summary(lrm)
 lrm$finalModel
 lrm$results
