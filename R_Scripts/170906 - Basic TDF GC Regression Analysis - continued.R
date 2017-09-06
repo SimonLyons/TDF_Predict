@@ -76,7 +76,7 @@ splom(input_data_train[ , 2:10], data = input_data_train)
 ##################################
 
 # Use caret package to create predictive model based on speficied method.
-lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC + Team_Mean + Country_Mean, method = "GFS.THRIFT")
+lrm <- train(data = input_data_train, FP_2016 ~ GC_Mean + best_GC + Team_Mean + Country_Mean, method = "glm")
 summary(lrm)
 lrm$finalModel
 lrm$results
