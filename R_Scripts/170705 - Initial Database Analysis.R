@@ -205,6 +205,7 @@ final_results_df_02 <- dbGetQuery(conn_local, "SELECT *
                               stage_id = 'race_2015_0240_s21' OR stage_id = 'race_2016_0221_s24')
                               AND result_class LIKE '%General classification%'
                              ;")
+View(final_results_df_02)
 # 'Pos' column with rider standings needs to be converted to class 'integer'
 final_results_df$Pos <- as.integer(final_results_df$Pos)
 final_results_df_02$Pos <- as.integer(final_results_df_02$Pos)
@@ -225,14 +226,14 @@ glimpse(final_results_df)
 
 # Not sure why the 2016 final TDF results have no date, but I'm temporarily insert one:  2016-07-24
 final_results_df[final_results_df$stage_id == 'race_2016_0221_s24', 'stage_date'] <- as.Date('2016-07-24')
-
+final_results_df_02[final_results_df_02$stage_id == 'race_2016_0221_s24', 'stage_date'] <- as.Date('2016-07-24')
 
 ### Time to build my analysis table ###
 
 # Firstly take the riders and their finishing position in the latest year (2016)
 anal_df_2016 <- final_results_df %>%
   filter(year(stage_date) == '2016') %>% 
-  select(Rider, "2016_FP" = Pos)
+  select(Rider, Country, Team, "2016_FP" = Pos)
 
 # Next create Rider/Pos tables for each year
 anal_df_2015 <- final_results_df %>% filter(year(stage_date) == '2015') %>% select(Rider, "2015_FP" = Pos)
@@ -252,7 +253,34 @@ View(anal_df_2016)
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
 write.csv(anal_df_2016, "anal_df_2016.csv", row.names = FALSE)
 
-###############################  UP TO THE ABOVE SECTION
+##############################################################
+# Building second basic dataset, which includes Country and 
+# Team details in addition to Rider.
+
+# Firstly take the riders and their finishing position in the latest year (2016)
+anal_df_2016 <- final_results_df_02 %>%
+  filter(year(stage_date) == '2016') %>% 
+  select(Rider, Country, Team, "2016_FP" = Pos)
+
+# Next create Rider/Pos tables for each year
+anal_df_2015 <- final_results_df_02 %>% filter(year(stage_date) == '2015') %>% select(Rider, "2015_FP" = Pos)
+anal_df_2014 <- final_results_df_02 %>% filter(year(stage_date) == '2014') %>% select(Rider, "2014_FP" = Pos)
+anal_df_2013 <- final_results_df_02 %>% filter(year(stage_date) == '2013') %>% select(Rider, "2013_FP" = Pos)
+anal_df_2012 <- final_results_df_02 %>% filter(year(stage_date) == '2012') %>% select(Rider, "2012_FP" = Pos)
+anal_df_2011 <- final_results_df_02 %>% filter(year(stage_date) == '2011') %>% select(Rider, "2011_FP" = Pos)
+
+# Now match up the 2016 riders with their finishing position in previous years
+anal_df_2016$`2015_FP` <-  match(anal_df_2016[,1], anal_df_2015[, 1])
+anal_df_2016$`2014_FP` <-  match(anal_df_2016[,1], anal_df_2014[, 1])
+anal_df_2016$`2013_FP` <-  match(anal_df_2016[,1], anal_df_2013[, 1])
+anal_df_2016$`2012_FP` <-  match(anal_df_2016[,1], anal_df_2012[, 1])
+anal_df_2016$`2011_FP` <-  match(anal_df_2016[,1], anal_df_2011[, 1])
+View(anal_df_2016)
+
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+write.csv(anal_df_2016, "anal_df_2016_C&T.csv", row.names = FALSE)
+
+###############################
 ###############################
 ###############################
 
