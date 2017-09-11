@@ -68,8 +68,10 @@ View(input_data_train)
 # Create scatterplot to assist in visually identifying input
 # variables with a strong relationship with predicting final GC position.
 splom_data <- input_data_train %>% select(FP_2016, Team_Mean, Team_Highest, Country_Mean, Country_Highest)
+View(splom_data[1:10,])
 splom(input_data_train[ , 4:8])
-splom(splom_data)
+splom(splom_data[1:10,])
+
 # This is interesting as it appears to indicate a strong (linear) relationship
 # between FP_2016 and GC_Mean, Best_GC & Worst_GC but not number of complete tours.
 

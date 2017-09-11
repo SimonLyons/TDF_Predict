@@ -1,7 +1,17 @@
 
 
 ------------------------------
-Notes from Thu 07 Sep Sep
+Notes from Tue 12 Sep
+
+I'm at a bit of a minor crossroads trying to work out what to focus on next. 
+
+- Building predictor variables. i.e. pulling the data from my database and collating it ready for analysis
+- Updating scraping script to pull latest cycling scripts
+- Working through Data Analytics course on EdX to improve my predictive analysis
+- Determining new predictor variables. e.g. race miles ridden, race results, etc
+
+------------------------------
+Notes from Thu 07 Sep
 
 Yesterday I went back to my TDF data and built up some new variables: Team_Mean, Team_Highest, Country_Mean, Country_Highest. The point was to see whether the introduction of these new variables would improve the accuracy of my basic TDF prediction work.
 
@@ -2174,7 +2184,7 @@ Next steps:
 
 - Sort out a Github account and start some version control
 
-- Download/Instal the VIM text editor
+- Download/Install the VIM text editor
 
 - Start thinking about what my main R functions will be and how they will call each other.
 
@@ -2195,7 +2205,7 @@ Next steps:
 
 - Sort out a Github account and start some version control
 
-- Download/Instal the VIM text editor
+- Download/Install the VIM text editor
 
 - Start thinking about what my main R functions will be and how they will call each other.
 
@@ -2241,7 +2251,7 @@ Next steps
 
 - Sort out a Github account and start some version control
 
-- Download/Instal the VIM text editor
+- Download/Install the VIM text editor
 
 - Start thinking about what my main R functions will be and how they will call each other.
 
