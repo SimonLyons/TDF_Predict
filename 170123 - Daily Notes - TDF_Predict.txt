@@ -1,6 +1,26 @@
 
 
 ------------------------------
+Notes from Wed 13 Sep
+
+I'm going to attempt to build the variable for the number of race miles and race minutes each TDF rider has done each year, prior to the TDF. Things I'll need:
+
+* Starting date for the TdF each year. Which give me the idea for measuring the rest they get (from racing) prior to the TdF start.
+
+I think I can just do this in this (to start) with just the race_master_time table from the datbase.
+
+## Right-o: I've had a reasonable amount of success this morning. My work is in the script:
+170913 - Variable builder - No of miles and minutes ridden.R
+
+I'm proud of being able to build a big query limiting the results of just the riders completing the 2016 TdF (+170). 
+
+Next steps:
+
+- Complete fix for dates in master database files so I can efficiently perform date queries.
+- Extend the query to limit results to racing prior to the TdF each year.
+
+
+------------------------------
 Notes from Tue 12 Sep
 
 I'm at a bit of a minor crossroads trying to work out what to focus on next. 
@@ -1656,7 +1676,6 @@ Model: broom
 Program: purr, magrittr
 
 
-
 ------------------------------
 Notes from Sat 11 Mar
 
@@ -1680,20 +1699,8 @@ Next steps
 - Consider how the tables might be amalgamated. Not easy given their heterogeneous nature. 
 
 
-
-
-
-
-
-
-
-
-
-
-
 ------------------------------
 Notes from Thu 9 Mar
-
 
 I had a quick go at using some of the dataframe arranging functions in the dplyr package. I went to my first BURGr Meetup last night and had a great time.
 (tidyverse, magrittr, dplyr)

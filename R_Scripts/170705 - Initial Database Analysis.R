@@ -29,7 +29,7 @@ View(master_race_weblinks)
 master_results_time <- dbGetQuery(conn_local, "SELECT * FROM master_results_time;")
 nrow(master_results_time)
 View(master_results_time)
-master_results_time_cdf <- dbGetQuery(conn_local, "SELECT * FROM master_results_time_cdf;")
+master_results_time_cdf <- dbGetQuery(conn_local, "SELECT * FROM master_results_time_cdf LIMIT 10;")
 nrow(master_results_time_cdf)
 View(master_results_time_cdf)
 
