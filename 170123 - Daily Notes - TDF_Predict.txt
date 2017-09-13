@@ -2,6 +2,22 @@
 
 
 ------------------------------
+Notes from Thu 14 Sep
+
+I was able to run the script I'd written on the bus to work yesterday aimed at creating a new full copy of the master_results_time table and correcting the date format to support full date-based queries via MySQL.
+
+After some testing, I carried out the same action for the master_results_points but it appears as though the modification might not be required as filtering WHERE queries on dates seems to be working on all the original tables....
+
+I've next created the date range query for the date ranges in each year prior to the start of the TdF. I've used dummy dates, but got a range query working for 2016 to 2010. 
+
+Next steps:
+
+- Extract the actual start dates for the TdF between 2017 and 2010 and sub this into my date range builder and query
+
+- Combine the rider filter and date range filter MySQL queries!
+
+
+------------------------------
 Notes from Wed 13 Sep @ work
 
 I did some work on the bus into work and then just a minor amount here at work with the primary outcome being some script to create a full copy of the master_results_time table (named master_results_time_cdf as before for 'corrected date format') and modified to have a correct date field for stage_date.

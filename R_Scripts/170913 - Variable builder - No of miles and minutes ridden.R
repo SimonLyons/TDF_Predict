@@ -29,7 +29,7 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
                         dbname='ProCycling', host='192.168.1.7', port=3306, timeout=3600)
 
 
-
+#          ### WHERE filter based on rider###
 # Build a WHERE criteria list of all the riders who completed the 2016 TdF
 WHERE_rider <- paste0("Rider = '", results_df$Rider[1], "'")
 for (r in 2:length(results_df$Rider)){
@@ -56,3 +56,31 @@ total_duration <- rider_table %>%
 # Just take a look at the results for Chris Froome
 CF_td <- total_duration %>% filter(Rider == 'Christopher Froome') %>% mutate("Duration_s" = )
 
+
+#          ### WHERE filter based on date ###
+# Build a WHERE criteria list of a date range for each year prior to the start of the TdF
+
+# Yet to be populated with the correct dates.
+TdF_start_dates <- c("2016-06-03", "2015-06-03", "2014-06-03", "2013-06-03", "2012-06-03", "2011-06-03", "2010-06-03")
+
+# Build a dataframe with the date ranges, and a field with the text of the range
+pre_TdF_date_range <- as.data.frame(matrix(data = NA, ncol = 3, nrow = length(TdF_start_dates)))
+colnames(pre_TdF_date_range) <- c("TdF_start", "year_start", "WHERE_date")
+pre_TdF_date_range_list <- NA
+for (d in 1:length(TdF_start_dates)){
+  pre_TdF_date_range[d, 1] <- TdF_start_dates[d]
+  pre_TdF_date_range[d, 2] <- paste0(year(TdF_start_dates[d]), "-01-01")
+  pre_TdF_date_range[d, 3] <- paste0("(stage_date >= '", pre_TdF_date_range[d, 2], "' AND stage_date < '", pre_TdF_date_range[d, 1], "')")
+  pre_TdF_date_range_list <- paste0(pre_TdF_date_range_list, " OR ", pre_TdF_date_range[d, 3])
+}
+# Get rid of the 'NA OR' at the start of the MySQL date range list
+pre_TdF_date_range_list <- gsub("NA OR ", "", pre_TdF_date_range_list)
+
+# WHERE_date <- "stage_date >= '2016-01-01' AND stage_date < '2016-06-03'"
+
+# Paste together the criteria for the MySQL query
+criteria <- paste0("SELECT * FROM master_results_time WHERE ", pre_TdF_date_range_list, ";")
+
+# Perform the MySQL query, 
+date_table <- dbGetQuery(conn_local, criteria)
+View(date_table)

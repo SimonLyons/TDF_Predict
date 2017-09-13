@@ -15,7 +15,7 @@ for(con in all_cons)
 # Open connection to ProCyling database
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                         password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                        dbname='ProCycling', host='192.168.1.5', port=3306, timeout=3600)
+                        dbname='ProCycling', host='192.168.1.7', port=3306, timeout=3600)
 
 # Show exsiting tables
 procycling_tables <- dbGetQuery(conn_local, "SHOW tables;")
@@ -364,12 +364,14 @@ dbSendQuery(conn_local, "ALTER TABLE race_calendar_master_cdf MODIFY end_date da
 # replace it with a copy of the prime master_results_time table. I'll then ALTER TABLE per my 
 # methodology above.
 
-# First - delete existing race_calendar_master_cdf table from MySQL database
-delete_tables <- dbSendQuery(conn_local, "DROP TABLE race_calendar_master_cdf;")
+#                     ### master_results_time MODIFY stage_date ###
 
-# Second - create copy of race_calendar_master table, renaming it to race_calendar_master_cdf 
+# First - delete existing master_results_time_cdf table from MySQL database
+delete_tables <- dbSendQuery(conn_local, "DROP TABLE master_results_time_cdf;")
+
+# Second - create copy of master_results_time table, renaming it to master_results_time_cdf 
 # The following two commands create the copy with not only the data, but also all of the database
-# objects associated with the original race_calendar_master table.
+# objects associated with the original master_results_time table.
 # http://www.mysqltutorial.org/mysql-copy-table-data.aspx
 dbSendQuery(conn_local, "CREATE TABLE IF NOT EXISTS master_results_time_cdf  LIKE master_results_time;")
 dbSendQuery(conn_local, "INSERT master_results_time_cdf SELECT * FROM master_results_time;")
@@ -379,6 +381,20 @@ dbSendQuery(conn_local, "ALTER TABLE master_results_time_cdf MODIFY stage_date d
 
 
 # Next - do the same again for the other tables: master_results_points & race_calendar_master_cdf
+# race_calendar_master, race_weblinks_master, rider_list_master, master_results_points
+
+
+#                     ### master_results_points MODIFY stage_date ###
+
+# First - create copy of master_results_points table, renaming it to master_results_points_cdf 
+# The following two commands create the copy with not only the data, but also all of the database
+# objects associated with the original master_results_points table.
+# http://www.mysqltutorial.org/mysql-copy-table-data.aspx
+dbSendQuery(conn_local, "CREATE TABLE IF NOT EXISTS master_results_points_cdf  LIKE master_results_points;")
+dbSendQuery(conn_local, "INSERT master_results_points_cdf SELECT * FROM master_results_points;")
+
+# Third - now go and convert the format of the stage_date column
+dbSendQuery(conn_local, "ALTER TABLE master_results_points_cdf MODIFY stage_date date;")
 
 
 
