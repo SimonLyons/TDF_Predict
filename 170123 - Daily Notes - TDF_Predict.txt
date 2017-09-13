@@ -17,6 +17,8 @@ I'm proud of being able to build a big query limiting the results of just the ri
 Next steps:
 
 - Complete fix for dates in master database files so I can efficiently perform date queries.
+My previous date correcting script is at around the 60% mark of the following script:
+170705 - Initial Database Analysis.R
 - Extend the query to limit results to racing prior to the TdF each year.
 
 
