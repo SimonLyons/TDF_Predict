@@ -358,6 +358,7 @@ dbWriteTable(conn_local, name = "race_calendar_master_cdf",
 dbSendQuery(conn_local, "ALTER TABLE race_calendar_master_cdf MODIFY start_date date;")
 dbSendQuery(conn_local, "ALTER TABLE race_calendar_master_cdf MODIFY end_date date;")
 
+#    ######
 #    CREATE NEW master_results_time_cdf with full results and corrected date format within MySQL
 # Okay - now I'm going to delete the test master_results_time_cdf table from the database and
 # replace it with a copy of the prime master_results_time table. I'll then ALTER TABLE per my 
@@ -366,10 +367,19 @@ dbSendQuery(conn_local, "ALTER TABLE race_calendar_master_cdf MODIFY end_date da
 # First - delete existing race_calendar_master_cdf table from MySQL database
 delete_tables <- dbSendQuery(conn_local, "DROP TABLE race_calendar_master_cdf;")
 
-# Second - create copy of race_calendar_master table, renaming it to race_calendar_master_cdf
-dbSendQuery(conn_local, "CREATE TABLE IF NOT EXISTS race_calendar_master_cdf
-                              SELECT *
-                              FROM race_calendar_master;")
+# Second - create copy of race_calendar_master table, renaming it to race_calendar_master_cdf 
+# The following two commands create the copy with not only the data, but also all of the database
+# objects associated with the original race_calendar_master table.
+# http://www.mysqltutorial.org/mysql-copy-table-data.aspx
+dbSendQuery(conn_local, "CREATE TABLE IF NOT EXISTS master_results_time_cdf  LIKE master_results_time;")
+dbSendQuery(conn_local, "INSERT master_results_time_cdf SELECT * FROM master_results_time;")
+
+# Third - now go and convert the format of the stage_date column
+dbSendQuery(conn_local, "ALTER TABLE master_results_time_cdf MODIFY stage_date date;")
+
+
+# Next - do the same again for the other tables: master_results_points & race_calendar_master_cdf
+
 
 
 ########################################################################

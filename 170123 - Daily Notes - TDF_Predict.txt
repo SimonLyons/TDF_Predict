@@ -1,5 +1,21 @@
 
 
+
+------------------------------
+Notes from Wed 13 Sep @ work
+
+I did some work on the bus into work and then just a minor amount here at work with the primary outcome being some script to create a full copy of the master_results_time table (named master_results_time_cdf as before for 'corrected date format') and modified to have a correct date field for stage_date.
+
+Next steps:
+
+- Complete fix for dates in master database files so I can efficiently perform date queries. I've written some code at work - I just need to go and execute/test it at home.
+My previous date correcting script is at around the 60% mark of the following script:
+170705 - Initial Database Analysis.R
+
+- Extend the query to limit results to racing prior to the TdF each year.
+
+
+
 ------------------------------
 Notes from Wed 13 Sep
 
