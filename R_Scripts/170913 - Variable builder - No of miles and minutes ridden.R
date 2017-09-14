@@ -62,20 +62,21 @@ CF_td <- total_duration %>% filter(Rider == 'Christopher Froome') %>% mutate("Du
 
 # Searc for Tdf in race_calendar_master
 
-# Basic string matching
+# Basic string matching - returns a variety of races with 'Tour de France in the race_details column
 TdF_dates <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master
-                                                  WHERE start_date LIKE '%Tour De France%';")
+                                                  WHERE race_details LIKE '%Tour De France%';")
 
 # More advanced fuzzy string matching using SOUNDEX()
+# On first testing appears to return a far more select group of results
 TdF_dates <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master
-                                                  WHERE SOUNDEX(start_date) = SOUNDEX('Tour De France');")
+                                                  WHERE SOUNDEX(race_details) = SOUNDEX('%Tour De France%');")
 
 # The next bit regarding picking the earliest date for each year might
 # be achieved by using the GROUP BY function and the MIN function
 # https://stackoverflow.com/questions/5736820/sql-how-to-select-earliest-row
-TdF_dates <- dbGetQuery(conn_local, "SELECT race details, MIN(start_date) 
+TdF_dates <- dbGetQuery(conn_local, "SELECT race_details, MIN(start_date) 
                                                   FROM race_calendar_master
-                                                  WHERE SOUNDEX(start_date) = SOUNDEX('Tour De France')
+                                                  WHERE SOUNDEX(race_details) = SOUNDEX('Tour De France')
                                                   GROUP BY YEAR(start_date);")
 
 View(TdF_dates)

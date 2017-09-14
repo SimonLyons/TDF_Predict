@@ -1,4 +1,10 @@
 
+------------------------------
+Notes from Fri 15 Sep
+
+My queries written at work (with a few corrections) looking for TdF dates worked!
+
+Now just looking to feed this information and combine it with the secondary date range filter query.
 
 
 ------------------------------
