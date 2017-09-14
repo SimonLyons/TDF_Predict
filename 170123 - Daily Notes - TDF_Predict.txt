@@ -2,6 +2,24 @@
 
 
 ------------------------------
+Notes from Thu 14 Sep @ work
+
+I've created some code to get the ball rolling on searching for the start dates for the Tour de France in each year between 2010 and 2017. This is a good skill area as I'm learning about fuzzy string matching. I'm concerned the Cyling News results will have varying titles for the Tour de France (stored in the race_details column) which will invalidate a simple WHERE filter search looking for 'Tour de France'. Having a good fuzzy string matching search will be critical to my future work, particularly when dealing with the variety in spelling of rider and team names. My work is in the following file:
+
+170913 - Variable builder - No of miles and minutes ridden.R
+
+I've come across a MySQL function called SOUNDEX() which appears to support fuzzy string matching. 
+
+It also looks like 'GROUP BY' and 'MIN' MySQL functions will be very usefull in executing my search for the first TdF date in each year. GROUP BY will be used to create groups for each year (using the YEAR) function. MIN will be used to pick the earliest date (for each year).
+
+Next steps:
+
+- Have a crack at running the code I've developed at work and modifying/fixing as needed.
+
+- Combine the rider filter and date range filter MySQL queries!
+
+
+------------------------------
 Notes from Thu 14 Sep
 
 I was able to run the script I'd written on the bus to work yesterday aimed at creating a new full copy of the master_results_time table and correcting the date format to support full date-based queries via MySQL.
