@@ -2,6 +2,14 @@
 
 
 ------------------------------
+Notes from Sat 16 Sep
+
+I've been working on visualisation associated with my new rider total annual riding time data. I did a plot of all the riders and their annual riding time. The result is a crazy graph that is more artwork than useful plot! Anyway - it's good to get going.
+
+I've created a dataframe combining the TdF finishing position data with the annual riding duration. The next step will be to have a look at a plot with 2016 finishing position against 2016 total riding duration for each rider. 
+
+
+------------------------------
 Notes from Fri 15 Sep - back at home
 
 Oh yeah baby! This is getting fun! The scripts I wrote at work to combine the pre-TDF date range and the rider list into a single MySQL query worked. I only needed to complete the final action of sticking them into the dbGetQuery command. The query took a minute or so to execute, but looks like it's worked. Hooray! The "date_table.csv" file is 10MB, which isn't too surprising given it has over 80k rows of results information!
