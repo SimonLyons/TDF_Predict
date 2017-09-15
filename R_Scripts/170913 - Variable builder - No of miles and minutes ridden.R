@@ -60,7 +60,7 @@ CF_td <- total_duration %>% filter(Rider == 'Christopher Froome') %>% mutate("Du
 #          ### WHERE filter based on date ###
 # Build a WHERE criteria list of a date range for each year prior to the start of the TdF
 
-# Searc for Tdf in race_calendar_master
+# Search for Tdf in race_calendar_master
 
 # Basic string matching - returns a variety of races with 'Tour de France in the race_details column
 TdF_dates <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master
@@ -82,10 +82,8 @@ TdF_dates <- dbGetQuery(conn_local, "SELECT race_details, MIN(start_date)
 
 View(TdF_dates)
 
-
-
-# Yet to be populated with the correct dates.
-TdF_start_dates <- c("2016-06-03", "2015-06-03", "2014-06-03", "2013-06-03", "2012-06-03", "2011-06-03", "2010-06-03")
+# Build list of TdF start dates, limited to 2010 and above
+TdF_start_dates <- TdF_dates %>% filter(year(`MIN(start_date)`) > 2009) %>% select(`MIN(start_date)`) %>% unlist()
 
 # Build a dataframe with the date ranges, and a field with the text of the range
 pre_TdF_date_range <- as.data.frame(matrix(data = NA, ncol = 3, nrow = length(TdF_start_dates)))
@@ -103,15 +101,26 @@ pre_TdF_date_range_list <- gsub("NA OR ", "", pre_TdF_date_range_list)
 # WHERE_date <- "stage_date >= '2016-01-01' AND stage_date < '2016-06-03'"
 
 # Paste together the criteria for the MySQL query
-criteria <- paste0("SELECT * FROM master_results_time WHERE ", pre_TdF_date_range_list, ";")
-
-# Perform the MySQL query, 
-date_table <- dbGetQuery(conn_local, criteria)
-View(date_table)
-
-# Okay - now to build a SUPER QUERY combining both the date range and rider selection in the WHERE filter
-criteria <- paste0("SELECT * FROM master_results_time WHERE ", pre_TdF_date_range_list, " AND ", WHERE_rider,";")
+criteria <- paste0("SELECT * FROM master_results_time WHERE (", pre_TdF_date_range_list, ") AND (", WHERE_rider ,");")
 
 # Perform the MySQL SUPER query, 
 date_table <- dbGetQuery(conn_local, criteria)
+write.csv(date_table, "date_table.csv", row.names = FALSE)
 View(date_table)
+
+# Filter down the table to just rows containg 'Results' or 'results'
+# We don't want the 'General Classification', 'Young Rider' or other classifications
+just_results <- date_table %>% filter(grepl(('Results|results'), result_class))
+
+# Let's summarise by summing up the total racing time (in hours) for
+# each rider, in each year.
+rider_duration <- just_results %>% 
+  group_by(Rider, "Year" = year(stage_date)) %>% 
+  summarise("Riding_Time_hrs" = sum(duration, na.rm = TRUE)/3600)
+View(rider_duration)
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+write.csv(rider_duration, "rider_duration.csv", row.names = FALSE)
+
+# Reformat the table so the years are spread out as columns
+rider_duration_spread <- tidyr::spread(rider_duration, Year, Riding_Time)
+write.csv(rider_duration_spread, "rider_duration_spread.csv", row.names = FALSE)

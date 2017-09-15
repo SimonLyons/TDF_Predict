@@ -2,6 +2,23 @@
 
 
 ------------------------------
+Notes from Fri 15 Sep - back at home
+
+Oh yeah baby! This is getting fun! The scripts I wrote at work to combine the pre-TDF date range and the rider list into a single MySQL query worked. I only needed to complete the final action of sticking them into the dbGetQuery command. The query took a minute or so to execute, but looks like it's worked. Hooray! The "date_table.csv" file is 10MB, which isn't too surprising given it has over 80k rows of results information!
+
+I've then extended on this by using dplyr to start building some summarising data. I filtered down to just rows containg 'Results' or 'results', we don't want the 'General Classification', 'Young Rider' or other classifications. 
+
+This work is contained in:
+170913 - Variable builder - No of miles and minutes ridden.R
+
+Next steps:
+
+- I guess the main thing is to explore this data (perhaps visually) and see if it leads to any insights, and to check if it looks correct (at a macro level). 
+
+- Next I'll scatterplot the results against TdF results to look for any obvious relationships and consider whether they might be useful predictor variables.
+
+
+------------------------------
 Notes from Fri 15 Sep @ work
 
 I've built a combined MySQL criteria for both the pre-TDF date range and the rider list, with a MySQL query directly following it. Now it just needs testing. The date range hasn't been limited to just 2010 to 2017, so this could potentially be chopped.
