@@ -6,9 +6,13 @@ Notes from Fri 15 Sep @ work
 
 I've built a combined MySQL criteria for both the pre-TDF date range and the rider list, with a MySQL query directly following it. Now it just needs testing. The date range hasn't been limited to just 2010 to 2017, so this could potentially be chopped.
 
+I've additionally started a new script working on summarising rider data, in this case driven by the desire to look at the performance of Simon Gerrans. The file is called: 170915 - Simon Gerrans Comparo.R
+
 Next steps:
 
 - Test out new combined SUPER QUERY @home
+
+- Continue work on Simon Gerrans summarising comparo file. I'm up to building the criteria for the MySQL filter query.
 
 
 ------------------------------
