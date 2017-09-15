@@ -1,4 +1,16 @@
 
+
+
+------------------------------
+Notes from Fri 15 Sep @ work
+
+I've built a combined MySQL criteria for both the pre-TDF date range and the rider list, with a MySQL query directly following it. Now it just needs testing. The date range hasn't been limited to just 2010 to 2017, so this could potentially be chopped.
+
+Next steps:
+
+- Test out new combined SUPER QUERY @home
+
+
 ------------------------------
 Notes from Fri 15 Sep
 

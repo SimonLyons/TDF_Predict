@@ -68,6 +68,7 @@ TdF_dates <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master
 
 # More advanced fuzzy string matching using SOUNDEX()
 # On first testing appears to return a far more select group of results
+# Also appears to match CAPS or NO CAPS. Bonus!
 TdF_dates <- dbGetQuery(conn_local, "SELECT * FROM race_calendar_master
                                                   WHERE SOUNDEX(race_details) = SOUNDEX('%Tour De France%');")
 
@@ -105,5 +106,12 @@ pre_TdF_date_range_list <- gsub("NA OR ", "", pre_TdF_date_range_list)
 criteria <- paste0("SELECT * FROM master_results_time WHERE ", pre_TdF_date_range_list, ";")
 
 # Perform the MySQL query, 
+date_table <- dbGetQuery(conn_local, criteria)
+View(date_table)
+
+# Okay - now to build a SUPER QUERY combining both the date range and rider selection in the WHERE filter
+criteria <- paste0("SELECT * FROM master_results_time WHERE ", pre_TdF_date_range_list, " AND ", WHERE_rider,";")
+
+# Perform the MySQL SUPER query, 
 date_table <- dbGetQuery(conn_local, criteria)
 View(date_table)
