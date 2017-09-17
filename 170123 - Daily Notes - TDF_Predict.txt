@@ -2,6 +2,22 @@
 
 
 ------------------------------
+Notes from Mon 18 Sep
+
+I'm preparing a few things to work on while I'm in Kingscliff for the week on Boeing's Supplier Management University course. Without access to my ProCycling database, I need to take any data I need away with me. 
+
+It's evident how much I learnt from the MySQL Coursera MOOC. I'm coming back into setting up queries after a decent break (I spent well over a month on Velogames work and doing some predictive analysis) and it's been good to pick up developing fairly complex queries without a lot of drama. I've definitely needed to Google for help, but I get the concepts.
+
+It looks like I've successfully built a query for all of Simon Gerrans' race data, which included a JOIN across three table MySQL tables. This is excellent as doing JOINs across these three tables (master_results_time, race_weblinks_master & race_calendar_master) is going to be quite common and important for my future predictive analysis
+
+Next steps:
+
+- Take the Simon Gerrans data and look at ways for visualising this. I think I'm looking for annual comparisons. Stuff like total distance ridden, number of races, number of top ten and podium places.
+
+- Use the rider duration data in the Variable Builder script and start making sense of that. Firstly I need to convert the combined datatable back into a long format for use in ggplot.
+
+
+------------------------------
 Notes from Sat 16 Sep
 
 I've been working on visualisation associated with my new rider total annual riding time data. I did a plot of all the riders and their annual riding time. The result is a crazy graph that is more artwork than useful plot! Anyway - it's good to get going.

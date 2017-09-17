@@ -37,9 +37,13 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 # returns their race results, including the race name (race_details).
 # This will come from the race_calendar_master & master_results_time tables
 
-sql_search_criteria <- 
+sql_search_criteria <- paste0("SELECT *
+                              FROM master_results_time t
+                              JOIN race_weblinks_master w ON t.stage_id = w.stage_id
+                              JOIN race_calendar_master c ON c.race_id = w.race_id
+                              WHERE t.rider = 'Simon Gerrans';")
 
-rider_data_query <- dbGetQuery(conn_local, sql_search_criteria)
-
-
-
+sg_data_query <- dbGetQuery(conn_local, sql_search_criteria)
+View(sg_data_query)
+getwd()
+write.csv(sg_data_query, "sg_data_query.csv", row.names = FALSE)
