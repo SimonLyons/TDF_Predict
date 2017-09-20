@@ -154,3 +154,11 @@ View(combined_rider_data)
 # Need to munge the combined_rider_data dataframe into a long format
 # I'll first pull out the data for 2016 finishind position and total hrs
 
+# Set working directory to location on work laptop
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_data/")
+rider_duration <- read.csv("rider_duration.csv", header = TRUE)
+rider_duration_spread <- read.csv("rider_duration_spread.csv", header = TRUE)
+results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
+combined_rider_data   # As above with the merge function
+
+
