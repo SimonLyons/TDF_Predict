@@ -1,5 +1,50 @@
 
 
+
+------------------------------
+Notes from Sat 23 Sep @ Kingscliff
+
+Very little progress this week, thanks to a busy time on my course, early morning riding and then Liz and the kids arriving here in Kingscliff. I'm motivated to keep moving and I'll work on some small things while Liz is out for a walk and the kids are watching some TV.
+
+I've been working on the variable builder script:
+170913 - Variable builder - No of miles and minutes ridden.R
+
+It's evident from my initial results that it's unlikely there's a correlation between the number of hours ridden and TdF finishing position, but it's also a bit early to tell. I've looked at the entire peloton and just the top 20 finishers and the results look pretty erratic. Liz has suggested looking at cumulative riding hours for a number of years, which is a good idea. Anyway, more work to do.
+
+I'm going to include some notes here I jotted down during my course this week. They are suggestions for variable categories to examine:
+
+- Place/country of residence
+- Nationality
+- Which races
+- Hours of racing in the months immediately prior to the TdF (taper may be important)
+- Age
+- Career length
+- Finishing position in particular races
+- #/% of same team mates from last year
+- # of TdF managed by team directeur
+- # of TdF ridden by team directeur
+- Similar data as above for Grand Tours
+
+I additionally wrote a list of future TdF Predict project jobs:
+- Updating dataset to include latest races
+- A semi-automated race update script
+- Some auditing and checking: duplicates, empty, corrupt, name conflicts
+- Metrics:
+   * No. of races each year
+   * No./% race categories
+   * No. of teams
+   * No. of countries
+   * No. of riders
+
+Next steps:
+
+- More work on rider duration variables
+
+- Take the Simon Gerrans data and look at ways for visualising this. I think I'm looking for annual comparisons. Stuff like total distance ridden, number of races, number of top ten and podium places.
+
+- Look to build new variables (more MySQL queries required)
+
+
 ------------------------------
 Notes from Wed 20 Sep
 

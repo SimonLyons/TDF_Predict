@@ -161,4 +161,15 @@ rider_duration_spread <- read.csv("rider_duration_spread.csv", header = TRUE)
 results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
 combined_rider_data   # As above with the merge function
 
+# Order combined_rider_data by 2016 finishing position
+top_20 <- combined_rider_data %>% arrange(X2016_FP) %>% filter(row_number() %in% 1:20)
+
+# Create variables for insertion into plot function based on selected year
+year_select <- 2014
+var_FP <- paste0("X", year_select, "_FP")   # The finishing position column for the selected year
+var_HR <- paste0("X", year_select)   # The number of hours ridden for the selected year
+
+# Create the plot of finishing position versus the hours ridden (for selected year)
+ggplot(top_20, aes_string(var_FP, var_HR, colour = "Team")) + 
+  geom_point() + theme(legend.position="bottom") + geom_text(aes(label=Rider),hjust=0, vjust=0)
 
