@@ -9,6 +9,7 @@
 require(RMySQL)
 require(lubridate)
 require(dplyr)
+require(tidyr)
 
 # Set working directory
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
@@ -47,3 +48,34 @@ sg_data_query <- dbGetQuery(conn_local, sql_search_criteria)
 View(sg_data_query)
 getwd()
 write.csv(sg_data_query, "sg_data_query.csv", row.names = FALSE)
+
+######################################################################
+# Read Simon Gerrans data in
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+sg_data <- read.csv("sg_data_query.csv", header = TRUE)
+View(sg_data)
+
+# Build a list of races by year
+races_by_year <- sg_data %>%
+  select(start_date, race_details) %>% 
+  group_by("Year" = year(start_date), race_details) %>% 
+  distinct()
+View(race_by_year)
+
+# Determine the number of unique races per year
+races_per_year <- races_by_year %>%
+  group_by(Year) %>% 
+  summarise("races_per_year" = n())
+View(races_per_year)
+
+# Attempting to build a table showing in which year Simon raced each unique event
+new_table <- spread(races_by_year, key = Year, value = race_details) %>% select(2:9)
+# At present the above table has a single line for each year. I want to have a single
+# line for each race showing occurences in each year (a column exists for each year)
+
+
+gather
+
+unique_races <- unique(race_by_year$race_details) %>% sort()
+years <- unique(races_by_year$Year)
+unique_races %in% 

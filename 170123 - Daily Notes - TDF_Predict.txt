@@ -1,5 +1,18 @@
 
 
+------------------------------
+Notes from Sun 24 Sep
+
+So I've had my first scare with this laptop. It didn't boot up properly and I needed to learn how to do a safe restore. I'm now working on sorting out a backup.
+
+I haven't been completely reckless. All of my code is safely stored on GitHub, and I can continue working on that from multiple computers. But it would be a pain if I lost the setup on the laptop and I need to sort out having a quick recovery service.
+
+I've been working with the Simon Gerrans' dataset. I've built tables showing a list of races by year and then a table with the number of unique races in each year. I'm not working on a table that shows each unique race (rows) and when Simon has races it in a particular year (columns). I'm halfway there.
+
+Next steps:
+
+- Keep working on the Simon Gerrans' dataset. Need to sort out the latest table so there is a single row for each race.
+
 
 ------------------------------
 Notes from Sat 23 Sep @ Kingscliff
