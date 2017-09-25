@@ -1,5 +1,22 @@
 
 
+
+------------------------------
+Notes from Mon 25 Sep
+
+I neglected to include my notes on Simon Gerrans data visualisation from my notepad whilst at Kingscliff.
+
+- No. of races
+- No. of minutes/hours
+- No. of top ten finishes
+- No. of podium finishes
+- Decending list of races most commonly entered
+- Which races are most commonly top ten and podium'd
+- No. of race wins and which races
+
+I've done a bit of minor manipulation on the Variable Builder file, reading in the 'data_table' file which contains the full dataset of results for riders who did the TdF in 2016 and prior, for all races prior to the TdF start in each year.
+
+
 ------------------------------
 Notes from Sun 24 Sep
 

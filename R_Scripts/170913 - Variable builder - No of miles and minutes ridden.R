@@ -116,6 +116,11 @@ View(date_table)
 ######################################################################
 # MANIPULATE DATA FROM MySQL QUERY
 # 
+# Read in the combined data table
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_data")
+date_table <- read.csv("date_table.csv", header = TRUE)
+
 # Filter down the table to just rows containg 'Results' or 'results'
 # We don't want the 'General Classification', 'Young Rider' or other classifications
 just_results <- date_table %>% filter(grepl(('Results|results'), result_class))
@@ -132,7 +137,9 @@ write.csv(rider_duration, "rider_duration.csv", row.names = FALSE)
 # Reformat the table so the years are spread out as columns
 # This format is useful for me eye-balling the data, but ggplot
 # requires the data in the long format created above: rider_duration
-rider_duration_spread <- tidyr::spread(rider_duration, Year, Riding_Time)
+rider_duration_spread <- tidyr::spread(rider_duration, Year, Riding_Time_hrs)
+# Quick comparison of annual pre-TdF riding duration between Adam Hansen and Chris Froome
+rd_AH_SG <- rider_duration_spread %>% filter(Rider == "Adam Hansen" | Rider == "Christopher Froome")
 View(rider_duration_spread)
 write.csv(rider_duration_spread, "rider_duration_spread.csv", row.names = FALSE)
 
