@@ -1,5 +1,16 @@
 
 
+------------------------------
+Notes from Tue 26 Sep
+
+I'm working on script to determine the number of the riders' 2016 team mates that have completed the TdF in each previoud year. I've built the code that determines this for a selected rider. I'm now attempted to create a sophisticated mutate() action allowing this calculation for all of the 2016 riders and hopefully for years 2015 back to 2011.
+
+At the moment I'm thinking of using the dplyr mutate function to create new columns. I may need to finally start looking at understanding the lapply function. My filtering script may otherwise be far too complex and I want to avoid running a loop if possible.
+
+Next steps:
+
+- Continue working on script to calculate the number of team mates who have completed the TdF in previous years.
+ 
 
 ------------------------------
 Notes from Mon 25 Sep

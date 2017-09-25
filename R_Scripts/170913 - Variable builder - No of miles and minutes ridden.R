@@ -145,6 +145,36 @@ write.csv(rider_duration_spread, "rider_duration_spread.csv", row.names = FALSE)
 
 ### Identify team mates for each of the top twenty riders
 
+# List of top 20 riders
+# Read prior file with details of riders finishing the 2016 TdF
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
+View(results_df)
+# Order combined_rider_data by 2016 finishing position
+top_20 <- results_df %>% arrange(X2016_FP) %>% filter(row_number() %in% 1:20)
+unique(top_20$Team)
+
+# Build a list of Chris Froome's team mates
+top_20[top_20$Rider == "Christopher Froome", 3]   # Identify Chris Froome's team
+top_20 %>% filter(Rider == "Christopher Froome") %>% select(Team) %>% as.list()   # Identify Chris Froome's team
+
+# Identify Chris Froome's team mates in 2016
+cf_tm <- results_df[results_df$Team ==  top_20[top_20$Rider == "Christopher Froome", 3]  & results_df$Rider != "Christopher Froome", 1]
+View(cf_tm)
+
+# Determine how many of these team mates completed the TdF in 2015
+results_df %>% filter(Rider %in% cf_tm & !is.na(X2015_FP)) %>% summarise(n())
+results_df %>% filter(Rider %in% cf_tm & !is.na(X2014_FP)) %>% summarise(n())
+results_df %>% filter(Rider %in% cf_tm & !is.na(X2013_FP)) %>% summarise(n())
+results_df %>% filter(Rider %in% cf_tm)
+
+# Do a mutate to create a new column with the number of team mates ridden in 2016
+results_df_tm <- results_df %>% 
+  mutate("tm_2015" = )
+
+
+
+
 
 
 ######################################################################
