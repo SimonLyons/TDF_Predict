@@ -143,6 +143,10 @@ rd_AH_SG <- rider_duration_spread %>% filter(Rider == "Adam Hansen" | Rider == "
 View(rider_duration_spread)
 write.csv(rider_duration_spread, "rider_duration_spread.csv", row.names = FALSE)
 
+### Identify team mates for each of the top twenty riders
+
+
+
 ######################################################################
 # DATA VISUALISATION
 # 
