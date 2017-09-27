@@ -11,6 +11,7 @@ require(RMySQL)
 require(lubridate)
 require(dplyr)
 require(ggplot2)
+require(tidyr)
 
 
 # Read prior file with details of riders finishing the 2016 TdF
@@ -172,7 +173,33 @@ results_df %>% filter(Rider %in% cf_tm)
 results_df_tm <- results_df %>% 
   mutate("tm_2015" = )
 
+View(results_df %>% mutate('new_column' = 
+                             results_df$Rider %in% results_df[results_df$Team == results_df[results_df$Rider == results_df$Rider, 3], 1] & !is.na(X2015_FP)))
 
+results_df %>% filter(Team == (filter(results_df, Rider == 
+                                        "Christopher Froome") %>% select(Team) %>% unlist()) & Rider !=
+                                        "Christopher Froome") %>% select(Rider) %>% unlist
+
+# This script works, returning the list of Chris Froome's team mates, minus Chris Froome
+cf_tm <- results_df %>% filter(Team == (filter(results_df, Rider == 
+                                                    "Christopher Froome") %>% select(Team) %>% unlist()) & Rider !=
+                                    "Christopher Froome") %>% select(Rider) %>% unlist
+
+
+
+
+
+# The below is successfully filling out a column in the dataframe with a list of 
+# Chris Froome's team mates. Unfortunately I'm having trouble taking this to the 
+# next level by having a row wise list of the team mates for each rider.
+new_df <-  results_df %>% rowwise() %>% mutate( 'rider_list' = (filter(results_df, Team == (filter(results_df, Rider == 
+                                                      "Christopher Froome") %>% select(Team) %>% unlist()) & Rider !=
+                                      "Christopher Froome") %>% select(Rider) %>% list()))
+View(new_df)
+new_df$rider_list[1]
+
+# Returns a count of the riders in each team.
+results_df %>% count(Team)
 
 
 

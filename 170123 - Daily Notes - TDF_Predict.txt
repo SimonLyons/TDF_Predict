@@ -1,6 +1,16 @@
 
 
 ------------------------------
+Notes from Wed 27 Sep
+
+I'm working on building a count of the number of team mates each rider has that have completed the TdF in previous years. I'm sneaking up on it slowly. Unfortunately I'm having problems mutating a new column with results of the list. Using the rider (in each row) as a filter is apparently challenging.
+
+Next steps:
+
+- Continue working on script to calculate the number of team mates who have completed the TdF in previous years.
+
+
+------------------------------
 Notes from Tue 26 Sep
 
 I'm working on script to determine the number of the riders' 2016 team mates that have completed the TdF in each previoud year. I've built the code that determines this for a selected rider. I'm now attempted to create a sophisticated mutate() action allowing this calculation for all of the 2016 riders and hopefully for years 2015 back to 2011.
