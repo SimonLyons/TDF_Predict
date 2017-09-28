@@ -212,12 +212,30 @@ results_df %>% filter(!is.na(X2014_FP)) %>% add_count(Team)
 # This script is the longhand of the above, but allows column naming.
 # Unfortunately I'm yet to work out how to do all of the years in one go.
 # I also haven't solved expanding the filtered dataframe back out.
-results_df %>% filter(!is.na(X2016_FP)) %>% group_by(Team) %>%  mutate('t_2016' = n())
-results_df %>% filter(!is.na(X2015_FP)) %>% group_by(Team) %>%  mutate('t_2015' = n())
-results_df %>% filter(!is.na(X2014_FP)) %>% group_by(Team) %>%  mutate('t_2014' = n())
+tm_2016 <- results_df %>% filter(!is.na(X2016_FP)) %>% group_by(Team) %>%  mutate('t_2016' = n()) %>% ungroup() %>% select(Rider, t_2016)
+tm_2015 <- results_df %>% filter(!is.na(X2015_FP)) %>% group_by(Team) %>%  mutate('t_2015' = n()) %>% ungroup() %>% select(Rider, t_2015)
+tm_2014 <- results_df %>% filter(!is.na(X2014_FP)) %>% group_by(Team) %>%  mutate('t_2014' = n()) %>% ungroup() %>% select(Rider, t_2014)
+tm_2013 <- results_df %>% filter(!is.na(X2013_FP)) %>% group_by(Team) %>%  mutate('t_2013' = n()) %>% ungroup() %>% select(Rider, t_2013)
+tm_2012 <- results_df %>% filter(!is.na(X2012_FP)) %>% group_by(Team) %>%  mutate('t_2012' = n()) %>% ungroup() %>% select(Rider, t_2012)
+tm_2011 <- results_df %>% filter(!is.na(X2011_FP)) %>% group_by(Team) %>%  mutate('t_2011' = n()) %>% ungroup() %>% select(Rider, t_2011)
+
+# So I've combined all of the years via the one-at-at-time merge() process. 
+tm_combined <- merge(tm_2016, tm_2015, by.x = 'Rider', by.y = 'Rider', all = TRUE)
+tm_combined <- merge(tm_2016, tm_2015, by = 'Rider', all = TRUE)
+tm_combined <- merge(tm_combined, tm_2014, by = 'Rider', all = TRUE)
+tm_combined <- merge(tm_combined, tm_2013, by = 'Rider', all = TRUE)
+tm_combined <- merge(tm_combined, tm_2012, by = 'Rider', all = TRUE)
+tm_combined <- merge(tm_combined, tm_2011, by = 'Rider', all = TRUE)
+results_df <- merge(results_df, tm_combined, by = 'Rider', all = TRUE)
+View(results_df)
+
+# I need to update the above dataframe to replace the NAs in the team columns with zero (0)
+
+# Do a pairs() plot showing 2016 finishing position against number
+# of team mates in each previous year
+pairs(X2016_FP~t_2016+t_2015+t_2014+t_2013+t_2012+t_2011, results_df)
 
 
-results_df %>% group_by(Team) %>%  mutate('t_2015' = n() & !is.na(X2015_FP))
 
 
 ######################################################################

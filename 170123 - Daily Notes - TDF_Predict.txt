@@ -1,7 +1,21 @@
 
 
 ------------------------------
-Notes from Wed 27 Sep @ Broadbeach
+Notes from Sat 30 Sep @ Broadbeach
+
+
+------------------------------
+Notes from Fri 29 Sep @ Broadbeach
+
+So I've combined all of the years via the one-at-at-time merge() process. It's produced the number of team mates in each year I was after. I've had a quick look at the plot of pairs and there doens't appear to be any significant relationship between the finishing position in the current year and the number of team mates that rider has who have completed the TdF in previous editions.
+
+Next steps:
+
+-I need to update the resulting dataframe to replace the NAs in the team columns with zero (0).
+
+
+------------------------------
+Notes from Thu 28 Sep @ Broadbeach
 
 I'm making a bit of slow progress on the generation of the team mates variable set for each year. I'm honing in on the calculation, but haven't yet found an elegant method for doing it for each year in the dataframe in one go.
 
