@@ -201,7 +201,23 @@ new_df$rider_list[1]
 # Returns a count of the riders in each team.
 results_df %>% count(Team)
 
+# This script uses the shorthand 'add_count' to generate a column with the number
+# of riders in each team (for each rider). The 'filter' function assists in narrowing
+# the riders in each year to only those who completed the TdF in that year.
+# Unfortunately there is no way to control/define the column name for the new variable set
+results_df %>% filter(!is.na(X2016_FP)) %>% add_count(Team)
+results_df %>% filter(!is.na(X2015_FP)) %>% add_count(Team)
+results_df %>% filter(!is.na(X2014_FP)) %>% add_count(Team)
 
+# This script is the longhand of the above, but allows column naming.
+# Unfortunately I'm yet to work out how to do all of the years in one go.
+# I also haven't solved expanding the filtered dataframe back out.
+results_df %>% filter(!is.na(X2016_FP)) %>% group_by(Team) %>%  mutate('t_2016' = n())
+results_df %>% filter(!is.na(X2015_FP)) %>% group_by(Team) %>%  mutate('t_2015' = n())
+results_df %>% filter(!is.na(X2014_FP)) %>% group_by(Team) %>%  mutate('t_2014' = n())
+
+
+results_df %>% group_by(Team) %>%  mutate('t_2015' = n() & !is.na(X2015_FP))
 
 
 ######################################################################

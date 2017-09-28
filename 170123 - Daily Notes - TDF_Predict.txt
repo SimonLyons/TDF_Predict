@@ -1,6 +1,16 @@
 
 
 ------------------------------
+Notes from Wed 27 Sep @ Broadbeach
+
+I'm making a bit of slow progress on the generation of the team mates variable set for each year. I'm honing in on the calculation, but haven't yet found an elegant method for doing it for each year in the dataframe in one go.
+
+Next steps:
+
+- Continue working on script to calculate the number of team mates who have completed the TdF in previous years.
+
+
+------------------------------
 Notes from Wed 27 Sep
 
 I'm working on building a count of the number of team mates each rider has that have completed the TdF in previous years. I'm sneaking up on it slowly. Unfortunately I'm having problems mutating a new column with results of the list. Using the rider (in each row) as a filter is apparently challenging.
