@@ -12,6 +12,7 @@ require(lubridate)
 require(dplyr)
 require(ggplot2)
 require(tidyr)
+require(caret)
 
 
 # Read prior file with details of riders finishing the 2016 TdF
@@ -144,6 +145,7 @@ rd_AH_SG <- rider_duration_spread %>% filter(Rider == "Adam Hansen" | Rider == "
 View(rider_duration_spread)
 write.csv(rider_duration_spread, "rider_duration_spread.csv", row.names = FALSE)
 
+
 ### Identify team mates for each of the top twenty riders
 
 # List of top 20 riders
@@ -169,25 +171,13 @@ results_df %>% filter(Rider %in% cf_tm & !is.na(X2014_FP)) %>% summarise(n())
 results_df %>% filter(Rider %in% cf_tm & !is.na(X2013_FP)) %>% summarise(n())
 results_df %>% filter(Rider %in% cf_tm)
 
-# Do a mutate to create a new column with the number of team mates ridden in 2016
-results_df_tm <- results_df %>% 
-  mutate("tm_2015" = )
-
 View(results_df %>% mutate('new_column' = 
                              results_df$Rider %in% results_df[results_df$Team == results_df[results_df$Rider == results_df$Rider, 3], 1] & !is.na(X2015_FP)))
-
-results_df %>% filter(Team == (filter(results_df, Rider == 
-                                        "Christopher Froome") %>% select(Team) %>% unlist()) & Rider !=
-                                        "Christopher Froome") %>% select(Rider) %>% unlist
 
 # This script works, returning the list of Chris Froome's team mates, minus Chris Froome
 cf_tm <- results_df %>% filter(Team == (filter(results_df, Rider == 
                                                     "Christopher Froome") %>% select(Team) %>% unlist()) & Rider !=
                                     "Christopher Froome") %>% select(Rider) %>% unlist
-
-
-
-
 
 # The below is successfully filling out a column in the dataframe with a list of 
 # Chris Froome's team mates. Unfortunately I'm having trouble taking this to the 
@@ -226,15 +216,39 @@ tm_combined <- merge(tm_combined, tm_2014, by = 'Rider', all = TRUE)
 tm_combined <- merge(tm_combined, tm_2013, by = 'Rider', all = TRUE)
 tm_combined <- merge(tm_combined, tm_2012, by = 'Rider', all = TRUE)
 tm_combined <- merge(tm_combined, tm_2011, by = 'Rider', all = TRUE)
-results_df <- merge(results_df, tm_combined, by = 'Rider', all = TRUE)
-View(results_df)
+# Update the above dataframe to replace the NAs in the team columns with zero (0)
+tm_combined[is.na(tm_combined)] <- 0
+# Combine the team mate count dataframe with the results_df
+tm_combined <- merge(results_df, tm_combined, by = 'Rider', all = TRUE)
+View(tm_combined)
 
-# I need to update the above dataframe to replace the NAs in the team columns with zero (0)
-
+### Visualising results of number of team mates data ###
 # Do a pairs() plot showing 2016 finishing position against number
 # of team mates in each previous year
-pairs(X2016_FP~t_2016+t_2015+t_2014+t_2013+t_2012+t_2011, results_df)
+pairs(X2016_FP~t_2016+t_2015+t_2014+t_2013+t_2012+t_2011, tm_combined)
+# There is no apparent predictive relationship between the number of a
+# rider's 2016 team mates who have completed previous editions of the 
+# TdF and that rider's finishing position in 2016
 
+### Regression Analysis ###
+# Carry out linear regresssion analysis to assess relationship further
+
+# First split data into training and testing sets
+set.seed(1977)
+my_split <- createDataPartition(tm_combined$X2016_FP, p = 0.75, list = FALSE)
+tm_train <- tm_combined[my_split, ]
+tm_test <- tm_combined[-my_split, ]
+
+# Determine regression model
+tm_lrm <- train(data = tm_train, X2016_FP ~ t_2016 + t_2015 + t_2014 + t_2013 + t_2012 + t_2011, model = 'lm')
+tm_lrm$results
+
+# Predict results on training set
+tm_results <- predict(tm_lrm, tm_test, type = 'raw')
+comparo <- as.data.frame(cbind("X2016_FP" = tm_test[ , "X2016_FP"], "Prediction" = round(tm_results,0)))
+comparo$delta <- abs(comparo$X2016_FP - comparo$Prediction)
+View(comparo)
+mean(comparo$delta)
 
 
 
