@@ -1,7 +1,37 @@
 
 
+
+
+------------------------------
+Notes from Sun 01 Oct @ Broadbeach
+
+I've updated the FP vs team mates pairs visualisation to show teams by colours. There are 22 teams, so the variation isn't always obvious. Anyway - nothing new jumped out in terms of a relationship between finishing position and the number of team mates completing a tour in a particular previous year. 
+
+I guess you could add up all of the completed tours for each rider and tally up this for each team to get an overall experience level for the team. 
+
+I've started building script to extract the Age for each rider completing the 2016 TdF. It's in the file: 171001 - Variable builder - Age.R
+
+Next steps:
+
+- Continue work on variable builder for rider Age
+
+
 ------------------------------
 Notes from Sat 30 Sep @ Broadbeach
+
+So I've just completed an initial visualisation and regression analysis of the dataset I created with variable sets for the number of team mates (in 2016) that have completed the TdF in each of the previous years. The visualisation doesn't reveal any meaningful relationships and the regression analysis therefore returns a model of predictably (no pun intended) low accuracy (RSquared ~ 0.02! i.e. 2%)
+
+Although the results aren't fantastic, the outcomes are reasonably intuitive. It's a bit like the predicting a rider's finishing position based on the mean of his team's finishing position in a previous year. It's obviously not going to reflect the individual results of each rider. 
+
+However there may be a broad influencing factor. Certainly the team each rider is on has an impact on their performance. So I think I'm going to take another look at the visualisation with colours for each team. My gut instinct tells me the experience of a rider's team is going to make a difference. Of course a rider may be very experienced without having ever completed a previous TdF. They may have ridden a great number of the other Grand Tours, or other races that would help. 
+
+Next steps:
+
+- Colour code by team the team mates visulation.
+
+- Look for next set of variables. Maybe Age?
+
+- Perhaps do regression analysis with small set of what I think will be influential predictive variables: Previous finishing position, team mates experience
 
 
 ------------------------------

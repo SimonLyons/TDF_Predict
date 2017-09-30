@@ -13,6 +13,8 @@ require(dplyr)
 require(ggplot2)
 require(tidyr)
 require(caret)
+require(RColorBrewer)
+require(colorspace)
 
 
 # Read prior file with details of riders finishing the 2016 TdF
@@ -225,10 +227,18 @@ View(tm_combined)
 ### Visualising results of number of team mates data ###
 # Do a pairs() plot showing 2016 finishing position against number
 # of team mates in each previous year
-pairs(X2016_FP~t_2016+t_2015+t_2014+t_2013+t_2012+t_2011, tm_combined)
+# 'pch' is the plotting symbol. 'bg' is the background (fill) color for the open plot symbols given by pch = 21:25.
+pairs(X2016_FP~t_2016+t_2015+t_2014+t_2013+t_2012+t_2011, tm_combined[1:20, ], pch = 21, bg = rainbow(22)[unclass(tm_combined$Team)])
 # There is no apparent predictive relationship between the number of a
 # rider's 2016 team mates who have completed previous editions of the 
-# TdF and that rider's finishing position in 2016
+# TdF and that rider's finishing position in 2016. Even when I add colour
+# definition to break the colour, or reduce the set to the top 20, nothing
+# jumps out as being anything other than completely random.
+
+# Default palette colour options include 'rainbow', 'heat.colors', 'terrain.colors', 'topo.colors' and 'cm.colors'. 
+# https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf
+# There are futher colour palettes available through the 'RColorBrewer' and 'colorbrewer' packages.
+
 
 ### Regression Analysis ###
 # Carry out linear regresssion analysis to assess relationship further
