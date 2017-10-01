@@ -40,20 +40,59 @@ conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager
 # 
 #          ### WHERE filter based on rider###
 # Build a WHERE criteria list of all the riders who completed the 2016 TdF
-WHERE_rider <- paste0("Rider = '", results_df$Rider[1], "'")
+WHERE_rider <- paste0("rider_name = '", results_df$Rider[1], "'")
 for (r in 2:length(results_df$Rider)){
-  WHERE_rider <- paste0(WHERE_rider, " OR Rider = '", results_df$Rider[r], "'")
+  WHERE_rider <- paste0(WHERE_rider, " OR rider_name = '", results_df$Rider[r], "'")
 }
 
 # Paste together the criteria for the MySQL query
-########## NEED TO ADJUST THE MySQL TABLE AT WHICH THE QUERY IS POINTING ##########
-criteria <- paste0("SELECT * FROM master_results_time WHERE ", WHERE_rider, ";")
+criteria <- paste0("SELECT * FROM rider_list_master WHERE ", WHERE_rider, ";")
 
 # Perform the MySQL query, 
 rider_table <- dbGetQuery(conn_local, criteria)
 View(rider_table)
+
+# Okay - so this is the first time I've gone looking for rider names as a query from
+# the ProCycling database and immediately it's obvious I've not retrieved all of the
+# riders in my list. 
+
+# The other signficant observation is the dob values have incorrect years listed. The 
+# date and month seem to be correct, but the year is 2019 for all the riders I've seen.
+
 # Convert DOB column to 'Date' class
-########## NEED TO CHANGE 'stage.date' TO THE DOB COLUMN IN THE DATABASE TABLE
-rider_table$stage_date <- as.Date(rider_table$stage_date)
+rider_table$dob <- as.Date(rider_table$dob)
 glimpse(rider_table)
+
+# The good news (regarding dob) is I can obtain the correct DOB for each rider from
+# their UCI number. I've inserted this corrected dob in my table under the field 'dob_c' 
+rider_table$dob_c <- ymd(substr(rider_table$uci_id , 4, 11))
+
+# Once the results table and rider table are merged the missing riders are obvious.
+rider_dob_merge <- merge(x = results_df, y = rider_table, by.x = 'Rider', by.y = 'rider_name', all = TRUE)
+View(rider_dob_merge)
+
+# Alejandro Valverde is the first big name I can see is missing. Looking at his 
+# Cycling News profile which has his name as Alejandro Valverde Belmonte:
+# http://www.cyclingnews.com/riders/alejandro-valverde-belmonte/
+# So I'll do a query on the database for this name to check
+
+rider_avb <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
+                        WHERE rider_name = 'Alejandro Valverde Belmonte';")
+rider_avb
+# The above returns data for Alejandro appropriately confirming the name issue
+
+# I'll now use the SOUNDEX function to see if it can be used to obtain better results
+# Firistly - testing with just Alejandro Valverde
+
+rider_avb_SOUNDEX <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
+                        WHERE SOUNDEX(rider_name) = SOUNDEX('Alejandro Valverde');")
+rider_avb_SOUNDEX
+# The above does not return anything for a string less than 'Alejandro Valverde Belmont'
+# So I'm looking for other fuzzy string matching techniques for MySQL. There MUST be some!
+
+########## CONTINUING FUZZY STRING MATCHING EXPLORATION ##########
+rider_avb_SOUNDEX <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
+                        WHERE SOUNDEX_MATCH(rider_name, 'Alejandro Valverde', ' ') as matches;")
+rider_avb_SOUNDEX
+
 

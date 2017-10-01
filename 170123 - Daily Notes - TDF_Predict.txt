@@ -1,6 +1,14 @@
 
+------------------------------
+Notes from Mon 02 Oct
 
+I'm working on the script to build the Age variable. The code I started in Broadbeach yesterday (without access to the database) was very useful and only need minor modification once I found the correct name of the rider list table (rider_list_master).
 
+I've pulled the relevant DOB data for the riders who completed the 2016 TdF. The initial issue was incorrect DOB data, which I corrected using the UCI ID for each rider (which conveniently contains each rider's correct DOB). The next issue is it was immediately obvious I had not extracted all riders. 
+
+So I'm currently working on how to correctly match rider names qith queries in the ProCycling database. I knew this problem was coming, right from the start. The variety of ways names are defined means perfect matching would never work. The first name to stick out on my current work is Alejandro Valverde who is listed as 'Alejandro Valverde Belmonte' in the Cycling News rider info page and therefore has this longer version of his name in my rider_list_master database table.
+
+I've been using SOUNDEX for approximate fuzzy matching, but it looks like this is useful when the string length is almost the same. SOUNDEX appears to deal well with incorrect or differing characters but not 
 
 ------------------------------
 Notes from Sun 01 Oct @ Broadbeach
