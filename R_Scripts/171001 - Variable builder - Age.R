@@ -82,17 +82,68 @@ rider_avb
 # The above returns data for Alejandro appropriately confirming the name issue
 
 # I'll now use the SOUNDEX function to see if it can be used to obtain better results
-# Firistly - testing with just Alejandro Valverde
+# Firstly - testing with just Alejandro Valverde
 
 rider_avb_SOUNDEX <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
-                        WHERE SOUNDEX(rider_name) = SOUNDEX('Alejandro Valverde');")
+                                WHERE SOUNDEX(rider_name) = SOUNDEX('Alejandro Valverde');")
 rider_avb_SOUNDEX
 # The above does not return anything for a string less than 'Alejandro Valverde Belmont'
 # So I'm looking for other fuzzy string matching techniques for MySQL. There MUST be some!
 
-########## CONTINUING FUZZY STRING MATCHING EXPLORATION ##########
-rider_avb_SOUNDEX <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
-                        WHERE SOUNDEX_MATCH(rider_name, 'Alejandro Valverde', ' ') as matches;")
-rider_avb_SOUNDEX
 
 
+
+# So in order to use the MATCH / AGAINST query functions it appears I need to have
+# the column I'm searching indexed as a FULLTEXT column. Here I modify rider_name:
+dbSendQuery(conn_local, "ALTER TABLE rider_list_master ADD FULLTEXT(rider_name);")
+
+# I can now use the FULLTEXT search command which works successfully.
+rider_avb_MATCH <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
+                              WHERE MATCH(rider_name) AGAINST ('+Ben+King' IN BOOLEAN MODE);")
+rider_avb_MATCH
+
+
+rider_avb_MATCH <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
+                              WHERE MATCH(rider_name) AGAINST ('+Alejandro +Valverde' IN BOOLEAN MODE);")
+rider_avb_MATCH
+
+# Setup query criteria for full 2016 TdF rider list
+WHERE_rider <- paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$Rider[1]), "')")
+for (r in 2:length(results_df$Rider)){
+  WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$Rider[r]), "' IN BOOLEAN MODE)")
+}
+
+
+########## Narrow MySQL FULLTEXT search results
+# I need to continue working on my fuzzy name matching.
+
+# Paste together the criteria for the MySQL query
+criteria <- paste0("SELECT * FROM rider_list_master WHERE ", WHERE_rider, ";")
+
+
+rider_table_MATCH <- dbGetQuery(conn_local, criteria)
+View(rider_table_MATCH)
+# I'm returning 160 riders in the above query, which isn't too bad. I'm therefore
+# missing 14 riders. 
+unique(rider_table_MATCH$rider_name)
+
+
+# Once the results table and rider table are merged the missing riders are obvious.
+rider_dob_MATCH_merge <- merge(x = results_df, y = rider_table_MATCH, by.x = 'Rider', by.y = 'rider_name', all = TRUE)
+View(rider_dob_MATCH_merge)
+# However
+
+# Missing riders from MATCH / AGAINST approach
+rider_dob_missing <- rider_dob_MATCH_merge[is.na(rider_dob_MATCH_merge$dob), ]
+View(rider_dob_missing)
+# There are 35 riders in this list, which means the merge is not picking up
+# all 160 riders in my database dob MATCH dataframe.
+
+# A TRUE/FALSE list of the rows in the merged dataframe with NA results
+rider_dob_MATCH_merge.na <- is.na(rider_dob_MATCH_merge$dob)
+
+unique(rider_table_MATCH$rider_name)
+results_df$Rider
+
+
+ 

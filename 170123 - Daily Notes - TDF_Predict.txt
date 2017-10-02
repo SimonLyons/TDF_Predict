@@ -1,4 +1,19 @@
 
+
+------------------------------
+Notes from Tue 03 Oct
+
+I'm making progress on my fuzzy matching. Although the SOUNDEX approach was good, it was missing out on names like Alejandro Valverde because he is listed with an additional name (Belmonte) in the rider_list_master database table. 
+
+I've been experimenting with the MySQL functions MATCH / AGAINST which seem to work quite well when combined with BOOLEAN operation. I'm still missing riders, so it requires more investigation.
+
+Additionally, when I merge my dob table with my results table, another perfect matching activity is going on and not all riders are being matched up. I'm missing 14 riders in my dob dataframe, but I'm missing 35 from the merged results/dob table.
+
+Next steps:
+
+- Continue work on fuzzy matching. 
+
+
 ------------------------------
 Notes from Mon 02 Oct
 
