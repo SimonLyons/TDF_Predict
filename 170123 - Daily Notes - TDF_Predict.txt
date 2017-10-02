@@ -8,7 +8,16 @@ I've pulled the relevant DOB data for the riders who completed the 2016 TdF. The
 
 So I'm currently working on how to correctly match rider names qith queries in the ProCycling database. I knew this problem was coming, right from the start. The variety of ways names are defined means perfect matching would never work. The first name to stick out on my current work is Alejandro Valverde who is listed as 'Alejandro Valverde Belmonte' in the Cycling News rider info page and therefore has this longer version of his name in my rider_list_master database table.
 
-I've been using SOUNDEX for approximate fuzzy matching, but it looks like this is useful when the string length is almost the same. SOUNDEX appears to deal well with incorrect or differing characters but not 
+I've been using SOUNDEX for approximate fuzzy matching, but it looks like this is useful when the string length is almost the same. SOUNDEX appears to deal well with incorrect or differing characters but not searches where there might be additional text (such as riders with extra names.....)
+
+I've now got the FULLTEXT searching functions working. I need to ALTER the rider_name column in the database to be a FULLTEXT column. So the MATCH / AGAINST functions are now working, however my query is now returning all rows with similar matches. For example, Christopher Froome is now returning 5 rows of riders with Chris in their names.
+
+Next steps:
+
+- Seek to understand how to limit the results of FULLTEXT searches. Need to return the best result.
+
+
+
 
 ------------------------------
 Notes from Sun 01 Oct @ Broadbeach
