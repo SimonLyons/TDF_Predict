@@ -1,5 +1,16 @@
 
 
+
+
+------------------------------
+Notes from Tue 03 Oct @ work
+
+I'm actually having some success today sorting out a solution for fuzzy string matching. The best approach appears to be using a Levenshtein Distances function to identify the best match. I haven't found a native function that returns the best result, but a small function script on the web using the 'RecordLinkage' calculated the Levenshtein distance and then picks the biggest value to return the best match. I've then extended on this function to allow quick application of matching a character vector (list) from one dataframe to another character vector (list). I've stored the function I'll hopefully be using a lot in the following script file:
+
+10_ClosestMatch3_function.R
+
+
+
 ------------------------------
 Notes from Tue 03 Oct
 
