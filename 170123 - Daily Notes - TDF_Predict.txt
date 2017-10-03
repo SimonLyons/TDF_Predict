@@ -9,6 +9,11 @@ I'm actually having some success today sorting out a solution for fuzzy string m
 
 10_ClosestMatch3_function.R
 
+I've inserted some new script into my Age variable builder using the new CloseMatch3 function.
+
+Next steps:
+
+- Trial new matching function in Age variable builder script.
 
 
 ------------------------------

@@ -128,10 +128,12 @@ View(rider_table_MATCH)
 unique(rider_table_MATCH$rider_name)
 
 
-# Once the results table and rider table are merged the missing riders are obvious.
-rider_dob_MATCH_merge <- merge(x = results_df, y = rider_table_MATCH, by.x = 'Rider', by.y = 'rider_name', all = TRUE)
+# Use my new ClosestMatch3 function to match up the rider names between the datasets
+results_df$Rider_M <- ClosestMatch3(results_df$Rider, rider_table_MATCH$rider_name)
+
+# Now use the new rider name column (Rider_M) in results_df to match/merge the rider table data
+rider_dob_MATCH_merge <- merge(x = results_df, y = rider_table_MATCH, by.x = 'Rider_M', by.y = 'rider_name', all = TRUE)
 View(rider_dob_MATCH_merge)
-# However
 
 # Missing riders from MATCH / AGAINST approach
 rider_dob_missing <- rider_dob_MATCH_merge[is.na(rider_dob_MATCH_merge$dob), ]
