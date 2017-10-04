@@ -104,7 +104,7 @@ rider_avb_MATCH
 
 
 rider_avb_MATCH <- dbGetQuery(conn_local, "SELECT * FROM rider_list_master 
-                              WHERE MATCH(rider_name) AGAINST ('+Alejandro +Valverde' IN BOOLEAN MODE);")
+                              WHERE MATCH(rider_name) AGAINST ('+Daniel+Moreno' IN BOOLEAN MODE);")
 rider_avb_MATCH
 
 # Setup query criteria for full 2016 TdF rider list
@@ -112,7 +112,8 @@ WHERE_rider <- paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$
 for (r in 2:length(results_df$Rider)){
   WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$Rider[r]), "' IN BOOLEAN MODE)")
 }
-
+View(WHERE)
+length(results_df$Rider)
 
 ########## Narrow MySQL FULLTEXT search results
 # I need to continue working on my fuzzy name matching.
@@ -121,18 +122,30 @@ for (r in 2:length(results_df$Rider)){
 criteria <- paste0("SELECT * FROM rider_list_master WHERE ", WHERE_rider, ";")
 
 
+
+
 rider_table_MATCH <- dbGetQuery(conn_local, criteria)
+# Write resulting rider list table to local working data directory
+write.csv(rider_table_MATCH, "rider_table_MATCH.csv", row.names = FALSE)
 View(rider_table_MATCH)
 # I'm returning 160 riders in the above query, which isn't too bad. I'm therefore
 # missing 14 riders. 
 unique(rider_table_MATCH$rider_name)
 
-
 # Use my new ClosestMatch3 function to match up the rider names between the datasets
-results_df$Rider_M <- ClosestMatch3(results_df$Rider, rider_table_MATCH$rider_name)
+results_df$Rider_M <- ClosestMatch3(as.character(results_df$Rider), rider_table_MATCH$rider_name)
+View(results_df[ , c("Rider", "Rider_M")])
+
+ClosestMatch2("Daniel Moreno", rider_table_MATCH$rider_name)
+
+rider_table_MATCH$rider_name[grep("Daniel", rider_table_MATCH$rider_name)]
+order(levenshteinSim("Daniel Moreno", rider_table_MATCH$rider_name), decreasing = TRUE)
+
+
+
 
 # Now use the new rider name column (Rider_M) in results_df to match/merge the rider table data
-rider_dob_MATCH_merge <- merge(x = results_df, y = rider_table_MATCH, by.x = 'Rider_M', by.y = 'rider_name', all = TRUE)
+rider_dob_MATCH_merge <- merge(x = results_df, y = rider_table_MATCH, by.x = 'Rider_M', by.y = 'rider_name', all = FALSE)
 View(rider_dob_MATCH_merge)
 
 # Missing riders from MATCH / AGAINST approach

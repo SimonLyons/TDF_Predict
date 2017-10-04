@@ -1,6 +1,17 @@
 
 
 
+------------------------------
+Notes from Thu 05 Oct
+
+Okay, so I'm making progress, but still coming across problems. The ClosestMatch3 function I've created is working, but the levenshtein distance calculation doens't necessarily return the correct match. The example I've checked is "Daniel Moreno", which returns "Daniel Martin" instead. This must be due to 'Dan Martin' returning a better levenshtein distance than the full name in the rider list table which is 'Daniel Moreno Fernandez'. I'm not sure what will solve this problem!
+
+The second, less troubling issue is there are riders in who finished the 2016 TdF who aren't in my database rider table. I think the main reason is these riders aren't in the ProTeams. I need to do more checking. 
+
+Next steps:
+
+- Continue work on fuzzy matching. Work on above issues. 
+
 
 ------------------------------
 Notes from Tue 03 Oct @ work
