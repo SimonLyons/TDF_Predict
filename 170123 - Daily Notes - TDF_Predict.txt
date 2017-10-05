@@ -2,6 +2,16 @@
 
 
 ------------------------------
+Notes from Thu 05 Oct @ work
+
+I've added some of the script I created to address the fuzzy matching problem posted on the forum. I've done a little bit using the Levenshtein algorithm and also a short bit combining both Levenshtein and Soundex functions. 
+
+The additions are at the bottom of the following file:
+
+171003 - Fuzzy Matching Practice.R
+
+
+------------------------------
 Notes from Thu 05 Oct
 
 Okay, so I'm making progress, but still coming across problems. The ClosestMatch3 function I've created is working, but the levenshtein distance calculation doens't necessarily return the correct match. The example I've checked is "Daniel Moreno", which returns "Daniel Martin" instead. This must be due to 'Dan Martin' returning a better levenshtein distance than the full name in the rider list table which is 'Daniel Moreno Fernandez'. I'm not sure what will solve this problem!
