@@ -127,38 +127,45 @@ criteria <- paste0("SELECT * FROM rider_list_master WHERE ", WHERE_rider, ";")
 rider_table_MATCH <- dbGetQuery(conn_local, criteria)
 # Write resulting rider list table to local working data directory
 write.csv(rider_table_MATCH, "rider_table_MATCH.csv", row.names = FALSE)
+
+# Read the above MATCH table bcak into R
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
+rider_table_MATCH <- read.csv("rider_table_MATCH.csv", header = TRUE)
 View(rider_table_MATCH)
 # I'm returning 160 riders in the above query, which isn't too bad. I'm therefore
 # missing 14 riders. 
 unique(rider_table_MATCH$rider_name)
 
 # Use my new ClosestMatch3 function to match up the rider names between the datasets
-results_df$Rider_M <- ClosestMatch3(as.character(results_df$Rider), rider_table_MATCH$rider_name)
+results_df$Rider_M <- ClosestMatch3(as.character(results_df$Rider), as.character(rider_table_MATCH$rider_name))
 View(results_df[ , c("Rider", "Rider_M")])
 
-ClosestMatch2("Daniel Moreno", rider_table_MATCH$rider_name)
 
-rider_table_MATCH$rider_name[grep("Daniel", rider_table_MATCH$rider_name)]
-order(levenshteinSim("Daniel Moreno", rider_table_MATCH$rider_name), decreasing = TRUE)
+# Daniel Moreno (31), Bartosz Huzarski (39), Thomas De Gendt (40), Jon Izaguirre (47), Rui Costa (49),
+# Luis Angel Mate (55), Mikael Cherel (57), Eduardo Sepulveda (59), Michael Valgren (77), Anthony Delaplace (90),
+# PierreLuc Perichon (93), Bertjan Lindeman (94), Florian Vachon (105), Nicolas Edet (106), Armindo Fonseca (146),
+# Andreas Schillinger (154), Greg Henderson (155), Christophe Laporte (157), Adrien Petit (164), 
+# Daniel Mclay (170)
 
+# Create a manual file for all the incorret matches
+rider_delete <- c(31, 39, 40, 47, 49, 55, 57, 59, 77, 90, 93, 94, 105, 106, 146, 154, 155, 157, 164, 170)
+results_df$Rider[-rider_delete]
 
-
+# Remove the incorrect matches from the results_df dataframe
+results_df <- results_df[-rider_delete, ]
 
 # Now use the new rider name column (Rider_M) in results_df to match/merge the rider table data
 rider_dob_MATCH_merge <- merge(x = results_df, y = rider_table_MATCH, by.x = 'Rider_M', by.y = 'rider_name', all = FALSE)
-View(rider_dob_MATCH_merge)
 
-# Missing riders from MATCH / AGAINST approach
-rider_dob_missing <- rider_dob_MATCH_merge[is.na(rider_dob_MATCH_merge$dob), ]
-View(rider_dob_missing)
-# There are 35 riders in this list, which means the merge is not picking up
-# all 160 riders in my database dob MATCH dataframe.
+# Insert rider age column. I've currently got 1/07/2016 as the date used to determined rider age
+# but this should strictly be the start date of the Tour de France in 2016
+rider_dob_MATCH_merge$Age <- as.numeric(round((today() - dmy(rider_dob_MATCH_merge$dob))/365, 2))
 
-# A TRUE/FALSE list of the rows in the merged dataframe with NA results
-rider_dob_MATCH_merge.na <- is.na(rider_dob_MATCH_merge$dob)
+# Order by 2016 finishing position
+rider_dob_MATCH_merge <- rider_dob_MATCH_merge[order(rider_dob_MATCH_merge$X2016_FP), ]
+# Create a subset of the top 20 finishing riders
+top_20_age <- rider_dob_MATCH_merge[1:20, ]
+# View(rider_dob_MATCH_merge)
+ggplot(top_20_age, aes(x = Age, y = X2016_FP, colour = Team)) + geom_point() + geom_text(aes(label=Rider),hjust=0, vjust=0)
 
-unique(rider_table_MATCH$rider_name)
-results_df$Rider
-
-
- 

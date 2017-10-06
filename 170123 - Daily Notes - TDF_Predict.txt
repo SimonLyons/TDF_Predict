@@ -1,5 +1,21 @@
 
 
+------------------------------
+Notes from Sat 07 Oct
+
+Okay - so I've finally progressed through my Age variable builder. The not so great news is that due to challenges with fuzzy string matching (and also just riders missing from the rider master table) I've got 20 of my 174 2016 TdF riders missing.
+
+Anyway - I've been able to work out the Age of each rider at the start of the 2016 Tdf (using the date of birth data) and do a quick plot of finishing position against age. There isn't any clear relationship, either with the full set of riders or a subset of the top 20 finishing positions.
+
+My work on understanding an improving fuzzy string matching has been excellent though. I need to do a bit more on this, but in terms of retrieving data from the ProCycling database and matching strings within R. 
+
+Next steps:
+
+- Further work on more sophisticated fuzzy string matching.
+    ~ Write script to test accuracy of matching results (particularly for database)
+    ~ Look at how name matching might be improved with weightings (e.g. on surname)
+    ~ Look at why MySQL boolean matching might be superior
+
 
 ------------------------------
 Notes from Thu 05 Oct @ work
