@@ -154,7 +154,7 @@ rep(myText1, length(search_string))[sapply(soundex(search_string), levenshteinSi
 soundex(search_string)
 
 
-cycling_search_term <- "Daniel Moreno"
+cycling_search_term <- "Moreno"
 cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
 
 
@@ -166,3 +166,28 @@ sapply(soundex(cycling_search_term), levenshteinSim, soundex(cycling_search_stri
 soundex("Daniel")
 soundex("Moreno")
 soundex("Fernández")
+
+
+
+########################################
+###### Fuzzy string matching with strings split into words
+
+# Split the search term into words
+cycling_search_term <- "Daniel Moreno Fernández"
+cycling_search_term_split <- strsplit(cycling_search_term, " ")
+
+cycling_search_term_split_soundex <- lapply(cycling_search_term_split, soundex)
+
+
+# Split the search string into words
+cycling_search_string_split <- strsplit(cycling_search_string, " ")
+cycling_search_string_split <- lapply(cycling_search_string, strsplit, " ")
+cycling_search_string_split[[1]][[1]]
+
+
+# Perform soundex matching of soundex search term on split search strings
+cycling_search_string_soundex <- lapply(cycling_search_string_split, soundex)
+
+
+levenshteinSim(cycling_search_term_split_soundex[1], )
+

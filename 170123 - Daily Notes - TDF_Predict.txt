@@ -1,5 +1,16 @@
 
 
+
+------------------------------
+Notes from Mon 09 Oct @ work
+
+I've done a really quick amount of work starting the process of fuzzy string matching with both the search term (a rider's name) and the search string (a list of rider's names) into individual words. I'm planning on coming up with my own weighted fuzzy matching script that give more emphasis to names other than the rider's first name (which are far more common). 
+
+Next steps:
+
+- Continue split string search fuzzy matching in Fuzzy Matching Practice file.
+
+
 ------------------------------
 Notes from Sat 07 Oct
 
