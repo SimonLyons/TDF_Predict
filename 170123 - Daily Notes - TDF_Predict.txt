@@ -1,5 +1,10 @@
 
 
+------------------------------
+Notes from Tue 10 Oct
+
+I've done a small amount of work on improving fuzzy string matching. I've come across a function developed by Robin Edwards (geotheory) on GitHub called 'bool_detect'.
+
 
 ------------------------------
 Notes from Mon 09 Oct @ work

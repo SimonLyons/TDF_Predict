@@ -173,13 +173,16 @@ soundex("Fernández")
 ###### Fuzzy string matching with strings split into words
 
 # Split the search term into words
-cycling_search_term <- "Daniel Moreno Fernández"
+cycling_search_term <- "Daniel M0reno Fernández"
 cycling_search_term_split <- strsplit(cycling_search_term, " ")
 
 cycling_search_term_split_soundex <- lapply(cycling_search_term_split, soundex)
+cycling_search_term_soundex <- paste(cycling_search_term_split_soundex, sep = "", collapse = "")
+cycling_search_term_soundex
 
 
 # Split the search string into words
+cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
 cycling_search_string_split <- strsplit(cycling_search_string, " ")
 cycling_search_string_split <- lapply(cycling_search_string, strsplit, " ")
 cycling_search_string_split[[1]][[1]]
@@ -191,3 +194,9 @@ cycling_search_string_soundex <- lapply(cycling_search_string_split, soundex)
 
 levenshteinSim(cycling_search_term_split_soundex[1], )
 
+
+bool_detect("Daniel", cycling_search_string)
+
+stri_detect(cycling_search_term, coll = cycling_search_string)
+fixed(cycling_search_string)
+stri_det
