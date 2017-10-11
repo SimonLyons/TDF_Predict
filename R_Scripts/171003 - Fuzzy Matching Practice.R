@@ -185,7 +185,12 @@ cycling_search_term_soundex
 cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
 cycling_search_string_split <- strsplit(cycling_search_string, " ")
 cycling_search_string_split <- lapply(cycling_search_string, strsplit, " ")
-cycling_search_string_split[[1]][[1]]
+
+
+# Looking at methods for assessing single words in rider names.
+length(cycling_search_string_split)
+length(cycling_search_string_split[[1]][[1]])
+cycling_search_string_split[[1]][[1]][[2]]
 
 
 # Perform soundex matching of soundex search term on split search strings
