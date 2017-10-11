@@ -1,6 +1,18 @@
 
 
 ------------------------------
+Notes from Thu 12 Oct
+
+I'm up to this bit here. I've got some script below which does the soundex() matching for the search name against the first name in the search list. I like the method I've employed. If the number of words match, I simply perform the Levenshtein Sim calculation on each of the soundex words in order. 
+
+If the number of words don't match, then I throw the whole book of matching, calculating the Levenshtein Sim result for each word in the search name against every word in the first name of the search list and then picking the top results (reducing it to the length of the shortest name).
+
+Next steps:
+
+- Extend the script I've written for matching just the first name in a list of names, out to all of the names in the list. Man it would be nice to do this without using a FOR loop, but I can't see how this would be acheived with lapply or sapply. I guess I'd need to write a function and feed that to lapply.....
+
+
+------------------------------
 Notes from Tue 10 Oct
 
 I've done a small amount of work on improving fuzzy string matching. I've come across a function developed by Robin Edwards (geotheory) on GitHub called 'bool_detect'.

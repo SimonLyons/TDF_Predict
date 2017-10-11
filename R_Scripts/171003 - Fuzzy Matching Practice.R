@@ -175,11 +175,7 @@ soundex("Fernández")
 # Split the search term into words
 cycling_search_term <- "Daniel M0reno Fernández"
 cycling_search_term_split <- strsplit(cycling_search_term, " ")
-
 cycling_search_term_split_soundex <- lapply(cycling_search_term_split, soundex)
-cycling_search_term_soundex <- paste(cycling_search_term_split_soundex, sep = "", collapse = "")
-cycling_search_term_soundex
-
 
 # Split the search string into words
 cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
@@ -188,17 +184,73 @@ cycling_search_string_split <- lapply(cycling_search_string, strsplit, " ")
 
 
 # Looking at methods for assessing single words in rider names.
-length(cycling_search_string_split)
+length(cycling_search_string_split[])
 length(cycling_search_string_split[[1]][[1]])
 cycling_search_string_split[[1]][[1]][[2]]
 
+### Find the maximum words for a name from the list of names
+# I'd like to find a neater/faster/shorter method for the below. I couldn't
+# get lapply() to do the trick for me.
+max_len <- 0   # The maximum number of words in a rider's name
+name_length <- NULL   # The number of words in each rider's name
+for(j in 1:length(cycling_search_string_split)){
+  name_length[j] <- length(cycling_search_string_split[[j]][[1]])
+  # print(name_length)
+  if(name_length[j] > max_len){max_len <- name_length[j]}
+}
+
+
 
 # Perform soundex matching of soundex search term on split search strings
-cycling_search_string_soundex <- lapply(cycling_search_string_split, soundex)
+cycling_search_string_soundex <- NULL
+for (k in 1:length(cycling_search_string_split)) {
+  cycling_search_string_soundex[[k]] <- lapply(cycling_search_string_split[[k]][[1]], soundex)
+}   # End FOR statement
+cycling_search_string_soundex[[2]]
+
+
+########################################
+###### I'm up to this bit here. I've got some script below which does the soundex()
+# matching for the search name against the first name in the search list.
+# I like the method I've employed. If the number of words match, I simply perform
+# the Levenshtein Sim calculation on each of the soundex words in order.
+# If the number of words don't match, then I throw the whole book of matching, calculating
+# the Levenshtein Sim result for each word in the search name against every word in the
+# first name of the search list and then picking the top results (reducing it to the length
+# of the shortest name)
+
+# Perform soundex() match for search term against first name in cycling search string
+cycling_search_term_split_soundex[[1]]  # Search name
+first_rider_soundex <- unlist(cycling_search_string_soundex[2])   # First name in list of riders
+length_search_name <- length(cycling_search_term_split_soundex[[1]])
+length_first_rider_name <- length(first_rider_soundex)
+length_shortest_name <- min(length_search_name, length_first_rider_name)
+if(length_search_name == length_first_rider_name){
+  # Match each of the soundex terms in order using the Levenshtein Sim function
+  levenS_match <- NULL
+  for (y in 1:length(first_rider_soundex)) {
+    levenS_match[y] <- levenshteinSim(cycling_search_term_split_soundex[[1]][y], first_rider_soundex[y])
+  }   # End FOR statement
+  levenS_mean <- mean(levenS_match)
+} else {
+  # ELSE
+  # Perform a Levenshtein Sim calculation for each/every word
+  levenS_match <- NULL
+  for(l in 1:length_search_name){
+    levenS_match[l] <-max(as.numeric(lapply(first_rider_soundex, levenshteinSim, cycling_search_term_split_soundex[[1]][l])))
+  }   # End FOR statement
+  # Pick the top number of results, where the number is the shortest name from
+  # the two and average the top results.
+  levenS_mean <- mean(levenS_match[order(levenS_match, decreasing = TRUE)][1:length_shortest_name])
+  
+}   # End ELSE statement
+
+
+
 
 
 levenshteinSim(cycling_search_term_split_soundex[1], )
-
+?append
 
 bool_detect("Daniel", cycling_search_string)
 
