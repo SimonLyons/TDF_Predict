@@ -1,4 +1,3 @@
-
 ########################################
 ###### FUZZY STRING MATCHING PRACTICE
 ########################################
@@ -201,12 +200,25 @@ for(j in 1:length(cycling_search_string_split)){
 
 
 
-# Perform soundex matching of soundex search term on split search strings
+########################################
+##### Perform soundex matching of soundex search term on split search strings
+# Interesing section here. It's where I've learnt to use 'lapply' insteat of
+# of a FOR loop!!! Big achievement!!
 cycling_search_string_soundex <- NULL
 for (k in 1:length(cycling_search_string_split)) {
   cycling_search_string_soundex[[k]] <- lapply(cycling_search_string_split[[k]][[1]], soundex)
 }   # End FOR statement
 cycling_search_string_soundex[[2]]
+
+
+# Definie function to calculate the soundex value for each word in a rider's name
+soundexOnName <- function(cycling_search_string_name){
+  lapply(cycling_search_string_name, soundex)
+}
+# Feed a list of names to the soundexOnName function
+cycling_search_string_soundex_2 <- sapply(cycling_search_string_split, soundexOnName)
+
+########################################
 
 
 ########################################
@@ -246,14 +258,49 @@ if(length_search_name == length_first_rider_name){
 }   # End ELSE statement
 
 
+# Rewrite the above using lapply() functions
+first_rider_soundex <- unlist(cycling_search_string_soundex_2[1])
+length_search_name <- length(cycling_search_term_split_soundex[[1]])
+length_first_rider_name <- length(first_rider_soundex)
+length_shortest_name <- min(length_search_name, length_first_rider_name)
 
 
 
-levenshteinSim(cycling_search_term_split_soundex[1], )
-?append
 
+# Calcuate the Levenshtein Sim value between an input word and earch word in a name
+levenNameList <- function(input_word, input_name){
+  return(max(sapply(input_name, levenshteinSim, input_word)))
+}
+
+# Calculate the mean of the Levnshtein Sim value for each word in an input name 
+# against another full name
+levenFullNameList <- function(search_name, input_name){
+  mean(sapply(search_name ,levenNameList,  input_name))
+}
+levenFullNameList(cycling_search_term_split_soundex[[1]], first_rider_soundex)
+
+
+########################################
+# I'm getting an error (below) with the final step:
+#     Error in max(sapply(input_name, levenshteinSim, input_word)) : 
+#        invalid 'type' (list) of argument 
+# Calculate the above for an input name against a list of names
+levenNameAgainstNameList <- function(search_name, input_name_list){
+  sapply(search_name, levenFullNameList, input_name_list)
+}
+
+levenNameAgainstNameList(cycling_search_term_split_soundex[[1]], as.vector(cycling_search_string_soundex_2))
+
+
+
+
+
+
+
+
+
+
+as.vector(cycling_search_string_soundex_2)
 bool_detect("Daniel", cycling_search_string)
 
 stri_detect(cycling_search_term, coll = cycling_search_string)
-fixed(cycling_search_string)
-stri_det
