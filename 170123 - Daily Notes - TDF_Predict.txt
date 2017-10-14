@@ -1,5 +1,22 @@
 
 
+------------------------------
+Notes from Sun 15 Oct
+
+So great news! It looks like I've got my own fuzzy matching function working properly and initial testing results are looking really good. It's already correctly matching names the standard fuzzy matching techniques were not getting.
+
+The problem with my nested sapply functions was as simple as having the input variable (search name) and the list (list of rider names) around the wrong way, so a list was being fed to a variable, instead of the other way around. Good to have that sorted.
+
+I have located one non-match:  "Andriy Grivko" returns "Andrey Amador Bikkazakova "
+
+There could be a number of reasons for this. Andriy GRivko could be missing from the list of rider names on Stage 1 and Andrey Amador could simply be the best match.
+
+Next steps:
+
+- Testing on my function against the TdF rider lists. Expand to run matching against everyname in both lists.
+
+- Look at development of my matching function so it returns the most useful values. A cracking result would be a dataframe with the input name, the return matching name, the position of the matched name in the list and finally the Levenshtein value.
+
 
 ------------------------------
 Notes from Sat 14 Oct

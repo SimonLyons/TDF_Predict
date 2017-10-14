@@ -174,46 +174,37 @@ soundex("Fernández")
 # Split the search term into words
 cycling_search_term <- "Daniel M0reno Fernández"
 cycling_search_term_split <- strsplit(cycling_search_term, " ")
-cycling_search_term_split_soundex <- lapply(cycling_search_term_split, soundex)
+cycling_search_term_split_soundex <- sapply(cycling_search_term_split, soundex)
+
 
 # Split the search string into words
 cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
 cycling_search_string_split <- strsplit(cycling_search_string, " ")
-cycling_search_string_split <- lapply(cycling_search_string, strsplit, " ")
-
+cycling_search_string_split <- sapply(cycling_search_string, strsplit, " ")
+class(cycling_search_string_split)
 
 # Looking at methods for assessing single words in rider names.
-length(cycling_search_string_split[])
-length(cycling_search_string_split[[1]][[1]])
-cycling_search_string_split[[1]][[1]][[2]]
+length(cycling_search_string_split)
+length(cycling_search_string_split[[1]])
+cycling_search_string_split[[1]][[3]]
 
 ### Find the maximum words for a name from the list of names
-# I'd like to find a neater/faster/shorter method for the below. I couldn't
-# get lapply() to do the trick for me.
-max_len <- 0   # The maximum number of words in a rider's name
-name_length <- NULL   # The number of words in each rider's name
-for(j in 1:length(cycling_search_string_split)){
-  name_length[j] <- length(cycling_search_string_split[[j]][[1]])
-  # print(name_length)
-  if(name_length[j] > max_len){max_len <- name_length[j]}
-}
-
+max(sapply(cycling_search_string_split, length))
 
 
 ########################################
 ##### Perform soundex matching of soundex search term on split search strings
-# Interesing section here. It's where I've learnt to use 'lapply' insteat of
+# Interesing section here. It's where I've learnt to use 'sapply' instead of
 # of a FOR loop!!! Big achievement!!
 cycling_search_string_soundex <- NULL
 for (k in 1:length(cycling_search_string_split)) {
-  cycling_search_string_soundex[[k]] <- lapply(cycling_search_string_split[[k]][[1]], soundex)
+  cycling_search_string_soundex[[k]] <- sapply(cycling_search_string_split[[k]], soundex)
 }   # End FOR statement
-cycling_search_string_soundex[[2]]
+cycling_search_string_soundex[[3]][[2]]
 
-
-# Definie function to calculate the soundex value for each word in a rider's name
+# Define function to calculate the soundex value for each word in a rider's name
 soundexOnName <- function(cycling_search_string_name){
-  lapply(cycling_search_string_name, soundex)
+  sapply(cycling_search_string_name, soundex)
 }
 # Feed a list of names to the soundexOnName function
 cycling_search_string_soundex_2 <- sapply(cycling_search_string_split, soundexOnName)
@@ -258,8 +249,9 @@ if(length_search_name == length_first_rider_name){
 }   # End ELSE statement
 
 
-# Rewrite the above using lapply() functions
-first_rider_soundex <- unlist(cycling_search_string_soundex_2[1])
+# Rewrite the above using sapply() functions
+# first_rider_soundex <- unlist(cycling_search_string_soundex_2[1])
+first_rider_soundex <- cycling_search_string_soundex_2[2]
 length_search_name <- length(cycling_search_term_split_soundex[[1]])
 length_first_rider_name <- length(first_rider_soundex)
 length_shortest_name <- min(length_search_name, length_first_rider_name)
@@ -267,40 +259,48 @@ length_shortest_name <- min(length_search_name, length_first_rider_name)
 
 
 
-# Calcuate the Levenshtein Sim value between an input word and earch word in a name
+# Calcuate the Levenshtein Sim value between an input word and each word in a name
 levenNameList <- function(input_word, input_name){
   return(max(sapply(input_name, levenshteinSim, input_word)))
 }
 
-# Calculate the mean of the Levnshtein Sim value for each word in an input name 
+# Calculate the mean of the Levenshtein Sim value for each word in an input name 
 # against another full name
 levenFullNameList <- function(search_name, input_name){
-  mean(sapply(search_name ,levenNameList,  input_name))
+  mean(sapply(input_name ,levenNameList, search_name))
 }
-levenFullNameList(cycling_search_term_split_soundex[[1]], first_rider_soundex)
 
-
-########################################
-# I'm getting an error (below) with the final step:
-#     Error in max(sapply(input_name, levenshteinSim, input_word)) : 
-#        invalid 'type' (list) of argument 
-# Calculate the above for an input name against a list of names
+# Wrap the above Levenshtein matching functions into a master function that
+# calculates the Levenstein Sim value between the search name and each name 
+# in the list, determines which has the highest value (closest match) and
+# then returns the name with the closest match.
+### IT MIGHT BE WORTH RETURNING THE POSITION OF THE BEST MATCH RATHER THAN THE NAME ITSELF ###
+# 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
+# 'input_name_list': The list containing names of riders.
 levenNameAgainstNameList <- function(search_name, input_name_list){
-  sapply(search_name, levenFullNameList, input_name_list)
+  search_name_soundex <-  sapply(strsplit(search_name, " "), soundex)   # Split the search name and determine soundex value
+  input_name_list_soundex <- sapply(strsplit(input_name_list, " "), soundex)   # Split list of names and determine soundex value for each
+  # Calculate the Levenshtein Sim value between the search name and each of the names in the list
+  levSim_each_name <- sapply(input_name_list_soundex, levenFullNameList, search_name_soundex)
+  # Find the position (in the list of names) of the same with the closest match
+  max_pos <- match(max(levSim_each_name), levSim_each_name)
+  input_name_list[max_pos]   # Return the name with the best match
 }
 
-levenNameAgainstNameList(cycling_search_term_split_soundex[[1]], as.vector(cycling_search_string_soundex_2))
+# Test example
+levenNameAgainstNameList(cycling_search_term, cycling_search_string[1:4])
+
+cn_start_list_split$Rider_1[5]
+cn_stage_1_results_table_split$Rider
+
+# Here I'm testing my new function against the rider list from the 2016 TdF. Results are almost 100%....
+levenNameAgainstNameList(cn_start_list_split$Rider_1[73], cn_stage_1_results_table_split$Rider)
+# The following riders are throwing up the wrong match:
+# "Andriy Grivko": "Andrey Amador Bikkazakova "
+# I need to do a full test against the entire list. 
 
 
 
-
-
-
-
-
-
-
-as.vector(cycling_search_string_soundex_2)
 bool_detect("Daniel", cycling_search_string)
 
 stri_detect(cycling_search_term, coll = cycling_search_string)
