@@ -35,7 +35,7 @@ cn_stage_1_results_table <- cn_stage_1_results_html %>%
 
 # Take just the first table (with the stage results)
 cn_stage_1_results_table <- as.data.frame(cn_stage_1_results_table[[1]])
-head(cn_stage_1_results_table)
+# head(cn_stage_1_results_table)
 # Split Rider (Country) Team column into multiple columns
 cn_stage_1_results_table_split <- separate(data = cn_stage_1_results_table, into = c("Rider_2", "Remaining"), 
                           sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
@@ -60,7 +60,7 @@ colnames(cn_start_list) <- "Results"
 cn_start_list_split <- separate(data = cn_start_list, into = c("Position", "Remaining"), sep = " [:space:]", col = "Results", remove = TRUE, extra = "drop")
 # Second separate the Rider name from the Country data
 cn_start_list_split <- separate(data = cn_start_list_split, into = c("Rider_1", "Country"), sep = "\\(", col = "Remaining", remove = TRUE, extra = "drop")
-head(cn_start_list_split)
+# head(cn_start_list_split)
 # Remove
 cn_start_list_split$Country <- gsub("\\)", "", cn_start_list_split$Country)
 cn_start_list_rider_list <- cn_start_list_split$Rider_1
@@ -87,8 +87,7 @@ ClosestMatch2 = function(string, stringVector){
 # The following lapply() action applies the above function. 
 # I'm using the Rider_1 list of riders (from the start list) to match aginast the
 # Rider_2 list of riders from the stage results dataframe.
-cn_start_list_split$Rider_3 <- as.character(lapply(cn_start_list_split$Rider_1, ClosestMatch2,cn_stage_1_results_table_split$Rider_2))
-
+cn_start_list_split$Rider_3 <- as.character(sapply(cn_start_list_split$Rider_1, ClosestMatch2,cn_stage_1_results_table_split$Rider_2))
 
 riders_combined <- merge(x = cn_start_list_split, y = cn_stage_1_results_table_split, by.x = 'Rider_3', by.y = 'Rider_2', all = TRUE)
 View(riders_combined)
@@ -299,6 +298,20 @@ levenNameAgainstNameList(cn_start_list_split$Rider_1[73], cn_stage_1_results_tab
 # "Andriy Grivko": "Andrey Amador Bikkazakova "
 # I need to do a full test against the entire list. 
 
+levenFullNameList("Andrey Amador Bikkazakova", "Andrey Amador")
+levenFullNameList("Andrey Amador Bikkazakova", "Andriy Grivko")
+
+
+levenNameList("Andrey" , "Andrey Amador")
+levenshteinSim("Andrey", "Andrey")
+
+cn_start_list_split$Rider_4 <- (lapply(cn_start_list_split$Rider_1, levenNameAgainstNameList ,cn_stage_1_results_table_split$Rider_2))
+
+View(cn_start_list_split)
+View(cn_stage_1_results_table_split)
+
+View(cn_start_list_split[ ,-3])
+# Andrey Amador Bikkazakova, Andrey Amador, Andriy Grivko
 
 
 bool_detect("Daniel", cycling_search_string)

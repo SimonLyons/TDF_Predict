@@ -1,6 +1,21 @@
 
 
 ------------------------------
+Notes from Mon 16 Oct
+
+Just a bit of quick testing against my new function. I extended the test to the full list of riders starting and on Stage 1 of the 2016 TdF. Strangely, I get a 100% match using the ClosestMatch2 function and using my new levenFullNameList function I get a miss on one name:
+"Andrey Amador Bikkazakova" returns "Andriy Grivko"
+
+Anyway - I need to do a bit more testing to understand what is going on.
+
+The function appeared to run relatively slowly too (compared to the other matchign functions which were almost instantaneous). 
+
+Next steps:
+
+- Further testing on my levenFullNameList function to see what is going on.
+
+
+------------------------------
 Notes from Sun 15 Oct
 
 So great news! It looks like I've got my own fuzzy matching function working properly and initial testing results are looking really good. It's already correctly matching names the standard fuzzy matching techniques were not getting.
