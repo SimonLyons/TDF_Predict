@@ -21,7 +21,8 @@ cn_stage_1_results_url <- "http://www.cyclingnews.com/tour-de-france/stage-1/res
 
 
 # Set the working directory
-setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_files/")
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_files/")   # Work laptop
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")   # HP laptop
 
 ########################################
 ###### Download and extract rider list from CN Stage 1 results
@@ -64,6 +65,10 @@ cn_start_list_split <- separate(data = cn_start_list_split, into = c("Rider_1", 
 # Remove
 cn_start_list_split$Country <- gsub("\\)", "", cn_start_list_split$Country)
 cn_start_list_rider_list <- cn_start_list_split$Rider_1
+
+# Save dataframes/tables locally
+write.csv(cn_start_list_split, "cn_start_list_split.csv", row.names = FALSE)
+write.csv(cn_stage_1_results_table_split, "cn_stage_1_results_table_split.csv", row.names = FALSE)
 
 ########################################
 ###### Merge Start List dataframe with Stage 1 Results dataframe
@@ -171,13 +176,14 @@ soundex("Fernández")
 ###### Fuzzy string matching with strings split into words
 
 # Split the search term into words
-cycling_search_term <- "Daniel M0reno Fernández"
+cycling_search_term <- cn_start_list_split$Rider_1[20]    # "Daniel M0reno Fernández"
 cycling_search_term_split <- strsplit(cycling_search_term, " ")
 cycling_search_term_split_soundex <- sapply(cycling_search_term_split, soundex)
 
 
 # Split the search string into words
-cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
+cycling_search_string <- cn_stage_1_results_table_split$Rider
+  # c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
 # cycling_search_string_split <- strsplit(cycling_search_string, " ")
 cycling_search_string_split <- sapply(cycling_search_string, strsplit, " ")
 
@@ -312,6 +318,8 @@ levenFullNameList(search_name_AAB_soundex, search_list_soundex[3:4])
 levenNameList("Andrey" , "Andrey Amador")
 levenshteinSim("Andrey", "Andrey")
 
+sapply(cn_start_list_split$Rider_1, levenshteinSim, cn_start_list_split$Rider_3)
+
 cn_start_list_split$Rider_4 <- (lapply(cn_start_list_split$Rider_1, levenNameAgainstNameList ,cn_stage_1_results_table_split$Rider_2))
 
 View(cn_start_list_split)
@@ -320,7 +328,52 @@ View(cn_stage_1_results_table_split)
 View(cn_start_list_split[ ,-3])
 # Andrey Amador Bikkazakova, Andrey Amador, Andriy Grivko
 
+########################################
 
 bool_detect("Daniel", cycling_search_string)
 
 stri_detect(cycling_search_term, coll = cycling_search_string)
+
+########################################
+# I'm attempting to improve my fuzzy matching function by
+# introducing some name length matching for optimisation.
+# https://stackoverflow.com/questions/14196696/sapply-with-custom-function-series-of-if-statements
+
+
+cycling_search_term_split <- strsplit(cycling_search_term, " ")
+cycling_search_term_split_soundex <- sapply(cycling_search_term_split, soundex)
+
+
+# Split the search string into words
+cycling_search_string <- cn_stage_1_results_table_split$Rider
+cycling_search_string_split <- sapply(cycling_search_string, strsplit, " ")
+sapply(cycling_search_string_split, length)
+
+
+
+
+levenNameAgainstNameList <- function(search_name, input_name_list){
+  search_name_soundex <-  sapply(strsplit(search_name, " "), soundex)   # Split the search name and determine soundex value
+  input_name_list_soundex <- sapply(strsplit(input_name_list, " "), soundex)   # Split list of names and determine soundex value for each
+  # Calculate the Levenshtein Sim value between the search name and each of the names in the list
+  levSim_each_name <- sapply(input_name_list_soundex, levenFullNameList, search_name_soundex)
+  # Find the position (in the list of names) of the same with the closest match
+  max_pos <- match(max(levSim_each_name), levSim_each_name)
+  input_name_list[max_pos]   # Return the name with the best match
+}
+
+search_name <- cycling_search_term
+input_name <- cycling_search_string[184]
+input_name <- cycling_search_string[19]
+input_name <- cycling_search_term
+
+check_name_length_match <- function(search_name, input_name){
+  search_name_soundex <-  sapply(strsplit(search_name, " "), soundex)
+  input_name_list_soundex <- sapply(strsplit(input_name, " "), soundex)
+  if(length(search_name_soundex) == length(input_name_list_soundex)){
+    levenshteinSim(search_name_soundex, input_name_list_soundex)
+  }
+  
+  
+}
+

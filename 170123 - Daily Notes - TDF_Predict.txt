@@ -1,12 +1,26 @@
 
 
 
+------------------------------
+Notes from Tue 17 Oct
+
+I'm making a bit of progress on optimising my fuzzy search function. It looks like it's possible to introduce IF statements into 'apply' functions:
+
+https://stackoverflow.com/questions/14196696/sapply-with-custom-function-series-of-if-statements
+
+I'm looking to optimise my fuzzy matching by enhancing the Levenshtein calculation where name length of search term and name from the list are the same. This will allow me to do the Levenshtein calc in order of words, not simply on every word and pick the best match.
+
+Next steps:
+
+- Finish first attempt at IF statement looking to match the number of names.
+
+- Extend optimising IF statements. Possibly looking to weight surnames.
+
 
 ------------------------------
 Notes from Mon 16 Oct @work
 
 I didn't get very far extending my testing.
-
 
 
 ------------------------------
