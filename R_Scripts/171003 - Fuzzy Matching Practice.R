@@ -178,9 +178,8 @@ cycling_search_term_split_soundex <- sapply(cycling_search_term_split, soundex)
 
 # Split the search string into words
 cycling_search_string <- c("Daniel Moreno Fernández", "Daniel Martin", "Daniel Monty", "Daniel Onerom")
-cycling_search_string_split <- strsplit(cycling_search_string, " ")
+# cycling_search_string_split <- strsplit(cycling_search_string, " ")
 cycling_search_string_split <- sapply(cycling_search_string, strsplit, " ")
-class(cycling_search_string_split)
 
 # Looking at methods for assessing single words in rider names.
 length(cycling_search_string_split)
@@ -300,6 +299,14 @@ levenNameAgainstNameList(cn_start_list_split$Rider_1[73], cn_stage_1_results_tab
 
 levenFullNameList("Andrey Amador Bikkazakova", "Andrey Amador")
 levenFullNameList("Andrey Amador Bikkazakova", "Andriy Grivko")
+
+search_name_AAB <- "Andrey Amador Bikkazakova"
+search_name_AAB_soundex <- sapply(strsplit(search_name_AAB, " "), soundex)
+search_list <- c("Andriy Grivko", "Andrey Amador")
+search_list_soundex <- sapply(strsplit(search_list, " "), soundex)
+  
+levenFullNameList(search_name_AAB_soundex, search_list_soundex[3:4])
+
 
 
 levenNameList("Andrey" , "Andrey Amador")
