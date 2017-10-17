@@ -70,6 +70,14 @@ cn_start_list_rider_list <- cn_start_list_split$Rider_1
 write.csv(cn_start_list_split, "cn_start_list_split.csv", row.names = FALSE)
 write.csv(cn_stage_1_results_table_split, "cn_stage_1_results_table_split.csv", row.names = FALSE)
 
+# Set the working directory
+setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_files/")   # Work laptop
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")   # HP laptop
+# Read in saved versions of the cycling news dataframes
+cn_start_list_split <- read.csv("cn_start_list_split.csv", header = TRUE)
+cn_stage_1_results_table_split <- read.csv("cn_stage_1_results_table_split.csv", header = TRUE)
+
+
 ########################################
 ###### Merge Start List dataframe with Stage 1 Results dataframe
 
@@ -339,17 +347,32 @@ stri_detect(cycling_search_term, coll = cycling_search_string)
 # introducing some name length matching for optimisation.
 # https://stackoverflow.com/questions/14196696/sapply-with-custom-function-series-of-if-statements
 
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")   # HP laptop
+# Read in saved versions of the cycling news dataframes
+cn_start_list_split <- read.csv("cn_start_list_split.csv", header = TRUE)
+cn_stage_1_results_table_split <- read.csv("cn_stage_1_results_table_split.csv", header = TRUE)
 
-cycling_search_term_split <- strsplit(cycling_search_term, " ")
+# Split search name/term and convert to Soundex values
+cycling_search_term_split <- strsplit(as.character(cn_start_list_split$Rider_1[23]), " ")
 cycling_search_term_split_soundex <- sapply(cycling_search_term_split, soundex)
-
+length(cycling_search_term_split[[1]])
 
 # Split the search string into words
 cycling_search_string <- cn_stage_1_results_table_split$Rider
-cycling_search_string_split <- sapply(cycling_search_string, strsplit, " ")
-sapply(cycling_search_string_split, length)
+cycling_search_string_split <- sapply(as.character(cycling_search_string), strsplit, " ")
+# Caculater the number of words (names) in the name of each rider
+max(sapply(cycling_search_string_split, length))
+length(cycling_search_string_split[[1]])
 
+my_simple_IF_match_function <- function(search_name, input_name){
+  if(length(search_name[[1]]) == length(input_name[[1]])){
+    print("Matching Length!")
+  } else{
+    print("No match!")
+  }
+}
 
+View(mapply(my_simple_IF_match_function, cycling_search_string_split, cycling_search_string_split))
 
 
 levenNameAgainstNameList <- function(search_name, input_name_list){

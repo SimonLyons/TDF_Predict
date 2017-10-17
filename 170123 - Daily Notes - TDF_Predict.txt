@@ -1,5 +1,10 @@
 
 
+------------------------------
+Notes from Wed 18 Oct
+
+More work on fuzzy matching practice file.
+
 
 ------------------------------
 Notes from Tue 17 Oct
