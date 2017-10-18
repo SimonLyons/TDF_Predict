@@ -1,6 +1,16 @@
 
 
 ------------------------------
+Notes from Thu 19 Oct
+
+I've had some success finally combining IF statements with sapply. It works for the basic function I've created to test it out. Next I need to extend this to doing a variety of things with fuzzy string matching against a list of riders.
+
+Next steps:
+
+- Extend IF statement function to sapply of list of riders. Aim is to build some weighting or ordered Levenshtein matching.
+
+
+------------------------------
 Notes from Wed 18 Oct
 
 More work on fuzzy matching practice file.

@@ -347,13 +347,14 @@ stri_detect(cycling_search_term, coll = cycling_search_string)
 # introducing some name length matching for optimisation.
 # https://stackoverflow.com/questions/14196696/sapply-with-custom-function-series-of-if-statements
 
+require(RecordLinkage)
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")   # HP laptop
 # Read in saved versions of the cycling news dataframes
 cn_start_list_split <- read.csv("cn_start_list_split.csv", header = TRUE)
 cn_stage_1_results_table_split <- read.csv("cn_stage_1_results_table_split.csv", header = TRUE)
 
 # Split search name/term and convert to Soundex values
-cycling_search_term_split <- strsplit(as.character(cn_start_list_split$Rider_1[23]), " ")
+cycling_search_term_split <- strsplit(as.character(cn_start_list_split$Rider_1[7]), " ")
 cycling_search_term_split_soundex <- sapply(cycling_search_term_split, soundex)
 length(cycling_search_term_split[[1]])
 
@@ -362,29 +363,28 @@ cycling_search_string <- cn_stage_1_results_table_split$Rider
 cycling_search_string_split <- sapply(as.character(cycling_search_string), strsplit, " ")
 # Caculater the number of words (names) in the name of each rider
 max(sapply(cycling_search_string_split, length))
-length(cycling_search_string_split[[1]])
+length(cycling_search_string_split[[141]])
 
-my_simple_IF_match_function <- function(search_name, input_name){
+# The function being fed to an apply() function needs to have the list
+# input variable first (even though I though it wouldn't matter).
+# input_name:  This variable is going to be fed rider names from the list of riders.
+# search_name: This is the rider name against which we're seeking a match.
+my_simple_IF_match_function <- function(input_name, search_name){
+  input_name <- as.vector(input_name)
+  search_name <- as.vector(search_name)
   if(length(search_name[[1]]) == length(input_name)){
     print("Matching Length!")
+    print(input_name)
   } else{
     print("No match!")
   }
 }
 
-View(mapply(my_simple_IF_match_function, cycling_search_term_split , cycling_search_string_split))
-length(cycling_search_term_split[[1]])
-length(cycling_search_string_split[[2]])
+# Test simple function against two rider names
+my_simple_IF_match_function(cycling_search_string_split[[141]], cycling_search_term_split)
 
-
-sapply(cycling_search_string_split, length)
-
-my_length_fun <- function(search_term, search_string){
-  print(length(search_term))
-  print(length(cycling_search_string_split))
-}
-(mapply(my_length_fun, cycling_search_term_split, cycling_search_string_split))
-?sapply
+# Test simple function against list of riders using sapply
+View(sapply(cycling_search_string_split, my_simple_IF_match_function, cycling_search_term_split))
 
 
 levenNameAgainstNameList <- function(search_name, input_name_list){
@@ -402,13 +402,15 @@ input_name <- cycling_search_string[184]
 input_name <- cycling_search_string[19]
 input_name <- cycling_search_term
 
+# Okay - time to continue working on this one, now that I've got
+# IF statements and apply() functions sorted out.
+
 check_name_length_match <- function(search_name, input_name){
   search_name_soundex <-  sapply(strsplit(search_name, " "), soundex)
   input_name_list_soundex <- sapply(strsplit(input_name, " "), soundex)
   if(length(search_name_soundex) == length(input_name_list_soundex)){
     levenshteinSim(search_name_soundex, input_name_list_soundex)
   }
-  
   
 }
 
