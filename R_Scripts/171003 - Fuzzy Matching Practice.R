@@ -365,14 +365,26 @@ max(sapply(cycling_search_string_split, length))
 length(cycling_search_string_split[[1]])
 
 my_simple_IF_match_function <- function(search_name, input_name){
-  if(length(search_name[[1]]) == length(input_name[[1]])){
+  if(length(search_name[[1]]) == length(input_name)){
     print("Matching Length!")
   } else{
     print("No match!")
   }
 }
 
-View(mapply(my_simple_IF_match_function, cycling_search_string_split, cycling_search_string_split))
+View(mapply(my_simple_IF_match_function, cycling_search_term_split , cycling_search_string_split))
+length(cycling_search_term_split[[1]])
+length(cycling_search_string_split[[2]])
+
+
+sapply(cycling_search_string_split, length)
+
+my_length_fun <- function(search_term, search_string){
+  print(length(search_term))
+  print(length(cycling_search_string_split))
+}
+(mapply(my_length_fun, cycling_search_term_split, cycling_search_string_split))
+?sapply
 
 
 levenNameAgainstNameList <- function(search_name, input_name_list){
