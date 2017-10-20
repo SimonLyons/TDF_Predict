@@ -361,7 +361,7 @@ length(cycling_search_term_split[[1]])
 # Split the search string into words
 cycling_search_string <- cn_stage_1_results_table_split$Rider
 cycling_search_string_split <- sapply(as.character(cycling_search_string), strsplit, " ")
-# Caculater the number of words (names) in the name of each rider
+# Caculate the number of words (names) in the name of each rider
 max(sapply(cycling_search_string_split, length))
 length(cycling_search_string_split[[141]])
 
@@ -387,6 +387,17 @@ my_simple_IF_match_function(cycling_search_string_split[[141]], cycling_search_t
 View(sapply(cycling_search_string_split, my_simple_IF_match_function, cycling_search_term_split))
 
 
+
+######################################################################
+######################################################################
+# Okay - this is where I'm up to
+# I'm attempting to build the function allowing more refined Levenshtein
+# Sim matching by isolating names pairs where the number of words match.
+# I think this comparison needs to occur in the (nested) levenFullNameList
+# function and below I've currently got it in the equivalent of the final
+# levenNameAgainstNameList function.
+
+
 levenNameAgainstNameList <- function(search_name, input_name_list){
   search_name_soundex <-  sapply(strsplit(search_name, " "), soundex)   # Split the search name and determine soundex value
   input_name_list_soundex <- sapply(strsplit(input_name_list, " "), soundex)   # Split list of names and determine soundex value for each
@@ -406,11 +417,28 @@ input_name <- cycling_search_term
 # IF statements and apply() functions sorted out.
 
 check_name_length_match <- function(search_name, input_name){
-  search_name_soundex <-  sapply(strsplit(search_name, " "), soundex)
-  input_name_list_soundex <- sapply(strsplit(input_name, " "), soundex)
+  search_name_soundex <-  sapply(strsplit(as.character(search_name), " "), soundex)
+  input_name_list_soundex <- sapply(strsplit(as.character(input_name), " "), soundex)
+  # Firstly, check for matching number of words in the pair of rider names
+  # If they match, do a straight Levenshtein calculation
   if(length(search_name_soundex) == length(input_name_list_soundex)){
-    levenshteinSim(search_name_soundex, input_name_list_soundex)
-  }
+    levSim_each_name <- (mean(levenshteinSim(search_name_soundex, input_name_list_soundex)))
+  } else {
+    # If the pair of names do not match in length, calculate the Levenshtein Sim
+    # value for each word in the first name against each word in the second name.
+    levSim_each_name <- sapply(input_name_list_soundex, levenFullNameList, search_name_soundex) }
   
+  max_pos <- match(max(levSim_each_name), levSim_each_name)
+  input_name_list[max_pos]   # Return the name with the best match
+    
 }
+
+
+sapply(as.character(cycling_search_string), check_name_length_match, as.character(cn_start_list_split$Rider_1[7]))
+as.vector(sapply(cycling_search_string, check_name_length_match, cn_start_list_split$Rider_1[83]))
+
+my_first <- cycling_search_string_split[1:10]
+my_second <- cycling_search_string_split[2:11]
+sapply(my_first, levenshteinSim, cycling_search_term_split[[1]])
+levenshteinSim(cycling_search_term_split[[1]][1:2], my_first[[1]])
 

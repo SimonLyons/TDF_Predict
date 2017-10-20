@@ -1,5 +1,18 @@
 
 
+
+------------------------------
+Notes from Sat 21 Oct
+
+I'm attempting to build the function allowing more refined Levenshtein Sim matching by isolating names pairs where the number of words match. I think this comparison needs to occur in the (nested) levenFullNameList function and below I've currently got it in the equivalent of the final levenNameAgainstNameList function.
+
+The kids are awake so I'm finding it hard to concentrate. Monday!
+
+Next steps:
+
+- Re-jig my work with the IF/ELSE statements so they are used in the name/name function
+
+
 ------------------------------
 Notes from Thu 19 Oct
 
