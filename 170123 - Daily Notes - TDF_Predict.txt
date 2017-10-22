@@ -1,4 +1,16 @@
+------------------------------
+Notes from Mon 23 Oct
 
+I'm making good progress with my improved fuzzy rider name matching function. I've just run it and I'm only getting one incorrect match:
+
+22 Andrey Amador Bikkazakova Crc Andriy Grivko
+
+The next test will be to modify if with the soundex conversion removed. I have the feeling this will be better now we're testing each individual word, and we've making accommodation for names of matching length.
+
+Next steps:
+
+- Modify new levenNameAgainstNameList function to remove soundex conversion and re-test.
+- Perhaps consider extending function to run both soundex and non-soundex matching and compare results, taking the best one.
 
 
 ------------------------------
