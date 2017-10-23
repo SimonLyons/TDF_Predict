@@ -427,8 +427,8 @@ check_name_length_match <- function(search_name, input_name){
 # ## THREE ##
 # The only change is the insertion of the new middle function - 'check_name_length_match'
 levenNameAgainstNameList <- function(search_name, input_name_list){
-  search_name_soundex <-  sapply(strsplit(as.character(search_name), " "), soundex)   # Split the search name and determine soundex value
-  input_name_list_soundex <- sapply(strsplit(as.character(input_name_list), " "), soundex)   # Split list of names and determine soundex value for each
+  search_name_soundex <-  sapply(strsplit(as.character(search_name), " "), tolower)   # Split the search name and determine soundex value
+  input_name_list_soundex <- sapply(strsplit(as.character(input_name_list), " "), tolower)   # Split list of names and determine soundex value for each
   # Calculate the Levenshtein Sim value between the search name and each of the names in the list
   levSim_each_name <- sapply(input_name_list_soundex, check_name_length_match, search_name_soundex)
   # Find the position (in the list of names) of the same with the closest match
@@ -444,6 +444,6 @@ levenNameAgainstNameList(cycling_search_term, cycling_search_string)
 cn_start_list_split$Rider_4 <- sapply(cn_start_list_split$Rider_1, levenNameAgainstNameList, cycling_search_string)
 
 View(cn_start_list_split)
-
+View(cn_start_list_split[ , -3])
 # 22 Andrey Amador Bikkazakova Crc Andriy Grivko
 

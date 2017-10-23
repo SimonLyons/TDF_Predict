@@ -1,3 +1,23 @@
+
+
+------------------------------
+Notes from Tue 24 Oct
+
+I improved the fuzzy name matching script by replacing the Soundex conversion to a lowercase ('tolower') conversion and leaving the straight Levenshtein distance calculation. This fixed up the mismatch with Andrey Amador Bikkazakova. More testing is required.
+
+I've now created a discrete function script called 'FuzzyNameMatch' stored in the following file.
+
+12_FuzzyNameMatch_function.R
+
+Next steps:
+
+- Finish off the neat FuzzyNameMatch function
+
+- Conduct testing of the new function.
+
+- Consider whether it should be converted to return the position of the best match, so it might be used more effectively in merging dataframes.
+
+
 ------------------------------
 Notes from Mon 23 Oct
 
