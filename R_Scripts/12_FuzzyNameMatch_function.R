@@ -71,10 +71,13 @@ levenNameAgainstNameList <- function(search_name, input_name_list){
   input_name_list_soundex <- sapply(strsplit(as.character(input_name_list), " "), tolower)   # Split list of names and determine soundex value for each
   # Calculate the Levenshtein Sim value between the search name and each of the names in the list
   levSim_each_name <- sapply(input_name_list_soundex, check_name_length_match, search_name_soundex)
-  # Find the position (in the list of names) of the same with the closest match
-  max_pos <- match(max(levSim_each_name), levSim_each_name)
-  input_name_list[max_pos]   # Return the name with the best match
-  # Need to consider whether returning the POSITION of the best match might be preferable. 
+  # Find and return the position (in the list of names) of the name with the closest match
+  match(max(levSim_each_name), levSim_each_name)   # Return the position of the name with the best match
+  
+  # The following is used in leiu of the above if the name of the rider is desired instead
+  # of the position (in the vector) of the name of the rider with the best match.
+  # max_pos <- match(max(levSim_each_name), levSim_each_name)
+  # input_name_list[max_pos]   # Return the name with the best match
 }
 
 

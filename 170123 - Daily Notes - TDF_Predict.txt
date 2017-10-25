@@ -1,5 +1,22 @@
 
 
+
+------------------------------
+Notes from Thu 25 Oct
+
+Okay - testing is going okay. What happens when the string vectors (for the two lists of rider names) are of different lengths?
+
+I've run a test between the 2017 TDF starting list of riders (198) and the riders finishing Stage 11 (180). 
+
+It's evident there are duplicated riders - as a result of having less riders finish Stage 11 than there were riders starting the TdF. Not surprising really. So we have duplicated results because my function finds the best match for each of the starting riders. 
+
+I think the method for matching only the correct riders will be to exclude the duplicates. I'll need to retain the calculation for the Levenshtein distance for each rider match and (in the case of the duplicates) use the best match to exclude the other duplicate results. I'm not sure how to approach this yet....
+
+Next steps:
+
+- Find a method for excluding missing riders. 
+ 
+
 ------------------------------
 Notes from Tue 24 Oct
 

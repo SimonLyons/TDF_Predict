@@ -18,7 +18,7 @@ require(RecordLinkage)
 
 list_cn_url <- "http://www.cyclingnews.com/tour-de-france/start-list/"
 cn_stage_1_results_url <- "http://www.cyclingnews.com/tour-de-france/stage-1/results/"
-
+cn_stage_11_results_url <- "http://www.cyclingnews.com/tour-de-france/stage-11/results/"
 
 # Set the working directory
 setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_files/")   # Work laptop
@@ -41,6 +41,26 @@ cn_stage_1_results_table <- as.data.frame(cn_stage_1_results_table[[1]])
 cn_stage_1_results_table_split <- separate(data = cn_stage_1_results_table, into = c("Rider_2", "Remaining"), 
                           sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
 cn_stage_1_results_table_split <- separate(data = cn_stage_1_results_table_split, into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
+
+
+########################################
+###### Download and extract rider list from CN Stage 11 results
+cn_stage_11_results_html <- download.file(cn_stage_11_results_url, "cn_stage_11_results_url.xml")
+cn_stage_11_results_html <- read_html("cn_stage_11_results_url.xml")
+
+# Extract the tables from the results html data
+cn_stage_11_results_table <- cn_stage_11_results_html %>% 
+  html_nodes(xpath = "//table") %>% 
+  html_table(fill = TRUE, trim = TRUE)
+
+# Take just the first table (with the stage results)
+cn_stage_11_results_table <- as.data.frame(cn_stage_11_results_table[[1]])
+# head(cn_stage_1_results_table)
+# Split Rider (Country) Team column into multiple columns
+cn_stage_11_results_table_split <- separate(data = cn_stage_11_results_table, into = c("Rider_2", "Remaining"), 
+                                           sep = " \\(", col = "Rider Name (Country) Team", remove = TRUE, extra = "drop")
+cn_stage_11_results_table_split <- separate(data = cn_stage_11_results_table_split, into = c("Country", "Team"), sep = "\\) ", col = "Remaining", remove = TRUE, extra = "drop")
+
 
 
 ########################################
@@ -390,8 +410,6 @@ View(sapply(cycling_search_string_split, my_simple_IF_match_function, cycling_se
 
 
 ######################################################################
-######################################################################
-# Okay - this is where I'm up to...
 # I'm attempting to build the function allowing more refined Levenshtein
 # Sim matching by isolating names pairs where the number of words match.
 # I think this comparison needs to occur in the (nested) levenFullNameList
@@ -441,9 +459,47 @@ cycling_search_string
 cycling_search_term <- cn_start_list_split$Rider_1[2]
 cycling_search_term
 levenNameAgainstNameList(cycling_search_term, cycling_search_string)
-cn_start_list_split$Rider_4 <- sapply(cn_start_list_split$Rider_1, levenNameAgainstNameList, cycling_search_string)
-
+cn_start_list_split$Rider_4_pos <- sapply(cn_start_list_split$Rider_1, levenNameAgainstNameList, cycling_search_string)
+cn_start_list_split$Rider_5 <- cycling_search_string[cn_start_list_split$Rider_4_pos]
 View(cn_start_list_split)
 View(cn_start_list_split[ , -3])
 # 22 Andrey Amador Bikkazakova Crc Andriy Grivko
+cycling_search_string[cn_start_list_split$Rider_4_pos]
 
+
+cn_stage_1_results_table_split[cn_start_list_split$Rider_4_pos, ]
+
+head(cn_start_list_split)
+head(cn_stage_1_results_table_split)
+
+first_merge <- merge(cn_start_list_split, cn_stage_1_results_table_split, by.x = "Rider_1", by.y = "Rider_2", all.x = TRUE, all.y = TRUE)
+View(first_merge)
+second_merge <- merge(cn_start_list_split, cn_stage_1_results_table_split, by.x = "Rider_5", by.y = "Rider_2", all.x = TRUE, all.y = TRUE)
+View(second_merge)
+
+
+######################################################################
+# Testing FuzzyNameMatch function against start list and Stage 11 results
+head(cn_stage_11_results_table_split)
+cn_start_list_split_clean <- read.csv("cn_start_list_split.csv", header = TRUE)
+head(cn_start_list_split_clean)
+
+rider_pos <- sapply(cn_start_list_split_clean$Rider_1, levenNameAgainstNameList, cn_stage_11_results_table_split$Rider_2)
+length(rider_pos)
+length(cn_start_list_split_clean$Rider_1)   # 198 Riders
+length(cn_stage_11_results_table_split$Rider_2)   # 180 Riders
+
+# Insert matched rider list (from Stage 11) into the start list dataframe
+cn_start_list_split_clean$Rider_4 <- cn_stage_11_results_table_split$Rider_2[rider_pos]
+# View the resulting dataframe with matched riders
+View(cn_start_list_split_clean[ , -c(3:4)])
+
+# It's evident there are duplicated riders - as a result of having less riders finish Stage 11 than
+# there were riders starting the TdF. Not surprising really. So we have duplicated results because
+# my function finds the best match for each of the starting riders. 
+# (9) Geraint Thomas, (29) Alejandro Valverde Belmonte, (41) Richie Porte, (67) Manuele Mori, (71) Arnaud Demare, 
+# (74) Jacopo Guarnieri, (75) Ignatas Konovalovas, (83) Luke Durbridge, (91) Mark Cavendish, (97) Mark Renshaw,
+# (108) Matteo Trentin, (111) Peter Sagan, (115) Rafał Majka, (118) Juraj Sagan, (161) Robert Gesink, (168) Jos van Emden,
+# (191) Jon Izagirre Insausti
+
+cn_start_list_split_clean$Rider_4[duplicated(cn_start_list_split_clean$Rider_4)]
