@@ -89,6 +89,7 @@ cn_start_list_rider_list <- cn_start_list_split$Rider_1
 # Save dataframes/tables locally
 write.csv(cn_start_list_split, "cn_start_list_split.csv", row.names = FALSE)
 write.csv(cn_stage_1_results_table_split, "cn_stage_1_results_table_split.csv", row.names = FALSE)
+write.csv(cn_stage_11_results_table_split, "cn_stage_11_results_table_split.csv", row.names = FALSE)
 
 # Set the working directory
 setwd("C:/aa Simon Lyons/2.0 Work/4.0 Data Analysis/4.6 Projects/TDF_Predict/working_files/")   # Work laptop
@@ -503,3 +504,17 @@ View(cn_start_list_split_clean[ , -c(3:4)])
 # (191) Jon Izagirre Insausti
 
 cn_start_list_split_clean$Rider_4[duplicated(cn_start_list_split_clean$Rider_4)]
+
+
+
+
+levSim_each_name <- levenNameAgainstNameList(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_split$Rider_2)
+match(max(levSim_each_name), levSim_each_name)
+cn_stage_11_results_table_split$Rider_2[97]
+
+rider_pos <- sapply(cn_start_list_split_clean$Rider_1, levenNameAgainstNameList, cn_stage_11_results_table_split$Rider_2)
+
+
+
+
+levenBestMatch(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_split$Rider_2)

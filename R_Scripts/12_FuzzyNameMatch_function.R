@@ -62,22 +62,29 @@ check_name_length_match <- function(search_name, input_name){
 # ## THREE ##
 # Wrap the above Levenshtein matching functions into a master function that
 # calculates the Levenstein Sim value between the search name and each name 
-# in the list, determines which has the highest value (closest match) and
-# then returns the name with the closest match.
+# in the list
 # 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
 # 'input_name_list': The list containing names of riders.
 levenNameAgainstNameList <- function(search_name, input_name_list){
-  search_name_soundex <-  sapply(strsplit(as.character(search_name), " "), tolower)   # Split the search name and determine soundex value
-  input_name_list_soundex <- sapply(strsplit(as.character(input_name_list), " "), tolower)   # Split list of names and determine soundex value for each
+  search_name_split <-  sapply(strsplit(as.character(search_name), " "), tolower)   # Split the search name and convert to lowercase
+  input_name_list_split <- sapply(strsplit(as.character(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
   # Calculate the Levenshtein Sim value between the search name and each of the names in the list
-  levSim_each_name <- sapply(input_name_list_soundex, check_name_length_match, search_name_soundex)
+  levSim_each_name <- sapply(input_name_list_split, check_name_length_match, search_name_split)
   # Find and return the position (in the list of names) of the name with the closest match
-  match(max(levSim_each_name), levSim_each_name)   # Return the position of the name with the best match
-  
+  # match(max(levSim_each_name), levSim_each_name)   # Return the position of the name with the best match
+  levSim_each_name
   # The following is used in leiu of the above if the name of the rider is desired instead
   # of the position (in the vector) of the name of the rider with the best match.
   # max_pos <- match(max(levSim_each_name), levSim_each_name)
   # input_name_list[max_pos]   # Return the name with the best match
 }
 
+# Takes the list of Levenshtein values calculated for the entire list and then
+# determines which has the highest value (closest match) and
+# then returns the position of the closest match.
+levenBestMatch <- function(search_name, input_name_list){
+  levSim_each_name <- levenNameAgainstNameList(search_name, input_name_list)
+  max_pos <- match(max(levSim_each_name), levSim_each_name)
+  max_pos
+}
 

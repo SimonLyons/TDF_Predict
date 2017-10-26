@@ -2,6 +2,16 @@
 
 
 ------------------------------
+Notes from Thu 25 Oct @work
+
+I've done a bit of work commencing how I might approach dealing with lists of matching lengths. I've changed the main wrapping Levenshtein function so it outputs all of the calculated Levenshtein values for each name so they can be used to evaluate duplicates. 
+
+Next steps:
+
+- Continue work on dealing with mismatched lists. Look for ways to use all Levenshtein values to pick the best match for a name from the shorter list.
+
+
+------------------------------
 Notes from Thu 25 Oct
 
 Okay - testing is going okay. What happens when the string vectors (for the two lists of rider names) are of different lengths?
