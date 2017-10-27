@@ -97,7 +97,7 @@ setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")   # HP 
 # Read in saved versions of the cycling news dataframes
 cn_start_list_split <- read.csv("cn_start_list_split.csv", header = TRUE)
 cn_stage_1_results_table_split <- read.csv("cn_stage_1_results_table_split.csv", header = TRUE)
-
+cn_stage_11_results_table_split <- read.csv("cn_stage_11_results_table_split.csv", header = TRUE)
 
 ########################################
 ###### Merge Start List dataframe with Stage 1 Results dataframe
@@ -373,6 +373,7 @@ setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")   # HP 
 # Read in saved versions of the cycling news dataframes
 cn_start_list_split <- read.csv("cn_start_list_split.csv", header = TRUE)
 cn_stage_1_results_table_split <- read.csv("cn_stage_1_results_table_split.csv", header = TRUE)
+cn_stage_11_results_table_split <- read.csv("cn_stage_11_results_table_split.csv", header = TRUE)
 
 # Split search name/term and convert to Soundex values
 cycling_search_term <- cn_start_list_split$Rider_1[7]
@@ -514,7 +515,57 @@ cn_stage_11_results_table_split$Rider_2[97]
 
 rider_pos <- sapply(cn_start_list_split_clean$Rider_1, levenNameAgainstNameList, cn_stage_11_results_table_split$Rider_2)
 
-
-
-
+# Run the levenBestMatch function which returns the best match for each rider in the list
+# from the search list.
 levenBestMatch(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_split$Rider_2)
+# The above identifies that the best match for every rider in the starting list, independent of
+# whether that rider is actually in the Stage 11 results or not.
+
+
+######################################################################
+# Building script to deal with mismatched lengths of rider lists
+# 
+# At this stage I can think of two methods for identifying (and therefore
+# removing) incorrect rider matches:
+# 1. Finding duplicates in the returned matching list and only keeping the best match; and
+# 2. Only retaining matched names above a specified minimum calculated Levenshtein value.
+
+search_name_list <- cn_start_list_split$Rider_1
+input_name_list <- cn_stage_11_results_table_split$Rider_2
+k <- 2
+
+
+if(length(search_name_list) == length(input_name_list)){
+  # Perhaps insert list cleansing functions as an advanced activity
+  # Things like replacing special characters and ensuring/converting
+  # lists to correct vector type
+  rider_pos <- sapply(input_name_list, levenBestMatch, search_name_list)
+  
+  } else{
+    # Determine which is shorter list
+    print("Different Length Lists!")
+    
+    # Create a dataframe to retain the Levenshtein result and best match name
+    name_match_table <- as.data.frame(matrix(data = NA, nrow = length(search_name_list), ncol = 4))
+    # class(name_match_table$search_name) <- "factor"
+    colnames(name_match_table) <- c("search_name", "input_match", "max_pos", "leven_result")
+    for(k in 1:length(search_name_list)){
+      # Calculate the Levenshtein value for the search name against each name in the input_list
+      name_match_table$search_name[[k]] <- as.character(search_name_list[[k]])
+      levSim_each_name <- levenNameAgainstNameList(search_name_list[[k]], input_name_list)
+      max_pos <- match(max(levSim_each_name), levSim_each_name)
+      name_match_table$max_pos[[k]] <- max_pos
+      name_match_table$input_match[[k]] <- as.character(input_name_list[max_pos])
+      name_match_table$leven_result[[k]] <- max(levSim_each_name)
+    }   # End FOR loop running through search name list
+    
+  }   # End ELSE statement for lists that don't match in length
+
+
+# Right-o.... making progress. I've got a table () with the matching data
+# including the max Levenshtein results. From this I can locate the duplicates
+# and work out which one is the best match and which one(s) should be removed
+# as matches. Below is a non-automated attempt at this.
+View(name_match_table)
+name_match_table[duplicated(name_match_table$input_match), "input_match"]
+name_match_table[name_match_table$input_match  == "Michael Valgren Andersen", ]
