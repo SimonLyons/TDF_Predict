@@ -66,8 +66,10 @@ check_name_length_match <- function(search_name, input_name){
 # 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
 # 'input_name_list': The list containing names of riders.
 levenNameAgainstNameList <- function(search_name, input_name_list){
-  search_name_split <-  sapply(strsplit(as.character(search_name), " "), tolower)   # Split the search name and convert to lowercase
-  input_name_list_split <- sapply(strsplit(as.character(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
+  search_name_split <-  sapply(strsplit(stri_trim_both(search_name), " "), tolower)   # Split the search name and convert to lowercase
+  input_name_list_split <- sapply(strsplit(stri_trim_both(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
+  
+  
   # Calculate the Levenshtein Sim value between the search name and each of the names in the list
   levSim_each_name <- sapply(input_name_list_split, check_name_length_match, search_name_split)
   # Find and return the position (in the list of names) of the name with the closest match

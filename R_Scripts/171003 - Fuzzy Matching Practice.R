@@ -534,7 +534,6 @@ search_name_list <- cn_start_list_split$Rider_1
 input_name_list <- cn_stage_11_results_table_split$Rider_2
 k <- 2
 
-
 if(length(search_name_list) == length(input_name_list)){
   # Perhaps insert list cleansing functions as an advanced activity
   # Things like replacing special characters and ensuring/converting
@@ -549,13 +548,20 @@ if(length(search_name_list) == length(input_name_list)){
     name_match_table <- as.data.frame(matrix(data = NA, nrow = length(search_name_list), ncol = 4))
     # class(name_match_table$search_name) <- "factor"
     colnames(name_match_table) <- c("search_name", "input_match", "max_pos", "leven_result")
+    search_name_list <- as.character(search_name_list)   # Convert name list to string/character list
     for(k in 1:length(search_name_list)){
+      # Trim leading and trailing blank spaces from name
+      search_name_list[[k]] <- stri_trim_both(search_name_list[[k]])
+      # Text clean the search name by replacing special characters
+      search_name_list[[k]] <- text_clean(search_name_list[[k]])
+      # Clean the name of special characters
+      # name_match_table$search_name[[k]] <- text_clean(name_match_table$search_name[[k]])
       # Calculate the Levenshtein value for the search name against each name in the input_list
-      name_match_table$search_name[[k]] <- as.character(search_name_list[[k]])
       levSim_each_name <- levenNameAgainstNameList(search_name_list[[k]], input_name_list)
+      name_match_table$search_name[k] <- search_name_list[k]
       max_pos <- match(max(levSim_each_name), levSim_each_name)
       name_match_table$max_pos[[k]] <- max_pos
-      name_match_table$input_match[[k]] <- as.character(input_name_list[max_pos])
+      name_match_table$input_match[[k]] <- stri_trim_both(input_name_list[max_pos])
       name_match_table$leven_result[[k]] <- max(levSim_each_name)
     }   # End FOR loop running through search name list
     
@@ -569,3 +575,5 @@ if(length(search_name_list) == length(input_name_list)){
 View(name_match_table)
 name_match_table[duplicated(name_match_table$input_match), "input_match"]
 name_match_table[name_match_table$input_match  == "Michael Valgren Andersen", ]
+name_match_table$search_name[5]
+

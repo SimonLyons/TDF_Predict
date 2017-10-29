@@ -1,9 +1,31 @@
 
+------------------------------
+Notes from Mon 30 Oct
+
+I made a small amount of progress today, inserting some script removing leading and trailing spaces spaces from search names and additionally replacing special characters (using my text_clean function) from search names.
+
+The above needs to be extended to the list of input names.
+
+So next steps are pretty much the same as Saturday:
+
+Next steps:
+
+- Continue work on differing list length script
+    * Take 'name_match_table' and start refining/removing duplicates
+    * Built a working script into a generic function
+
+- Improve current name matching function to take mean of only the number of words from the shortest name.
+
+- Look at running a test with limited matching names.
+
+- Insert list cleansing functions such as replacing special characters and converting lists to correct vector type
+
+
 
 ------------------------------
 Notes from Sat 28 Oct
 
-I'm making some progress on my script to evaluate lists of riders of different lengths. I've got a table () with the matching data including the max Levenshtein results. From this I can locate the duplicates and work out which one is the best match and which one(s) should be removed as matches. I've also got some preliminary script exploring how to identify duplicate matches and work out which one is the best match.
+I'm making some progress on my script to evaluate lists of riders of different lengths. I've got a table (name_match_table) with the matching data including the max Levenshtein results. From this I can locate the duplicates and work out which one is the best match and which one(s) should be removed as matches. I've also got some preliminary script exploring how to identify duplicate matches and work out which one is the best match.
 
 One of the unexpected benefits of pulling this data out is that it shows a lower than 1.00 Levenshtein result for names that are a match, where the names have differing number of words (e.g. Mikel Landa Meana and Mikel Landa). This instantly makes me think I need to return the mean of only the number of words that match the length of the shorter name. This should firm up the results and possibly help avoid matching errors.
 
