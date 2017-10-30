@@ -49,12 +49,25 @@ check_name_length_match <- function(search_name, input_name){
   # input_name_list_soundex <- sapply(strsplit(as.character(input_name), " "), soundex)
   # Firstly, check for matching number of words in the pair of rider names
   # If they match, do a straight Levenshtein calculation
-  if(length(search_name) == length(input_name)){
+  if(length(search_name[[1]]) == length(input_name[[1]])){
+    print("Matching Length Names")
     mean(levenshteinSim(as.character(search_name), as.character(input_name)))
   } else {
+    print("Non Matching Length Names")
+    # We want to have the words in the longer name cycle against the words in the shorter name
+    both_names <- c(search_name, input_name)
+    longer_name <- both_names[[match(max(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length) )]]
+    shorter_name <- both_names[[match(min(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length))]]
+    
     # If the pair of names do not match in length, calculate the Levenshtein Sim
     # value for each word in the first name against each word in the second name.
-    mean(sapply(input_name ,levenNameList, search_name))
+    # mean(sapply(input_name[[1]] ,levenNameList, search_name[[1]]))
+    sapply(longer_name ,levenNameList, shorter_name)
+    
+    
+    
+    
+    # return(my_new_list)
   }   # End ELSE statement
 }   # End 'check_name_length_match' function
 

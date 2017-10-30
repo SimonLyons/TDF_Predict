@@ -1,4 +1,18 @@
 
+
+------------------------------
+Notes from Mon 30 Oct @work
+
+
+I've been working on the 'check_name_length_match' function and looking to deal with names not matching in length. I've successfully identified the longer and shorter name (lists) and fed these into the 'levenNameList' in the best order. I now need to take the results of just the number of words from the shorter name. Easy!
+
+I've had to finish before neatly closing things off. 
+
+Next steps:
+
+- Get into check_name_length_match function and work with outputs from different length names.
+
+
 ------------------------------
 Notes from Mon 30 Oct
 

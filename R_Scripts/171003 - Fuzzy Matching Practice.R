@@ -577,3 +577,25 @@ name_match_table[duplicated(name_match_table$input_match), "input_match"]
 name_match_table[name_match_table$input_match  == "Michael Valgren Andersen", ]
 name_match_table$search_name[5]
 
+
+# Work on optimising matches between names of different word lengths
+# example:  Haimar Zubeldia Aguirre  and  Haimar Zubeldia
+
+check_name_length_match(strsplit("Haimar Zubeldia Aguirre", " "), strsplit("Haimar Zubeldia", " "))
+
+length(strsplit("Haimar Zubeldia Aguirre", " "))
+my_string_1 <- strsplit("Haimar Zubeldia Aguirre", " ")
+my_string_2 <- strsplit("Haimar Zubeldia", " ")
+length(my_string_1[[1]]) == length(my_string_2[[1]])
+
+check_name_length_match(my_string_1, my_string_2)
+
+sapply(my_string_1[[1]] ,levenNameList, my_string_2[[1]])
+as.list(my_string_2)
+my_string_2[[1]][[2]]
+
+
+both_names <- c(my_string_1, my_string_2)
+longer_name <- both_names[[match(max(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length) )]]
+shorter_name <- both_names[[match(min(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length))]]
+
