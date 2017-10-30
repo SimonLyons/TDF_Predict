@@ -530,9 +530,9 @@ levenBestMatch(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_
 # 1. Finding duplicates in the returned matching list and only keeping the best match; and
 # 2. Only retaining matched names above a specified minimum calculated Levenshtein value.
 
-search_name_list <- cn_start_list_split$Rider_1
+search_name_list <- as.character(cn_start_list_split$Rider_1)
 input_name_list <- cn_stage_11_results_table_split$Rider_2
-k <- 2
+k <- 28
 
 if(length(search_name_list) == length(input_name_list)){
   # Perhaps insert list cleansing functions as an advanced activity
@@ -577,6 +577,14 @@ name_match_table[duplicated(name_match_table$input_match), "input_match"]
 name_match_table[name_match_table$input_match  == "Michael Valgren Andersen", ]
 name_match_table$search_name[5]
 
+
+search_name <- "Alberto Contador Velasco"
+search_name <- search_name_split
+input_name <- input_name_list_split[71]
+levSim_each_name[71]
+
+check_name_length_match(input_name_list_split[71], search_name_split)
+levenNameAgainstNameList("Alberto Contador Velasco", input_name_list)
 
 # Work on optimising matches between names of different word lengths
 # example:  Haimar Zubeldia Aguirre  and  Haimar Zubeldia

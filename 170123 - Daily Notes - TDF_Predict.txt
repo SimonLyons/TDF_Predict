@@ -1,6 +1,12 @@
 
 
 ------------------------------
+Notes from Tue 31 Oct
+
+I'm struggling to identify why my script isn't narrowing down the Levenshtein calculation to just the shortest name.
+
+
+------------------------------
 Notes from Mon 30 Oct @work
 
 
