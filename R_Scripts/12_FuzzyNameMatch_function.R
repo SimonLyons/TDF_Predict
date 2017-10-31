@@ -26,6 +26,7 @@
 
 # Load required package(s)
 require(RecordLinkage)
+require(stringi)
 
 
 # ## ONE ##
@@ -50,8 +51,8 @@ check_name_length_match <- function(input_name, search_name){
   # Firstly, check for matching number of words in the pair of rider names
   # If they match, do a straight Levenshtein calculation
   if(length(search_name[[1]]) == length(input_name[[1]])){
-    # print("Matching Length Names")
-    mean(levenshteinSim(as.character(search_name), as.character(input_name)))
+    print("Matching Length Names")
+    mean(levenshteinSim(as.character(search_name), as.character(input_name[1])))
   } else {
     # If the pair of names do not match in length, calculate the Levenshtein Sim
     # value for each word in the first name against each word in the second name.
@@ -62,7 +63,7 @@ check_name_length_match <- function(input_name, search_name){
     longer_name <- both_names[[match(max(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length) )]]
     shorter_name <- both_names[[match(min(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length))]]
     # No calculate the mean of the best Levenshtein matches (using the levenNameList function)
-    mean(sapply(shorter_name ,levenNameList, longer_name))
+    mean(sapply(shorter_name,  levenNameList, longer_name))
     # return(my_new_list)
   }   # End ELSE statement
 }   # End 'check_name_length_match' function
@@ -75,8 +76,8 @@ check_name_length_match <- function(input_name, search_name){
 # 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
 # 'input_name_list': The list containing names of riders.
 levenNameAgainstNameList <- function(search_name, input_name_list){
-  search_name_split <-  sapply(strsplit(stri_trim_both(search_name), " "), tolower)   # Split the search name and convert to lowercase
-  input_name_list_split <- sapply(strsplit(stri_trim_both(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
+  search_name_split <-  lapply(strsplit(stri_trim_both(search_name), " "), tolower)   # Split the search name and convert to lowercase
+  input_name_list_split <- lapply(strsplit(stri_trim_both(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
 
     # Calculate the Levenshtein Sim value between the search name and each of the names in the list
   levSim_each_name <- sapply(input_name_list_split, check_name_length_match, search_name_split)

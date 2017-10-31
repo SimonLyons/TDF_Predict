@@ -567,43 +567,32 @@ if(length(search_name_list) == length(input_name_list)){
     
   }   # End ELSE statement for lists that don't match in length
 
-
 # Right-o.... making progress. I've got a table () with the matching data
 # including the max Levenshtein results. From this I can locate the duplicates
 # and work out which one is the best match and which one(s) should be removed
 # as matches. Below is a non-automated attempt at this.
 View(name_match_table)
-name_match_table[duplicated(name_match_table$input_match), "input_match"]
-name_match_table[name_match_table$input_match  == "Michael Valgren Andersen", ]
+name_match_table[duplicated(name_match_table$input_match), ]
+name_match_table[name_match_table$input_match  == "Michael Matthews", ]
 name_match_table$search_name[5]
 
 
-search_name <- "Alberto Contador Velasco"
+search_name <- "Michael Matthews"
 search_name <- search_name_split
+input_name <- input_name_list[71]
 input_name <- input_name_list_split[71]
 levSim_each_name[71]
 
 check_name_length_match(input_name_list_split[71], search_name_split)
-levenNameAgainstNameList("Alberto Contador Velasco", input_name_list)
+input_name_list[levenNameAgainstNameList("Michael Matthews", input_name_list) == 1]
 
-# Work on optimising matches between names of different word lengths
-# example:  Haimar Zubeldia Aguirre  and  Haimar Zubeldia
+levenshteinSim(c("Simon", "Lyons"), c("Simon", "Arnold"))
 
-check_name_length_match(strsplit("Haimar Zubeldia Aguirre", " "), strsplit("Haimar Zubeldia", " "))
-
-length(strsplit("Haimar Zubeldia Aguirre", " "))
-my_string_1 <- strsplit("Haimar Zubeldia Aguirre", " ")
-my_string_2 <- strsplit("Haimar Zubeldia", " ")
-length(my_string_1[[1]]) == length(my_string_2[[1]])
-
-check_name_length_match(my_string_1, my_string_2)
-
-sapply(my_string_1[[1]] ,levenNameList, my_string_2[[1]])
-as.list(my_string_2)
-my_string_2[[1]][[2]]
+search_name_split <-  lapply(strsplit(stri_trim_both(search_name), " "), tolower)   # Split the search name and convert to lowercase
+input_name_list_split <- lapply(strsplit(stri_trim_both(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
 
 
-both_names <- c(my_string_1, my_string_2)
-longer_name <- both_names[[match(max(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length) )]]
-shorter_name <- both_names[[match(min(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length))]]
+check_name_length_match(search_name_split, input_name_list_split[54])
+levenshteinSim(as.character(search_name_split), as.character(input_name_list_split[40]))
 
+sapply(input_name_list_split, check_name_length_match, search_name_split)

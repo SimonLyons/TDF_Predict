@@ -1,5 +1,18 @@
 
 
+
+------------------------------
+Notes from Tue 31 Oct @work
+
+The struggle goes on. There is something funny going on with the check_name_length_match and I can't work out what it is. It may have something to do with how the levenNameAgainstNameList function is passing name lists to it.
+
+In fact, it's starting to look like the check_name_length_match function is working okay.
+
+Anyway - more testing and sorting out required.
+
+
+
+
 ------------------------------
 Notes from Tue 31 Oct
 
