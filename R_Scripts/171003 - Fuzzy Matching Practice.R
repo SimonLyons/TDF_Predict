@@ -530,9 +530,11 @@ levenBestMatch(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_
 # 1. Finding duplicates in the returned matching list and only keeping the best match; and
 # 2. Only retaining matched names above a specified minimum calculated Levenshtein value.
 
-search_name_list <- as.character(cn_start_list_split$Rider_1)
+search_name_list <- (cn_start_list_split$Rider_1)
+class(search_name_list)
 input_name_list <- cn_stage_11_results_table_split$Rider_2
-k <- 28
+k <- 6
+search_name <- search_name_list[[6]]
 
 if(length(search_name_list) == length(input_name_list)){
   # Perhaps insert list cleansing functions as an advanced activity
@@ -567,6 +569,12 @@ if(length(search_name_list) == length(input_name_list)){
     
   }   # End ELSE statement for lists that don't match in length
 
+# The following is helping me with the problem of having multiple 100% matches, which
+# I think it occuring because only the first (christian) name is being used.
+which(levSim_each_name == max(levSim_each_name))   # Find which rows of the input list are matches
+input_name_list[which(levSim_each_name == max(levSim_each_name))]    # List which name(s) of the input list are matches
+
+
 # Right-o.... making progress. I've got a table () with the matching data
 # including the max Levenshtein results. From this I can locate the duplicates
 # and work out which one is the best match and which one(s) should be removed
@@ -596,3 +604,9 @@ check_name_length_match(search_name_split, input_name_list_split[54])
 levenshteinSim(as.character(search_name_split), as.character(input_name_list_split[40]))
 
 sapply(input_name_list_split, check_name_length_match, search_name_split)
+
+search_name_split <- lapply(strsplit(stri_trim_both(cn_start_list_split$Rider_1[7]), " "), tolower)
+input_name_list_split <- sapply(strsplit(stri_trim_both(cn_stage_11_results_table_split$Rider_2), " "), tolower)
+check_name_length_match(search_name_split, input_name_list_split[[58]])
+
+
