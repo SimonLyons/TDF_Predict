@@ -1,5 +1,28 @@
 
 
+
+------------------------------
+Notes from Sat 4 Nov
+
+Okay - finally making some progress. I think I've got the check_name_length_match function sorted out. It appears I was not creating an equal match of name types. One was a list and the other was not and therefore the words were not being matched up against each other correctly. Hard to identify!!
+
+So the issue I have now seems to be with special character names, such as Jasha Sütterlin and Rüdiger Selig. It looks like I haven't implemented the use of my text_clean function properly. Once this is sorted I think I'll be 99% of the way to correctly matching names.
+
+The stuff that is left are the anomolies. For example, where different spelling is used for a rider's name. e.g. 
+PierreLuc Perichon  ->  Pierre Luc Perichon
+Jacobus Venter  ->  Jaco Venter
+Tom Leezer  ->  Thomas Leezer
+It's usually christian names that are modified, so I could possibly improve the matching here by giving more weight to surnames.
+
+So what's then left is removing incorrect matches, which can largely be identified by a low Levenshtein calculated result. I'll also be looking for duplicate matches.
+
+Next steps:
+
+- Correct issue with text_clean function and removing special characters prior to Levenshtein matching
+
+- Build script to identify and remove incorrect matches. 
+
+
 ------------------------------
 Notes from Thu 2 Nov
 
@@ -14,8 +37,6 @@ The struggle goes on. There is something funny going on with the check_name_leng
 In fact, it's starting to look like the check_name_length_match function is working okay.
 
 Anyway - more testing and sorting out required.
-
-
 
 
 ------------------------------

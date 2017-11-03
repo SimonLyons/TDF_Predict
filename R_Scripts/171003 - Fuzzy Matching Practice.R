@@ -533,7 +533,7 @@ levenBestMatch(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_
 search_name_list <- (cn_start_list_split$Rider_1)
 class(search_name_list)
 input_name_list <- cn_stage_11_results_table_split$Rider_2
-k <- 6
+k <- 26
 search_name <- search_name_list[[6]]
 
 if(length(search_name_list) == length(input_name_list)){
@@ -553,9 +553,9 @@ if(length(search_name_list) == length(input_name_list)){
     search_name_list <- as.character(search_name_list)   # Convert name list to string/character list
     for(k in 1:length(search_name_list)){
       # Trim leading and trailing blank spaces from name
-      search_name_list[[k]] <- stri_trim_both(search_name_list[[k]])
+      # search_name_list[[k]] <- stri_trim_both(search_name_list[[k]])
       # Text clean the search name by replacing special characters
-      search_name_list[[k]] <- text_clean(search_name_list[[k]])
+      # search_name_list[[k]] <- text_clean(search_name_list[[k]])
       # Clean the name of special characters
       # name_match_table$search_name[[k]] <- text_clean(name_match_table$search_name[[k]])
       # Calculate the Levenshtein value for the search name against each name in the input_list
@@ -585,28 +585,32 @@ name_match_table[name_match_table$input_match  == "Michael Matthews", ]
 name_match_table$search_name[5]
 
 
-search_name <- "Michael Matthews"
-search_name <- search_name_split
-input_name <- input_name_list[71]
-input_name <- input_name_list_split[71]
-levSim_each_name[71]
+require(dplyr)
+weak_matches <- name_match_table %>% filter(leven_result < 1) %>% arrange(desc(leven_result))
+View(weak_matches)
 
-check_name_length_match(input_name_list_split[71], search_name_split)
-input_name_list[levenNameAgainstNameList("Michael Matthews", input_name_list) == 1]
-
-levenshteinSim(c("Simon", "Lyons"), c("Simon", "Arnold"))
 
 search_name_split <-  lapply(strsplit(stri_trim_both(search_name), " "), tolower)   # Split the search name and convert to lowercase
 input_name_list_split <- lapply(strsplit(stri_trim_both(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
 
 
-check_name_length_match(search_name_split, input_name_list_split[54])
-levenshteinSim(as.character(search_name_split), as.character(input_name_list_split[40]))
+check_name_length_match(search_name_split, input_name_list_split[58])
+levenshteinSim(as.character(search_name_split), as.character(input_name_list_split[58]))
 
 sapply(input_name_list_split, check_name_length_match, search_name_split)
 
-search_name_split <- lapply(strsplit(stri_trim_both(cn_start_list_split$Rider_1[7]), " "), tolower)
+search_name_split <- lapply(strsplit(stri_trim_both(cn_start_list_split$Rider_1[40]), " "), tolower)
 input_name_list_split <- sapply(strsplit(stri_trim_both(cn_stage_11_results_table_split$Rider_2), " "), tolower)
 check_name_length_match(search_name_split, input_name_list_split[[58]])
+levenshteinSim("mikel", "michael")
+levenNameList("ituralde", input_name_list_split[[178]])
+search_name <- search_name_split
+input_name <- input_name_list_split[[150]]
+check_name_length_match(input_name, input_name)
+list(input_name)
+class(search_name)
+list(search_name)
+
+clean_jasha <- text_clean("Jasha Sütterlin")
 
 

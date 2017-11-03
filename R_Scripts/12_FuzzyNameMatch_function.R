@@ -46,28 +46,37 @@ levenNameList <- function(input_word, input_name){
 # is iterated across each word permutation.
 # In both cases the mean of each result is returned.
 check_name_length_match <- function(input_name, search_name){
+  if(class(search_name) == 'list'){
+    search_name <- unlist(search_name)
+  }
+  if(class(input_name) == 'list'){
+    input_name <- unlist(input_name)
+  }
   # search_name_soundex <-  sapply(strsplit(as.character(search_name), " "), soundex)
   # input_name_list_soundex <- sapply(strsplit(as.character(input_name), " "), soundex)
   # Firstly, check for matching number of words in the pair of rider names
   # If they match, do a straight Levenshtein calculation
-  if(length(search_name[[1]]) == length(input_name[[1]])){
+  if(length(search_name) == length(input_name)){
     # print("Matching Length Names")
-    mean(levenshteinSim(as.character(search_name), as.character(input_name[1])))
+    mean(levenshteinSim(as.character(search_name), as.character(input_name)))
   } else {
     # If the pair of names do not match in length, calculate the Levenshtein Sim
     # value for each word in the first name against each word in the second name.
     print("Non Matching Length Names")
     # We want to have the words in the longer name cycle against the words in the shorter name
     # First determine which name is the shortest and which is the longest
-    both_names <- c(search_name, input_name)   # Put both names into a single object
+    both_names <- list(search_name, input_name)   # Put both names into a single object
     longer_name <- both_names[[match(max(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length) )]]
+    longer_name <- unlist(lapply(longer_name, text_clean))
+    # longer_name <- text_clean(stri_trim_both(longer_name))   # Trim white space from ends and text clean name
     shorter_name <- both_names[[match(min(length(both_names[[1]]), length(both_names[[2]])), lapply(both_names, length))]]
+    shorter_name <- unlist(lapply(shorter_name, text_clean))
+    # shorter_name <- text_clean(stri_trim_both(shorter_name))   # Trim white space from ends and text clean name
     # No calculate the mean of the best Levenshtein matches (using the levenNameList function)
     mean(sapply(shorter_name,  levenNameList, longer_name))
     # return(my_new_list)
   }   # End ELSE statement
 }   # End 'check_name_length_match' function
-
 
 # ## THREE ##
 # Wrap the above Levenshtein matching functions into a master function that
