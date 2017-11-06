@@ -531,10 +531,8 @@ levenBestMatch(cn_start_list_split_clean$Rider_1[23], cn_stage_11_results_table_
 # 2. Only retaining matched names above a specified minimum calculated Levenshtein value.
 
 search_name_list <- (cn_start_list_split$Rider_1)
-class(search_name_list)
 input_name_list <- cn_stage_11_results_table_split$Rider_2
 k <- 26
-search_name <- search_name_list[[6]]
 
 if(length(search_name_list) == length(input_name_list)){
   # Perhaps insert list cleansing functions as an advanced activity
@@ -552,12 +550,6 @@ if(length(search_name_list) == length(input_name_list)){
     colnames(name_match_table) <- c("search_name", "input_match", "max_pos", "leven_result")
     search_name_list <- as.character(search_name_list)   # Convert name list to string/character list
     for(k in 1:length(search_name_list)){
-      # Trim leading and trailing blank spaces from name
-      # search_name_list[[k]] <- stri_trim_both(search_name_list[[k]])
-      # Text clean the search name by replacing special characters
-      # search_name_list[[k]] <- text_clean(search_name_list[[k]])
-      # Clean the name of special characters
-      # name_match_table$search_name[[k]] <- text_clean(name_match_table$search_name[[k]])
       # Calculate the Levenshtein value for the search name against each name in the input_list
       levSim_each_name <- levenNameAgainstNameList(search_name_list[[k]], input_name_list)
       name_match_table$search_name[k] <- search_name_list[k]
@@ -567,50 +559,23 @@ if(length(search_name_list) == length(input_name_list)){
       name_match_table$leven_result[[k]] <- max(levSim_each_name)
     }   # End FOR loop running through search name list
     
+    
+    
   }   # End ELSE statement for lists that don't match in length
-
-# The following is helping me with the problem of having multiple 100% matches, which
-# I think it occuring because only the first (christian) name is being used.
-which(levSim_each_name == max(levSim_each_name))   # Find which rows of the input list are matches
-input_name_list[which(levSim_each_name == max(levSim_each_name))]    # List which name(s) of the input list are matches
-
 
 # Right-o.... making progress. I've got a table () with the matching data
 # including the max Levenshtein results. From this I can locate the duplicates
 # and work out which one is the best match and which one(s) should be removed
 # as matches. Below is a non-automated attempt at this.
 View(name_match_table)
-name_match_table[duplicated(name_match_table$input_match), ]
-name_match_table[name_match_table$input_match  == "Michael Matthews", ]
-name_match_table$search_name[5]
-
+dupes <- name_match_table[duplicated(name_match_table$input_match), ] %>% arrange(input_match)
+View(dupes)
 
 require(dplyr)
 weak_matches <- name_match_table %>% filter(leven_result < 1) %>% arrange(desc(leven_result))
 View(weak_matches)
 
-
-search_name_split <-  lapply(strsplit(stri_trim_both(search_name), " "), tolower)   # Split the search name and convert to lowercase
-input_name_list_split <- lapply(strsplit(stri_trim_both(input_name_list), " "), tolower)   # Split list of names and convert to lowercase
-
-
-check_name_length_match(search_name_split, input_name_list_split[58])
-levenshteinSim(as.character(search_name_split), as.character(input_name_list_split[58]))
-
-sapply(input_name_list_split, check_name_length_match, search_name_split)
-
-search_name_split <- lapply(strsplit(stri_trim_both(cn_start_list_split$Rider_1[40]), " "), tolower)
-input_name_list_split <- sapply(strsplit(stri_trim_both(cn_stage_11_results_table_split$Rider_2), " "), tolower)
-check_name_length_match(search_name_split, input_name_list_split[[58]])
-levenshteinSim("mikel", "michael")
-levenNameList("ituralde", input_name_list_split[[178]])
-search_name <- search_name_split
-input_name <- input_name_list_split[[150]]
-check_name_length_match(input_name, input_name)
-list(input_name)
-class(search_name)
-list(search_name)
-
-clean_jasha <- text_clean("Jasha Sütterlin")
+remove_dupes <- name_match_table %>% distinct(input_match, .keep_all = TRUE)
+View(remove_dupes)
 
 

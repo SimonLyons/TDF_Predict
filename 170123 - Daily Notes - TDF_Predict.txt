@@ -1,5 +1,14 @@
 
 
+------------------------------
+Notes from Tue 7 Nov
+
+It looks like I've got the text_clean bit working and I'm getting much better matches as a result. I'm now working on moving my latest script into a permanent function. At the moment I'm parking the problem of converting my 'FOR' loop into a function with an 'sapply'. It will be interesting (once I do) to see if it is any quicker.
+
+I'm currently working on the problem of removing the duplicate matches and poor matches.
+
+- Build script to identify and remove incorrect matches.
+
 
 ------------------------------
 Notes from Sat 4 Nov

@@ -20,7 +20,7 @@ text_clean <- function(string) {
   string <- string %>% 
     stri_trans_general("LATIN-ASCII") %>% 
     as.character() %>% 
-    gsub("[[:punct:]]", "", .) %>% 
+    gsub("[[:punct:]]", " ", .) %>% 
     gsub("[^[:alnum:]///' ]", "", .) %>% 
     gsub(rawToChar(as.raw("0xa0")), "", .) %>% 
     gsub("  ", " ", .)
