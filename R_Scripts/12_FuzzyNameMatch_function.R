@@ -27,6 +27,7 @@
 # Load required package(s)
 require(RecordLinkage)
 require(stringi)
+require(dplyr)
 
 
 # ## ONE ##
@@ -132,5 +133,25 @@ levelTwoListMatch <- function(search_name_list, input_name_list){
     name_match_table$input_match[[k]] <- stri_trim_both(input_name_list[max_pos])
     name_match_table$leven_result[[k]] <- max(levSim_each_name)
   }   # End FOR loop running through search name list
+  
+  
+  max(t01_test[grepl("Christopher Froome", t01_test$search_name), 4])
+  
+  t01_test[t01_test$leven_result == max(t01_test[grepl("Christopher Froome", t01_test$search_name), 4]), ]
+  
+  t01_test %>% filter(input_match == "Daniel Martin") %>% filter(leven_result == max(leven_result))
+  t01_test %>% filter(leven_result != 1)    
+  t01_test[duplicated(t01_test$input_match), 'input_match']
+
+  t02_test <- t01_test %>% mutate(o33nly_when = case_when(input_match == "Daniel Martin") ~ max_pos, TRUE~as.integer(NA)) 
+  
+  t03_test <- t01_test %>% mutate(new_col = case_when(input_match == "Daniel Martin" & leven_result == max(leven_result) ~ max_pos))
+  
+  isolate_highest_leven <- function(input_name, name_table){
+    name_table <- name_table %>% mutate(new_col = case_when(input_match == input_name & leven_result == max(leven_result) ~ max_pos))
+    return(name_table)
+  }
+  
+  return(name_match_table)
   
 }   # End 'levelTwoListMatch' function

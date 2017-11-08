@@ -578,4 +578,19 @@ View(weak_matches)
 remove_dupes <- name_match_table %>% distinct(input_match, .keep_all = TRUE)
 View(remove_dupes)
 
+cn_start_list_split$Rider_1
+cn_stage_1_results_table_split$Rider_2
+cn_stage_11_results_table_split$Rider_2
 
+t01_test <- levelTwoListMatch(cn_start_list_split$Rider_1, cn_stage_11_results_table_split$Rider_2)
+t09_test <- t01_test
+write.csv(t01_test, "t01_test.csv", row.names = FALSE)
+read.csv("t01_test.csv", header = TRUE)
+
+
+View(t01_test)
+
+
+isolate_highest_leven("Daniel Martin" , t09_test)
+
+lapply(t09_test$input_match, isolate_highest_leven, t09_test)
