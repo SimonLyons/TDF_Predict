@@ -134,24 +134,12 @@ levelTwoListMatch <- function(search_name_list, input_name_list){
     name_match_table$leven_result[[k]] <- max(levSim_each_name)
   }   # End FOR loop running through search name list
   
+  # Create a new column keeping only the best Levenshtein result for each of the matched riders
+  # and therefore filtering out (leaving 'NA') the duplicates
+  name_match_table <- name_match_table %>% group_by(input_match) %>% 
+    mutate(best_pos = case_when(input_match == input_match & leven_result == max(leven_result) & leven_result > 0.7 ~ max_pos)) %>% 
+    ungroup()
   
-  max(t01_test[grepl("Christopher Froome", t01_test$search_name), 4])
-  
-  t01_test[t01_test$leven_result == max(t01_test[grepl("Christopher Froome", t01_test$search_name), 4]), ]
-  
-  t01_test %>% filter(input_match == "Daniel Martin") %>% filter(leven_result == max(leven_result))
-  t01_test %>% filter(leven_result != 1)    
-  t01_test[duplicated(t01_test$input_match), 'input_match']
-
-  t02_test <- t01_test %>% mutate(o33nly_when = case_when(input_match == "Daniel Martin") ~ max_pos, TRUE~as.integer(NA)) 
-  
-  t03_test <- t01_test %>% mutate(new_col = case_when(input_match == "Daniel Martin" & leven_result == max(leven_result) ~ max_pos))
-  
-  isolate_highest_leven <- function(input_name, name_table){
-    name_table <- name_table %>% mutate(new_col = case_when(input_match == input_name & leven_result == max(leven_result) ~ max_pos))
-    return(name_table)
-  }
-  
-  return(name_match_table)
-  
+  # Retun only the vector of the best matching positions
+  return(name_match_table$best_pos)
 }   # End 'levelTwoListMatch' function

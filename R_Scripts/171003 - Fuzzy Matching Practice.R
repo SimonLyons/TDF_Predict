@@ -15,6 +15,7 @@
 library(rvest)
 require(tidyr)
 require(RecordLinkage)
+require(dplyr)
 
 list_cn_url <- "http://www.cyclingnews.com/tour-de-france/start-list/"
 cn_stage_1_results_url <- "http://www.cyclingnews.com/tour-de-france/stage-1/results/"
@@ -558,18 +559,12 @@ if(length(search_name_list) == length(input_name_list)){
       name_match_table$input_match[[k]] <- stri_trim_both(input_name_list[max_pos])
       name_match_table$leven_result[[k]] <- max(levSim_each_name)
     }   # End FOR loop running through search name list
-    
-    
-    
   }   # End ELSE statement for lists that don't match in length
 
 # Right-o.... making progress. I've got a table () with the matching data
 # including the max Levenshtein results. From this I can locate the duplicates
 # and work out which one is the best match and which one(s) should be removed
 # as matches. Below is a non-automated attempt at this.
-View(name_match_table)
-dupes <- name_match_table[duplicated(name_match_table$input_match), ] %>% arrange(input_match)
-View(dupes)
 
 require(dplyr)
 weak_matches <- name_match_table %>% filter(leven_result < 1) %>% arrange(desc(leven_result))
@@ -582,15 +577,16 @@ cn_start_list_split$Rider_1
 cn_stage_1_results_table_split$Rider_2
 cn_stage_11_results_table_split$Rider_2
 
-t01_test <- levelTwoListMatch(cn_start_list_split$Rider_1, cn_stage_11_results_table_split$Rider_2)
+
+
+t09_test <- levelTwoListMatch(cn_start_list_split$Rider_1, cn_stage_1_results_table_split$Rider_2)
+t09_final <- data.frame(as.factor(cn_start_list_split$Rider_1), as.factor(cn_stage_11_results_table_split$Rider_2[t09_test]))
+View(t09_final)
+
 t09_test <- t01_test
 write.csv(t01_test, "t01_test.csv", row.names = FALSE)
-read.csv("t01_test.csv", header = TRUE)
-
-
+t01_test <- read.csv("t01_test.csv", header = TRUE)
 View(t01_test)
 
 
-isolate_highest_leven("Daniel Martin" , t09_test)
 
-lapply(t09_test$input_match, isolate_highest_leven, t09_test)

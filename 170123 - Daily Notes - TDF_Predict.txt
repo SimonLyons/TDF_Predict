@@ -1,5 +1,30 @@
 
 
+
+
+------------------------------
+Notes from Sat 11 Nov
+
+Woo hoo! Looks like I've just about got this licked (the name matching script that is). The two big successes of the morning have been:
+
+1. Finally isolating only the best of the matches and leaving out the duplicates; and
+2. Eliminating poor matches with a Levenshtein result less than 0.7 (although removing the duplicate matches essentially dealth with this problem anyway)
+
+Hadley Wickham's dplyr function came to the rescue again. I used 'group_by' before mutate to create a new column that carried the Levenshtein result through only for best Levenshtein result for each rider match. This script is contained within the levelTwoListMatch function in my 12_FuzzyNameMatch_function.R file.
+
+So the main issue now is my levelTwoListMatch seems quite demanding of the processor and takes a while (~1min) to match two rider lists. I'd therefore like to improve the efficiency of my text which I think may be acheived by replacing the FOR loop in this function with an appropriate 'apply' function.
+
+So I've spent six weeks building script to allow me to effectively fuzzy match names within R. It's been a bit of a frustrating process and I gues I'm a little surprised how long it's taken me, but then it's a challenging problem and I'm very happy with both the things I've learnt and the end result. I was last working on looking for a possible relationship between a riders Age and their TDF result.
+
+Next steps:
+
+- Improve efficiency of levelTwoListMatch function. Look at replacing FOR loop with apply function.
+
+- Consider creating my own package, so I can easily load all of my functions.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
+
 ------------------------------
 Notes from Thu 9 Nov
 
@@ -289,7 +314,7 @@ Next steps:
 ------------------------------
 Notes from Thu 12 Oct
 
-I'm up to this bit here. I've got some script which does the soundex() matching for the search name against the first name in the search list. I like the method I've employed. If the number of words match, I simply perform the Levenshtein Sim calculation on each of the soundex words in order. 
+I've got some script which does the soundex() matching for the search name against the first name in the search list. I like the method I've employed. If the number of words match, I simply perform the Levenshtein Sim calculation on each of the soundex words in order. 
 
 If the number of words don't match, then I throw the whole book of matching, calculating the Levenshtein Sim result for each word in the search name against every word in the first name of the search list and then picking the top results (reducing it to the length of the shortest name).
 
