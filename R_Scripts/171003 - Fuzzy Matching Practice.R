@@ -579,14 +579,23 @@ cn_stage_11_results_table_split$Rider_2
 
 
 
-t09_test <- levelTwoListMatch(cn_start_list_split$Rider_1, cn_stage_1_results_table_split$Rider_2)
+# Test levelTwoListMatch name matching function using the TDF 16 rider start list and rider list from Stage 11
+t09_test <- levelTwoListMatch(cn_start_list_split$Rider_1, cn_stage_11_results_table_split$Rider_2)
+# Combine two rider lists (with new order for Stage 11 riders) to check results
 t09_final <- data.frame(as.factor(cn_start_list_split$Rider_1), as.factor(cn_stage_11_results_table_split$Rider_2[t09_test]))
 View(t09_final)
 
+# Write results locally for future use
 t09_test <- t01_test
 write.csv(t01_test, "t01_test.csv", row.names = FALSE)
 t01_test <- read.csv("t01_test.csv", header = TRUE)
 View(t01_test)
 
+# Combine complete rider data tables, using results order for Stage 11 riders to reorder Stage 11 table
+combi_rider_tables <- cbind(cn_start_list_split, cn_stage_11_results_table_split[t09_test, ])
+View(combi_rider_tables)
 
 
+# Testing improved levelTwoListMatch function
+search_name_list <- cn_start_list_split$Rider_1
+input_name_list <- cn_stage_11_results_table_split$Rider_2

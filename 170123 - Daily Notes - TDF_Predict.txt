@@ -1,6 +1,21 @@
 
 
 
+------------------------------
+Notes from Mon 13 Nov
+
+I'm now slowing again as I look to tackle converting a FOR loop into a faster apply. Although it appears all the processing load is likely devoted to my extended Levenshtein calculations and not the FOR loop!
+
+The bit I'm struggling with is running an apply function with two lists as an input and wanting to run through the lists in sequential order NOT run every item in one list against every item in the other list.
+
+Next steps:
+
+- Contintue work on improving efficiency of levelTwoListMatch function. Look at replacing FOR loop with apply function.
+
+- Consider creating my own package, so I can easily load all of my functions.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
 
 ------------------------------
 Notes from Sat 11 Nov
