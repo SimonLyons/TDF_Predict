@@ -20,14 +20,20 @@ levelTwoListMatch <- function(search_name_list, input_name_list){
   
   name_match_table$search_name <- search_name_list
   levSim_each_name <- lapply(search_name_list, levenNameAgainstNameList, input_name_list)
-  max_pos <- match(max(levSim_each_name), levSim_each_name)
+  max_pos <- match(lapply(levSim_each_name, max), levSim_each_name)
   length(max_pos[[1]])
   ghjk <- lapply(levSim_each_name, max)
+  
+  
+  match(lapply(levSim_each_name, max)[[1]], levSim_each_name[[1]])
+  
+  lapply(levSim_each_name, match , lapply(levSim_each_name, max))
   
   ghjk[[1]] %in% levSim_each_name[[1]]
   match(ghjk[[1]], levSim_each_name[[1]])
   
-  pos_Match <- function(max_lev_value, lev_values_for_a_name){
+
+    pos_Match <- function(max_lev_value, lev_values_for_a_name){
     match(max_lev_value, lev_values_for_a_name)
     
     
@@ -40,7 +46,7 @@ levelTwoListMatch <- function(search_name_list, input_name_list){
   input_name_list[zxcv]
   
   max_pos <- lapply(levSim_each_name, match, lapply(levSim_each_name, max))
-  max_pos[[1]]
+  max_pos[[2]]
   input_match
   input_name_list[max_pos[[1]]]
   search_name_list[max_pos[[1]]]

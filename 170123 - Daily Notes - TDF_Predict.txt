@@ -1,6 +1,20 @@
 
 
 
+
+------------------------------
+Notes from Tue 14 Nov
+
+So I'm giving up on the optimisation of my fuzzy name match function for now. I think I'd have to change the way the Levenshtein calculation is performed to have any real improvement in the processing time, not simply swap out the FOR loop for an apply function.
+
+I've decided to add my functions to my own package, to make it so much easier to use them every time I start up. I've called my package 'tdfAuto' and I'm committing it to GitHub.
+
+Next steps:
+
+- Continue creating my own package, so I can easily load all of my functions.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
 ------------------------------
 Notes from Mon 13 Nov
 
