@@ -1,9 +1,10 @@
 Package: tdfAuto
-Title: What the Package Does (one line, title case)
+Title: Process Data Relating to Professional Cycling
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: person("Simon", "Lyons", email = "simon_lyons@hotmail.com", role = c("aut", "cre"))
+Description: The tdfAuto package contains a variety of functions developed to assist with the processing of data in relation to the sport of bicycle racing. The focus of this development work has been professional road bicycle racing, but the functions allow the collection, manipulation and analyis of a range of data relating to bicycle racing in general.
 Depends: R (>= 3.4.2)
-License: What license is it under?
+License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1

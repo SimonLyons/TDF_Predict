@@ -1,6 +1,15 @@
 
 
 
+------------------------------
+Notes from Thu 16 Nov
+
+I believe I've completed the creation and installation of my 'tdfAuto' package. Now to test out from a computer other than the HP Laptop!
+
+- Test my own 'tdfAuto' package from another computer, so I can easily load all of my functions.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
 
 ------------------------------
 Notes from Tue 14 Nov

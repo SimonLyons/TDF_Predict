@@ -101,11 +101,19 @@ check_name_length_match <- function(input_name, search_name){
   }   # End ELSE statement
 }   # End 'check_name_length_match' function
 
+
 # ## THREE ##
-# Wrap the above Levenshtein matching functions into a master function that calculates the 
-# Levenstein Sim value between the search name and each name in the list
-# 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
-# 'input_name_list': The list containing names of riders.
+#' A Levenshtein Sim Name Against List of Names Function
+#'
+#' This 'levenNameAgainstNameList' function wraps the prior Levenshtein matching functions into a master function that calculates the Levenstein Sim value between the search name and each name in the list.
+#' 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
+#' 'input_name_list': The list containing names of riders.
+#' The Levenshtein result for each name in the list is returned.
+#' @param string input and string list
+#' @return numeric output
+#' @export
+#' @examples
+
 levenNameAgainstNameList <- function(search_name, input_name_list){
   # convert both the search name and input_name_list:
   #    remove spaces at the start and end of each name
@@ -119,10 +127,19 @@ levenNameAgainstNameList <- function(search_name, input_name_list){
   levSim_each_name
 }
 
+
 # ## FOUR ##   It's starting to look like I won't use this function (7 Nov 17)
-# Takes the list of Levenshtein values calculated for the entire list and then
-# determines which has the highest value (closest match) and
-# then returns the position of the closest match.
+#' A Levenshtein Sim Wrapping Function to Return the Best Match
+#'
+#' This 'levenBestMatch' function takes the list of Levenshtein values calculated for the entire list (of riders) and then determines which has the highest value (closest match) and then returns the position of the closest match.
+#' 'search_name': The name of the rider for whom we are seeking a match from another list of riders.
+#' 'input_name_list': The list containing names of riders.
+#' The position of the best match in the input_name_list of riders is returned.
+#' @param string input and string list
+#' @return numeric output
+#' @export
+#' @examples
+
 levenBestMatch <- function(search_name, input_name_list){
   levSim_each_name <- levenNameAgainstNameList(search_name, input_name_list)
   max_pos <- match(max(levSim_each_name), levSim_each_name)
@@ -131,8 +148,18 @@ levenBestMatch <- function(search_name, input_name_list){
 
 
 # ## FIVE ##
-# Take two lists of rider names and determine the positions of the best match.
-# Returns no match ('NA') where there is no good match or there are duplicates.
+#' A Levenshtein Sim Weighting and Selection Function to Return the Best Match
+#'
+#' This 'levelTwoListMatch' function takes two lists of rider names and determines the positions of the best match. 
+#' Returns no match ('NA') where there is no good match or there are duplicates.
+#' 'search_name_list': The names (list) of the riders for whom we are seeking a match from another list of riders.
+#' 'input_name_list': The list containing names of riders for matching.
+#' The position of the best match in the input_name_list of riders is returned.
+#' @param string input and string list
+#' @return numeric output
+#' @export
+#' @examples
+
 levelTwoListMatch <- function(search_name_list, input_name_list){
   # Create a dataframe to retain the Levenshtein result and best match name
   name_match_table <- as.data.frame(matrix(data = NA, nrow = length(search_name_list), ncol = 4))

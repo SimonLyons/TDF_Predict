@@ -599,3 +599,7 @@ View(combi_rider_tables)
 # Testing improved levelTwoListMatch function
 search_name_list <- cn_start_list_split$Rider_1
 input_name_list <- cn_stage_11_results_table_split$Rider_2
+
+check_name_length_match(c("Rigobert", "Robert"), c("Derek", "Bones"))
+
+                        
