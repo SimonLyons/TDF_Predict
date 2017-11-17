@@ -1,8 +1,23 @@
 
 
 
+
 ------------------------------
-Notes from FRi 17 Nov
+Notes from Sat 18 Nov
+
+This morning I've been working out why my text_clean function wasn't being included correctly in my tdfAuto package (something to do with the pre-function script) and then streamlining updates to my tdfAuto package.
+
+I think I've got this sorted, so I'll now start transitioning my functions to the tdfAuto package and progressively delete the old script from the TDF_Predict working R script directory. It will be nice to have my main functions readily available through quickly loading my 'tdfAuto' package.
+
+Next steps:
+
+- Test my own 'tdfAuto' package from another computer, so I can easily load all of my functions.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
+
+------------------------------
+Notes from Fri 17 Nov
 
 I've had a tough time dealing with an accidental commit of a large file to my GIT repository. I did a blanket add files and somehow added the +600MB file 'super_join.csv'. Although I deleted it from my commit, I think the file was still sitting in the commit history and the GIT push was still attempting to deal with it and giving me an error. I finally had success (I think - I'm about to test) using the following command:
 
