@@ -7,27 +7,22 @@
 
 # The function uses a Levenshtein distance calculation (specifically the
 # LevenshteinSim function from the RecordLinkage package) to find the best
-# match. 
+# match.
 # The FuzzyNameMatch goes a step further by taking into account the nature of
 # people's names. Its primary weapon in this search is comparing all of the words
 # in the each name against all of the words in each name from the list, and
-# identifying the best match from each name. This is a step up from just a 
+# identifying the best match from each name. This is a step up from just a
 # Levenstein distance calculation on the whole name against a whole name.
 # We also need to take into account the order of the words in each name.
 # Lastly, where the names being compared have a matching number of words, the
 # Levenshtein distance calculation is done in order for each word, rather than
 # every word iterated against every word.
 
-# The function is a nested combination of three functions. This allows the 
+# The function is a nested combination of three functions. This allows the
 # sapply function to be rolled through the three types of lists:
 # 1. For each single word (in a name), comparing it against the list of words in another name;
 # 2. Applying the above for each word in the search name; and
 # 3. Applying the above for every name in the search list.
-
-# Load required package(s)
-require(RecordLinkage)
-require(stringi)
-require(dplyr)
 
 
 # ## ONE ##
@@ -43,6 +38,8 @@ require(dplyr)
 #' levenNameList("Rigoberto", c("Rigobert", "Robert"))   ->   0.8888889
 
 levenNameList <- function(input_word, input_name){
+  # Load required package
+  require(RecordLinkage)
   return(max(sapply(input_name, levenshteinSim, input_word)))
 }
 
@@ -50,8 +47,7 @@ levenNameList <- function(input_word, input_name){
 # ## TWO ##
 #' A Levenshtein Sim Name List Function
 #'
-#' This 'check_name_length_match' function applies function 'levenNameList' for
-# each word in the search name. Where the number of words in the two compared names match, a straight Levenshtein distance calculation is performed. 
+#' This 'check_name_length_match' function applies function 'levenNameList' for each word in the search name. Where the number of words in the two compared names match, a straight Levenshtein distance calculation is performed.
 #' Where there isn't a match in the number of words, the Levenshtein distance calculation is iterated across each word permutation.
 #' In both cases the mean of each result is returned.
 #' @param string input and string list
@@ -63,6 +59,8 @@ levenNameList <- function(input_word, input_name){
 #' check_name_length_match(c("Rigobert", "Robert"), c("Derek", "Bones"))   ->   0.2291667
 
 check_name_length_match <- function(input_name, search_name){
+  # Load required package(s)
+  require(RecordLinkage)
   # Clean up input types by removing lists.
   if(class(search_name) == 'list'){
     search_name <- unlist(search_name)
@@ -115,6 +113,9 @@ check_name_length_match <- function(input_name, search_name){
 #' @examples
 
 levenNameAgainstNameList <- function(search_name, input_name_list){
+  # Load required package(s)
+  require(stringi)
+
   # convert both the search name and input_name_list:
   #    remove spaces at the start and end of each name
   #    split the names into separate word strings
@@ -150,7 +151,7 @@ levenBestMatch <- function(search_name, input_name_list){
 # ## FIVE ##
 #' A Levenshtein Sim Weighting and Selection Function to Return the Best Match
 #'
-#' This 'levelTwoListMatch' function takes two lists of rider names and determines the positions of the best match. 
+#' This 'levelTwoListMatch' function takes two lists of rider names and determines the positions of the best match.
 #' Returns no match ('NA') where there is no good match or there are duplicates.
 #' 'search_name_list': The names (list) of the riders for whom we are seeking a match from another list of riders.
 #' 'input_name_list': The list containing names of riders for matching.
@@ -161,12 +162,16 @@ levenBestMatch <- function(search_name, input_name_list){
 #' @examples
 
 levelTwoListMatch <- function(search_name_list, input_name_list){
+  # Load required package(s)
+  require(dplyr)
+  require(stringi)
+
   # Create a dataframe to retain the Levenshtein result and best match name
   name_match_table <- as.data.frame(matrix(data = NA, nrow = length(search_name_list), ncol = 4))
   # class(name_match_table$search_name) <- "factor"
   colnames(name_match_table) <- c("search_name", "input_match", "max_pos", "leven_result")
   search_name_list <- as.character(search_name_list)   # Convert name list to string/character list
-  
+
   for(k in 1:length(search_name_list)){
     # Calculate the Levenshtein value for the search name against each name in the input_list
     levSim_each_name <- levenNameAgainstNameList(search_name_list[[k]], input_name_list)
@@ -176,13 +181,13 @@ levelTwoListMatch <- function(search_name_list, input_name_list){
     name_match_table$input_match[[k]] <- stri_trim_both(input_name_list[max_pos])
     name_match_table$leven_result[[k]] <- max(levSim_each_name)
   }   # End FOR loop running through search name list
-  
+
   # Create a new column keeping only the best Levenshtein result for each of the matched riders
   # and therefore filtering out (leaving 'NA') the duplicates
-  name_match_table <- name_match_table %>% group_by(input_match) %>% 
-    mutate(best_pos = case_when(input_match == input_match & leven_result == max(leven_result) & leven_result > 0.7 ~ max_pos)) %>% 
+  name_match_table <- name_match_table %>% group_by(input_match) %>%
+    mutate(best_pos = case_when(input_match == input_match & leven_result == max(leven_result) & leven_result > 0.7 ~ max_pos)) %>%
     ungroup()
-  
+
   # Retun only the vector of the best matching positions
   return(name_match_table$best_pos)
 }   # End 'levelTwoListMatch' function

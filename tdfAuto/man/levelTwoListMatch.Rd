@@ -13,7 +13,7 @@ levelTwoListMatch(search_name_list, input_name_list)
 numeric output
 }
 \description{
-This 'levelTwoListMatch' function takes two lists of rider names and determines the positions of the best match. 
+This 'levelTwoListMatch' function takes two lists of rider names and determines the positions of the best match.
 Returns no match ('NA') where there is no good match or there are duplicates.
 'search_name_list': The names (list) of the riders for whom we are seeking a match from another list of riders.
 'input_name_list': The list containing names of riders for matching.

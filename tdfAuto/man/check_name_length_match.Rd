@@ -13,7 +13,7 @@ check_name_length_match(input_name, search_name)
 numeric output
 }
 \description{
-This 'check_name_length_match' function applies function 'levenNameList' for
+This 'check_name_length_match' function applies function 'levenNameList' for each word in the search name. Where the number of words in the two compared names match, a straight Levenshtein distance calculation is performed.
 Where there isn't a match in the number of words, the Levenshtein distance calculation is iterated across each word permutation.
 In both cases the mean of each result is returned.
 }
