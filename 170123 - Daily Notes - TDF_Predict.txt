@@ -2,9 +2,30 @@
 
 
 ------------------------------
+Notes from FRi 17 Nov
+
+I've had a tough time dealing with an accidental commit of a large file to my GIT repository. I did a blanket add files and somehow added the +600MB file 'super_join.csv'. Although I deleted it from my commit, I think the file was still sitting in the commit history and the GIT push was still attempting to deal with it and giving me an error. I finally had success (I think - I'm about to test) using the following command:
+
+git filter-branch --index-filter 'git rm --cached --ignore-unmatch super_join.csv' HEAD
+
+This website was very helpful:
+https://dalibornasevic.com/posts/2-permanently-remove-files-and-folders-from-a-git-repository
+
+I'll push this change to the Daily Notes and see where I'm at.
+
+Next steps:
+
+- Test my own 'tdfAuto' package from another computer, so I can easily load all of my functions.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
+
+------------------------------
 Notes from Thu 16 Nov
 
 I believe I've completed the creation and installation of my 'tdfAuto' package. Now to test out from a computer other than the HP Laptop!
+
+Next steps:
 
 - Test my own 'tdfAuto' package from another computer, so I can easily load all of my functions.
 
