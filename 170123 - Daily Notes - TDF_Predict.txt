@@ -1,6 +1,23 @@
 
 
 
+------------------------------
+Notes from Mon 20 Nov
+
+I've returned to the following script to apply my new fuzzy name matching functions:
+
+171001 - Variable builder - Age.R
+
+The good news is my 'levelTwoListMatch' function seems to have worked accurately on matching the two lists of riders I was previously having problems. The function returns the position of the correct matches in the second rider list, returning an 'NA' where there is not an appropriate match.
+
+The bad news (not new bad news) is that there are missing riders and this must be because the input list of riders (extracted from the database) did not pull out all the necessary riders from the database. This indicates a search and matching problem at the database point. I had done some work previously to significantly improve the database fuzzy search, but it would appear some more refinement/optimisation is required, which will be my next step.
+
+Next steps:
+
+- Test my own 'tdfAuto' package from another computer, so I can easily load all of my functions.
+
+- Examine method for searching and matching names from the database with the aim of improving the number of correct names returned from database searches.
+
 
 ------------------------------
 Notes from Sat 18 Nov
@@ -487,7 +504,7 @@ I'm working on the script to build the Age variable. The code I started in Broad
 
 I've pulled the relevant DOB data for the riders who completed the 2016 TdF. The initial issue was incorrect DOB data, which I corrected using the UCI ID for each rider (which conveniently contains each rider's correct DOB). The next issue is it was immediately obvious I had not extracted all riders. 
 
-So I'm currently working on how to correctly match rider names qith queries in the ProCycling database. I knew this problem was coming, right from the start. The variety of ways names are defined means perfect matching would never work. The first name to stick out on my current work is Alejandro Valverde who is listed as 'Alejandro Valverde Belmonte' in the Cycling News rider info page and therefore has this longer version of his name in my rider_list_master database table.
+So I'm currently working on how to correctly match rider names with queries in the ProCycling database. I knew this problem was coming, right from the start. The variety of ways names are defined means perfect matching would never work. The first name to stick out on my current work is Alejandro Valverde who is listed as 'Alejandro Valverde Belmonte' in the Cycling News rider info page and therefore has this longer version of his name in my rider_list_master database table.
 
 I've been using SOUNDEX for approximate fuzzy matching, but it looks like this is useful when the string length is almost the same. SOUNDEX appears to deal well with incorrect or differing characters but not searches where there might be additional text (such as riders with extra names.....)
 

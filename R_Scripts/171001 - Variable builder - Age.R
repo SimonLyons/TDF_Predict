@@ -169,3 +169,43 @@ top_20_age <- rider_dob_MATCH_merge[1:20, ]
 # View(rider_dob_MATCH_merge)
 ggplot(top_20_age, aes(x = Age, y = X2016_FP, colour = Team)) + geom_point() + geom_text(aes(label=Rider),hjust=0, vjust=0)
 
+
+######################################################################
+# Recommencing work on Mon 20 Nov 17
+# FUZZY NAME MATCHING FUNCTIONS
+# I'm getting back into the above Age analysis with the use of fuzzy
+# name matching functions I've developed over the last six weeks.
+
+# Read the original results analysis and database Age tables back into R
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
+rider_table_MATCH <- read.csv("rider_table_MATCH.csv", header = TRUE)
+View(results_df)
+View(rider_table_MATCH)
+
+# Load my tdfAuto package
+require(tdfAuto)
+
+# Run two list fuzzy name matching function
+pos_match <- levelTwoListMatch(results_df$Rider, rider_table_MATCH$rider_name)
+
+# Combinge search list and input list of riders into a dataframe for comparison
+name_check <- data.frame(as.factor(results_df$Rider), as.factor(rider_table_MATCH$rider_name[pos_match]))
+colnames(name_check) <- c("Search_Riders", "Input_Riders")
+View(name_check)
+# THe above matching appears to have been executed correctly, with accurate matches
+# against each name and an 'NA' entry where no match is found.
+
+# Identify the missing riders (no match found)
+name_check[is.na(name_check$Input_Riders) , "Search_Riders"]
+
+# Put the search list and the missing rider list into alphabetical order for a manual check
+alpha_db <- rider_table_MATCH %>% arrange(rider_name) %>% select(rider_name)
+alpha_fuzzymatch <- name_check %>% filter(is.na(Input_Riders)) %>% arrange(Search_Riders) %>% select(Search_Riders)
+View(alpha_db)
+View(alpha_fuzzymatch)
+# A manual check of the two lists confirms there are no riders that should have been matched.
+# It would appear the missing riders were not extracted from the database.
+# Time to go and refine the database matching and extraction approach.
+
+
