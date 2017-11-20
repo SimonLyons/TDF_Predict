@@ -11,6 +11,7 @@ require(dplyr)
 require(ggplot2)
 require(tidyr)
 require(caret)
+require(tdfAuto)
 
 
 # Read prior file with details of riders finishing the 2016 TdF
@@ -30,7 +31,7 @@ for(con in all_cons)
 # Open connection to ProCyling database
 conn_local <- dbConnect(MySQL(), user = as.character(psswd[psswd$type== "Manager", "user"]), 
                         password = as.character(psswd[psswd$type == "Manager", "password"]),  
-                        dbname='ProCycling', host='192.168.1.7', port=3306, timeout=3600)
+                        dbname='ProCycling', host='192.168.1.6', port=3306, timeout=3600)
 
 ######################################################################
 # MySQL QUERIES
@@ -128,7 +129,7 @@ rider_table_MATCH <- dbGetQuery(conn_local, criteria)
 # Write resulting rider list table to local working data directory
 write.csv(rider_table_MATCH, "rider_table_MATCH.csv", row.names = FALSE)
 
-# Read the above MATCH table bcak into R
+# Read the above MATCH table back into R
 setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
 results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
 rider_table_MATCH <- read.csv("rider_table_MATCH.csv", header = TRUE)
@@ -193,7 +194,7 @@ pos_match <- levelTwoListMatch(results_df$Rider, rider_table_MATCH$rider_name)
 name_check <- data.frame(as.factor(results_df$Rider), as.factor(rider_table_MATCH$rider_name[pos_match]))
 colnames(name_check) <- c("Search_Riders", "Input_Riders")
 View(name_check)
-# THe above matching appears to have been executed correctly, with accurate matches
+# The above matching appears to have been executed correctly, with accurate matches
 # against each name and an 'NA' entry where no match is found.
 
 # Identify the missing riders (no match found)
@@ -201,11 +202,70 @@ name_check[is.na(name_check$Input_Riders) , "Search_Riders"]
 
 # Put the search list and the missing rider list into alphabetical order for a manual check
 alpha_db <- rider_table_MATCH %>% arrange(rider_name) %>% select(rider_name)
+write.csv(alpha_db, "alpha_db.csv", row.names = FALSE)
 alpha_fuzzymatch <- name_check %>% filter(is.na(Input_Riders)) %>% arrange(Search_Riders) %>% select(Search_Riders)
+write.csv(alpha_fuzzymatch, "alpha_fuzzymatch.csv", row.names = FALSE)
 View(alpha_db)
 View(alpha_fuzzymatch)
 # A manual check of the two lists confirms there are no riders that should have been matched.
 # It would appear the missing riders were not extracted from the database.
 # Time to go and refine the database matching and extraction approach.
+
+######################################################################
+# Improving Database Fuzzy Name Matching
+
+# Load required packages
+require(RMySQL)
+
+# Read the original results analysis and database Age tables back into R
+setwd("/home/a_friend/data_analysis/projects/TDF_Predict/working_data/")
+results_df <- read.csv("anal_df_2016_C&T.csv", header = TRUE)
+rider_table_MATCH <- read.csv("rider_table_MATCH.csv", header = TRUE)
+
+# Put the search list and the missing rider list into alphabetical order for a manual check
+alpha_db <- rider_table_MATCH %>% arrange(rider_name) %>% select(rider_name)
+alpha_fuzzymatch <- read.csv("alpha_fuzzymatch.csv", header = TRUE)
+
+#          ### WHERE filter based on missing riders ###
+# Build a WHERE criteria list of all the riders missing from my original
+# MySQL Boolean matching
+WHERE_rider <- paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", alpha_fuzzymatch$Search_Riders[1]), "')")
+for (r in 2:length(alpha_fuzzymatch$Search_Riders)){
+  WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", alpha_fuzzymatch$Search_Riders[r]), "' IN BOOLEAN MODE)")
+}
+WHERE_rider
+
+# Paste together the criteria for the MySQL query
+criteria <- paste0("SELECT * FROM rider_list_master WHERE ", WHERE_rider, ";")
+
+# Execute MySQL query against missing rider search criteria
+rider_table_MISSING <- dbGetQuery(conn_local, criteria)
+View(rider_table_MISSING)
+# Write resulting missing rider list table to local working data directory
+write.csv(rider_table_MISSING, "rider_table_MISSING.csv", row.names = FALSE)
+
+# The above returns only one rider (Adrien Niyonshuti), which is an incorrect 
+# match presumably for Adrien Petit
+
+# Now to check for individual names in database
+criteria <- paste0("SELECT * FROM rider_list_master WHERE ", 
+                   paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", 
+                  alpha_fuzzymatch$Search_Riders[10]), "')"), ";")
+criteria <- "SELECT * FROM rider_list_master WHERE MATCH(rider_name) AGAINST('+Greg+Henderson');"
+# Execute MySQL query against missing rider search criteria
+rider_table_INDIVIDUAL <- dbGetQuery(conn_local, criteria)
+rider_table_INDIVIDUAL
+# So the issue here is I'm getting a return from the database for Greg Henderson.
+# It's returning two names: Greg Van Avermaet & Gregory Henderson
+# However Gregory Henderson IS NOT in the full rider list search results (rider_table_MATCH)
+
+# Run two list fuzzy name matching function
+pos_match <- levelTwoListMatch(results_df$Rider, rider_table_INDIVIDUAL$rider_name)
+results_df$Rider[155]
+require(stringr)
+looking_for_Greg <- rider_table_MATCH %>% filter(str_detect(rider_name, "Gre")) %>% arrange(rider_name) 
+looking_for_Greg$rider_name
+
+# So I need to work out why my Boolean matching isn't returning Gregory Henderson.
 
 
