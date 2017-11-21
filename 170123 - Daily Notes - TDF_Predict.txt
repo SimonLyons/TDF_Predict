@@ -2,6 +2,20 @@
 
 
 ------------------------------
+Notes from Tue 21 Nov
+
+I'm getting into the guts of improving my MySQL queries. Greg Henderson is throwing up some interesting problems. Gregory Henderson is not appearing in the full MySQL Boolean search, but if I do a search just for Greg Henderson, I get a two row table with Greg Van Avermaet and Gregory Henderson. I have a hunch the bigger search is just returning the first match.
+
+https://dev.mysql.com/doc/refman/5.5/en/fulltext-boolean.html
+
+Next steps:
+
+- Test my own 'tdfAuto' package from another computer, so I can easily load all of my functions.
+
+- Examine method for searching and matching names from the database with the aim of improving the number of correct names returned from database searches. Specifically - looking at what is happening with Greg Henderson.
+
+
+------------------------------
 Notes from Mon 20 Nov
 
 I've returned to the following script to apply my new fuzzy name matching functions:
