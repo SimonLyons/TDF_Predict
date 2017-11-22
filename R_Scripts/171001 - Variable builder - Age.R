@@ -111,9 +111,9 @@ rider_avb_MATCH
 # Setup query criteria for full 2016 TdF rider list
 WHERE_rider <- paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$Rider[1]), "')")
 for (r in 2:length(results_df$Rider)){
-  WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$Rider[r]), "' IN BOOLEAN MODE)")
+  WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", results_df$Rider[r]), "')")
 }
-View(WHERE)
+WHERE_rider
 length(results_df$Rider)
 
 ########## Narrow MySQL FULLTEXT search results
@@ -231,7 +231,7 @@ alpha_fuzzymatch <- read.csv("alpha_fuzzymatch.csv", header = TRUE)
 # MySQL Boolean matching
 WHERE_rider <- paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", alpha_fuzzymatch$Search_Riders[1]), "')")
 for (r in 2:length(alpha_fuzzymatch$Search_Riders)){
-  WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", alpha_fuzzymatch$Search_Riders[r]), "' IN BOOLEAN MODE)")
+  WHERE_rider <- paste0(WHERE_rider, " OR MATCH(rider_name) AGAINST('+", gsub(" ", "+", alpha_fuzzymatch$Search_Riders[r]), "')")
 }
 WHERE_rider
 

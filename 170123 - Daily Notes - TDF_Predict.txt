@@ -4,6 +4,12 @@
 ------------------------------
 Notes from Tue 21 Nov
 
+Just a quick amount of work. I'm in the thick of trying to improve my MySQL search for rider. I've removed 'IN BOOLEAN MODE' from the search, which on first pass appears to improve the returned matches. At least, I'm getting 'Gregory Henderson' where I wasn't before. More testing required.
+
+
+------------------------------
+Notes from Tue 21 Nov
+
 I'm getting into the guts of improving my MySQL queries. Greg Henderson is throwing up some interesting problems. Gregory Henderson is not appearing in the full MySQL Boolean search, but if I do a search just for Greg Henderson, I get a two row table with Greg Van Avermaet and Gregory Henderson. I have a hunch the bigger search is just returning the first match.
 
 https://dev.mysql.com/doc/refman/5.5/en/fulltext-boolean.html
