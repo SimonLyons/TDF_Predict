@@ -1,10 +1,19 @@
-
+﻿
 
 
 ------------------------------
-Notes from Tue 21 Nov
+Notes from Thu 23 Nov
 
 Just a quick amount of work. I'm in the thick of trying to improve my MySQL search for rider. I've removed 'IN BOOLEAN MODE' from the search, which on first pass appears to improve the returned matches. At least, I'm getting 'Gregory Henderson' where I wasn't before. More testing required.
+
+
+------------------------------
+Notes from Wed 22 Nov @ work
+
+I've attempted installation of my 'tdfAuto' package on my work latop and failed with the following warning message:
+
+Warning in install.packages :
+  package ‘tdfAuto’ is not available (for R version 3.3.1)
 
 
 ------------------------------
