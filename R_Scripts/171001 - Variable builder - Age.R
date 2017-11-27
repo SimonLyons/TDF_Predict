@@ -251,7 +251,7 @@ write.csv(rider_table_MISSING, "rider_table_MISSING.csv", row.names = FALSE)
 criteria <- paste0("SELECT * FROM rider_list_master WHERE ", 
                    paste0("MATCH(rider_name) AGAINST('+", gsub(" ", "+", 
                   alpha_fuzzymatch$Search_Riders[10]), "')"), ";")
-criteria <- "SELECT * FROM rider_list_master WHERE MATCH(rider_name) AGAINST('+Greg+Henderson');"
+criteria <- "SELECT * FROM rider_list_master WHERE MATCH(rider_name) AGAINST('FUZZY FORM OF `+Greg+Henderson`');"
 # Execute MySQL query against missing rider search criteria
 rider_table_INDIVIDUAL <- dbGetQuery(conn_local, criteria)
 rider_table_INDIVIDUAL
@@ -268,4 +268,4 @@ looking_for_Greg$rider_name
 
 # So I need to work out why my Boolean matching isn't returning Gregory Henderson.
 
-
+#  IN BOOLEAN MODE

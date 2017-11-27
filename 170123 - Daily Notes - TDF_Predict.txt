@@ -1,6 +1,24 @@
 ﻿
 
 
+
+------------------------------
+Notes from Tue 28 Nov
+
+So I'm exploring methods for improving my rider searches in MySQL.
+
+I'm definitely not there yet - particularly given there aren't any obvious techniques for fuzzy matching of multiple words.
+
+Three Ways to Search Smarter in MySQL
+https://www.morpheusdata.com/blog/2015-03-14-three-ways-to-search-smarter-in-mysql
+
+WL#2476: Fuzzy operations for fulltext
+https://dev.mysql.com/worklog/task/?id=2476
+
+Using SOUNDEX and MySQL Full-Text Search for Fuzzy Matching
+http://sjhannah.com/blog/2014/11/03/using-soundex-and-mysql-full-text-search-for-fuzzy-matching/
+
+
 ------------------------------
 Notes from Thu 23 Nov
 
