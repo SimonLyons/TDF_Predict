@@ -1,6 +1,17 @@
 ﻿
 
 
+------------------------------
+Notes from Thu 30 Nov
+
+I've been learning a bit about Boolean Full-Text Searches in MySQL from the following website:
+
+https://dev.mysql.com/doc/refman/5.7/en/fulltext-boolean.html
+
+Importantly, I need to ensure the negative operator ('-') is not present in search words as the negative operator indicates that a word must be absent!
+
+There are some different actions with wildcards and other operators I need to investigate.
+
 
 ------------------------------
 Notes from Tue 28 Nov
