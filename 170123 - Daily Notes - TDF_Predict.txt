@@ -1,4 +1,22 @@
-﻿
+
+
+
+------------------------------
+Notes from Mon 4 Dec
+
+I've started a data exploration script. 
+
+171204 - Burleigh Data Exploration.R
+
+I've also started back on my edEx data analysis studies.﻿
+
+Next steps:
+
+- Return to MySQL fuzzy string matching research once I'm back at home.
+
+- Re-commence my analysis work I stopped to work on fuzzy name matching. This happened on 01 Oct and I was working on Age data in the file: 171001 - Variable builder - Age.R
+
+
 
 
 ------------------------------
